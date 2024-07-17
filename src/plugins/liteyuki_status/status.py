@@ -27,7 +27,12 @@ status_alc = on_alconna(
     aliases={"状态"},
     command=Alconna(
         "status",
-        Option("-r|--refresh", alias={"refr", "r", "刷新"}, action=store_true),
+        Option(
+            "-r|--refresh",
+            default=False,
+            alias={"refr", "r", "刷新"},
+            action=store_true,
+        ),
         Subcommand(
             "memory",
             alias={"mem", "m", "内存"},
