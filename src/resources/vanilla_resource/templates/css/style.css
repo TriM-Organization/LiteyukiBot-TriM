@@ -3,7 +3,7 @@ body {
     background-size: cover;
     background-position: center;
     color: white;
-/ / 上10px，左右10px，下0px / / margin: 24 px;
+    /* // 上10px，左右10px，下0px // margin: 24 px; */
     margin: 20px;
 }
 
@@ -55,7 +55,8 @@ body {
     background-color: white;
 }
 
-.bot-name, .bot-tag {
+.bot-name,
+.bot-tag {
     margin-left: 20px;
 }
 
@@ -98,4 +99,9 @@ body {
     font-size: 30px;
     font-style: italic;
     color: #ccc;
+}
+
+.addition-info {
+    font-size: 36px;
+    color: #fff;
 }

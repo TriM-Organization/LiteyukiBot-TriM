@@ -28,3 +28,5 @@ jieba~=0.42.1
 pip~=23.2.1
 fastapi~=0.110.0
 python-dotenv~=1.0.1
+pypinyin
+zhDateTime>=1.0.3

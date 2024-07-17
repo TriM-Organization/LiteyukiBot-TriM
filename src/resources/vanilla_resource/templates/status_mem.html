@@ -49,7 +49,8 @@
             background-color: white;
         }
 
-        .bot-name, .bot-tag {
+        .bot-name,
+        .bot-tag {
             margin-left: 20px;
         }
 
@@ -93,35 +94,36 @@
             font-style: italic;
             color: #ccc;
         }
-
     </style>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4.3.0/dist/echarts.min.js"></script>
 
 </head>
+
 <body>
 
 
-<div class="info-box" id="hardware-info">
-    <div class="pie-info" id="cpu-info">
-        <div class="pie-chart" id="cpu-chart"></div>
+    <div class="info-box" id="hardware-info">
+        <div class="pie-info" id="cpu-info">
+            <div class="pie-chart" id="cpu-chart"></div>
+        </div>
+        <div class="pie-info" id="mem-info">
+            <div class="pie-chart" id="mem-chart"></div>
+        </div>
+        <div class="pie-info" id="swap-info">
+            <div class="pie-chart" id="swap-chart"></div>
+        </div>
     </div>
-    <div class="pie-info" id="mem-info">
-        <div class="pie-chart" id="mem-chart"></div>
+
+    <div class="info-box" id="disks-info">
     </div>
-    <div class="pie-info" id="swap-info">
-        <div class="pie-chart" id="swap-chart"></div>
+
+    <div class="info-box" id="motto-info">
     </div>
-</div>
 
-<div class="info-box" id="disks-info">
-</div>
-
-<div class="info-box" id="motto-info">
-</div>
-
-<!--储存数据div，不显示-->
-<div id="data" style="display: none">{{ data | tojson }}</div>
-<script src="js/motto.js"></script>
-<script src="js/style.js"></script>
+    <!--储存数据div，不显示-->
+    <div id="data" style="display: none">{{ data | tojson }}</div>
+    <!-- <script src="js/motto.js"></script> -->
+    <script src="js/style.js"></script>
 </body>
+
 </html>

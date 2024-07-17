@@ -33,6 +33,20 @@ markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).con
 
 @on_alconna(
     command=Alconna(
+        "ryounecho",
+        Args["text", str, ""],
+    ),
+    permission=SUPERUSER
+).handle()
+# Satori OK
+async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
+    if result.main_args.get("text"):
+        await matcher.finish(Message(unescape(result.main_args.get("text"))))
+    else:
+        await matcher.finish(f"君安！灵温向你问好~\n此机 {bot.self_id}")
+
+@on_alconna(
+    command=Alconna(
         "liteecho",
         Args["text", str, ""],
     ),
@@ -43,13 +57,13 @@ async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
     if result.main_args.get("text"):
         await matcher.finish(Message(unescape(result.main_args.get("text"))))
     else:
-        await matcher.finish(f"Hello, Liteyuki!\nBot {bot.self_id}")
+        await matcher.finish(f"Hello! TriM-Liteyuki!\nRyBot {bot.self_id}")
 
 
 @on_alconna(
-    aliases={"更新轻雪"},
+    aliases={"更新灵温"},
     command=Alconna(
-        "update-liteyuki"
+        "update-ryoun"
     ),
     permission=SUPERUSER
 ).handle()
@@ -59,7 +73,7 @@ async def _(bot: T_Bot, event: T_MessageEvent):
 
     ulang = get_user_lang(str(event.user.id if isinstance(event, satori.event.Event) else event.user_id))
     success, logs = update_liteyuki()
-    reply = "Liteyuki updated!\n"
+    reply = "尹灵温 更新完成！\n"
     reply += f"```\n{logs}\n```\n"
     btn_restart = md.btn_cmd(ulang.get("liteyuki.restart_now"), "reload-liteyuki")
     pip.main(["install", "-r", "requirements.txt"])
@@ -68,15 +82,15 @@ async def _(bot: T_Bot, event: T_MessageEvent):
 
 
 @on_alconna(
-    aliases={"重启轻雪"},
+    aliases={"重启灵温","重启尹灵温", "重载灵温"},
     command=Alconna(
-        "reload-liteyuki"
+        "reload-ryoun",
     ),
     permission=SUPERUSER
 ).handle()
 # Satori OK
 async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
-    await matcher.send("Liteyuki reloading")
+    await matcher.send("尹灵温 正在重载")
     temp_data = common_db.where_one(TempConfig(), default=TempConfig())
 
     temp_data.data.update(
@@ -179,15 +193,15 @@ async def _(event: T_MessageEvent, matcher: Matcher):
         ulang.get("liteyuki.image_mode_on" if stored_config.config["markdown_image"] else "liteyuki.image_mode_off"))
 
 
-@on_alconna(
-    command=Alconna(
-        "liteyuki-docs",
-    ),
-    aliases={"轻雪文档"},
-).handle()
-# Satori OK
-async def _(matcher: Matcher):
-    await matcher.finish("https://bot.liteyuki.icu/usage")
+# @on_alconna(
+#     command=Alconna(
+#         "liteyuki-docs",
+#     ),
+#     aliases={"轻雪文档"},
+# ).handle()
+# # Satori OK
+# async def _(matcher: Matcher):
+#     await matcher.finish("https://bot.liteyuki.icu/usage")
 
 
 @on_alconna(
@@ -350,7 +364,7 @@ async def _(bot: T_Bot):
         if isinstance(bot, satori.Bot):
             await bot.send_message(
                 channel_id=reload_session_id,
-                message="Liteyuki reloaded in %.2f s" % delta_time
+                message="灵温 重载耗时 %.2f 秒" % delta_time
             )
         else:
             await bot.call_api(
@@ -358,7 +372,7 @@ async def _(bot: T_Bot):
                 message_type=reload_session_type,
                 user_id=reload_session_id,
                 group_id=reload_session_id,
-                message="Liteyuki reloaded in %.2f s" % delta_time
+                message="灵温 重载耗时 %.2f 秒" % delta_time
             )
 
 
@@ -369,8 +383,8 @@ async def every_day_update():
         result, logs = update_liteyuki()
         pip.main(["install", "-r", "requirements.txt"])
         if result:
-            await broadcast_to_superusers(f"Liteyuki updated: ```\n{logs}\n```")
-            nonebot.logger.info(f"Liteyuki updated: {logs}")
+            await broadcast_to_superusers(f"灵温已更新： ```\n{logs}\n```")
+            nonebot.logger.info(f"灵温已更新： {logs}")
             Reloader.reload(5)
         else:
             nonebot.logger.info(logs)

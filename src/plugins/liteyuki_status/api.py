@@ -93,6 +93,7 @@ async def generate_status_card(
     hardware: dict,
     liteyuki: dict,
     lang="zh-CN",
+    motto={"text":"风朗气清","source":"成语一则"},
     bot_id="0",
 ) -> bytes:
     return await template2image(
@@ -103,6 +104,7 @@ async def generate_status_card(
                 "hardware": hardware,
                 "liteyuki": liteyuki,
                 "localization": get_local_data(lang),
+                "motto": motto,
             }
         },
     )

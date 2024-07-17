@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <title>Liteyuki Status</title>
@@ -8,43 +9,46 @@
     <link rel="stylesheet" href="./css/fonts.css">
 
 </head>
+
 <body>
-<template id="bot-template">
-    <div class="info-box bot-info">
-        <div class="bot-icon">
-            <img class="bot-icon-img" src="" alt="bot-icon">
-        </div>
-        <div class="bot-detail">
-            <div class="bot-name">
-                Liteyuki
+    <template id="bot-template">
+        <div class="info-box bot-info">
+            <div class="bot-icon">
+                <img class="bot-icon-img" src="" alt="bot-icon">
             </div>
-            <hr>
-            <div class="bot-tags">
-                <!--                tag span-->
+            <div class="bot-detail">
+                <div class="bot-name">
+                    TriM-Liteyuki
+                </div>
+                <hr>
+                <div class="bot-tags">
+                    <!--                tag span-->
+                </div>
             </div>
         </div>
-    </div>
-</template>
+    </template>
 
-<template id="device-info">
-    <div class="device-info">
-        <div class="device-chart">
+    <template id="device-info">
+        <div class="device-info">
+            <div class="device-chart">
+            </div>
+            <div class="device-tags">
+            </div>
         </div>
-        <div class="device-tags">
-        </div>
-    </div>
-</template>
+    </template>
 
-<div class="data-storage" id="data">{{ data | tojson }}</div>
-<div class="info-box" id="hardware-info"></div>
-<div class="info-box" id="disk-info"></div>
-<div class="info-box" id="motto-info">
-    <div id="motto-text"></div>
-    <div id="motto-from"></div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
-<script src="./js/motto.js"></script>
-<script src="./js/card.js"></script>
-<script src="./js/status.js"></script>
+    <div class="data-storage" id="data">{{ data | tojson }}</div>
+    <div class="info-box" id="hardware-info"></div>
+    <div class="info-box" id="disk-info"></div>
+    <div class="info-box" id="motto-info">
+        <div id="motto-text"></div>
+        <div id="motto-from"></div>
+    </div>
+    <div class="info-box" id="addition-info"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <!-- <script src="./js/motto.js"></script> -->
+    <script src="./js/card.js"></script>
+    <script src="./js/status.js"></script>
 </body>
+
 </html>

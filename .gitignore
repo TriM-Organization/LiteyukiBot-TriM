@@ -1,5 +1,7 @@
 .venv/
 .idea/
+.vscode/
+.pycharm/
 .cache/
 node_modules/
 data/

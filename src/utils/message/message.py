@@ -75,8 +75,8 @@ class MarkdownMessage:
                 group_id = event.group_id if message_type == "group" else None
             user_id = event.user.id if isinstance(event, satori.event.Event) else event.user_id
             session_id = user_id if message_type == "private" else group_id
-        else:
-            pass
+        
+        
         try:
             raise TencentBannedMarkdownError("Tencent banned markdown")
             forward_id = await bot.call_api(

@@ -157,3 +157,10 @@ status.cores=轮核
 status.threads=程线
 status.process=行轨
 status.description=轻雪灵机台
+
+yanlun.refresh.success=言·论 方新，合{COUNT}条
+yanlun.refresh.failed=言·论 因{ERR}而无以新：{ERRCODE}
+yanlun.errtype.net=遥讯不得
+yanlun.errtype.unknown=无名之亏
+yanlun.count.head=所缘ttt几何(比率)
+yanlun.count.tail=...(合{NUM}条)

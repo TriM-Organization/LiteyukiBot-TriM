@@ -2,3 +2,11 @@
     height: 400px;
     background-color: rgba(255, 255, 255, 0.7);
 }
+
+#addition-info {
+    font-size: 36px;
+    word-wrap: break-word;
+    color: var(--main-text-color);
+    text-align: center;
+    margin: 30px 0 10px 0;
+}

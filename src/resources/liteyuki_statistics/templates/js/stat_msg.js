@@ -52,3 +52,6 @@ function timestampToTime(timestamp) {
     let s = date.getSeconds()
     return M + D + h + m + s
 }
+
+
+document.getElementById('addition-info').innerText = '感谢 锅炉 云裳工作室 提供服务器支持'

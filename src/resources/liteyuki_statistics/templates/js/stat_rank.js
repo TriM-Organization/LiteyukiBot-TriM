@@ -23,3 +23,5 @@ data["ranking"].forEach((item) => {
     document.body.appendChild(row)
 })
 
+
+document.getElementById('addition-info').innerText = '感谢 锅炉 云裳工作室 提供服务器支持'

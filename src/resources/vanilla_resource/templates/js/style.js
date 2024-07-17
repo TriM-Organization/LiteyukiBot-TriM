@@ -103,7 +103,7 @@
     )
 
     // 从/js/motto.js中读取mottos{}，随机选择一句
-    let motto = mottos[Math.floor(Math.random() * mottos.length)];
+    // let motto = mottos[Math.floor(Math.random() * mottos.length)];
     // 正文在中间，作者和来源格式为--作者 来源，在右下方
     let mottoDiv = document.getElementById('motto-info');
     let mottoText = document.createElement('div');
@@ -113,13 +113,13 @@
     let mottoAuthor = document.createElement('div');
     mottoAuthor.className = 'motto-author';
     // motto.author和motto.source可能不存在为空，所以要判断
-    if (!motto.author) {
-        motto.author = '';
-    }
+    // if (!motto.author) {
+    //     motto.author = '';
+    // }
     if (!motto.source) {
         motto.source = '';
     }
-    mottoAuthor.innerText = `\n--${motto.author} ${motto.source}`;
+    mottoAuthor.innerText = `\n${motto.source}`;
     mottoAuthor.style.textAlign = 'right';
     mottoDiv.appendChild(mottoAuthor);
 

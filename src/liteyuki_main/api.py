@@ -4,8 +4,8 @@ from git import Repo
 from src.utils.base.config import get_config
 
 remote_urls = [
-        "https://github.com/LiteyukiStudio/LiteyukiBot.git",
-        "https://gitee.com/snowykami/LiteyukiBot.git"
+        "https://github.com/TriM-Organization/LiteyukiBot-TriM.git",
+        "https://github.com/TriM-Organization/LiteyukiBot-TriM.git"
 ]
 
 

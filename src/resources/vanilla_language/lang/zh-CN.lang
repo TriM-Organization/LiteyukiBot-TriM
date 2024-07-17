@@ -157,3 +157,10 @@ status.cores=核心
 status.threads=线程
 status.process=进程
 status.description=轻雪机器人状态面板
+
+yanlun.refresh.success=言·论 更新成功，共 {COUNT} 条
+yanlun.refresh.failed=更新 言·论 信息发生 {ERR} 错误：{ERRCODE}
+yanlun.errtype.net=互联网连接
+yanlun.errtype.unknown=未知
+yanlun.count.head=出处ttt数量(占比)
+yanlun.count.tail=...(共 {NUM} 条)

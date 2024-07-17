@@ -3,6 +3,7 @@ const bot_data = data['bot'];  // 机器人数据
 const hardwareData = data['hardware'];    // 硬件数据
 const liteyukiData = data['liteyuki'];   // LiteYuki数据
 const localData = data['localization'];    // 本地化语言数据
+const motto_ = data['motto'];    // 言论数据
 
 /**
  * 创建CPU/内存/交换饼图
@@ -61,10 +62,10 @@ function createPieChartOption(title, data) {
 }
 
 
-function convertSize(size, precision = 2, addUnit = true, suffix = " XiB") {
+function convertSize(size, precision = 2, addUnit = true, suffix = " X字节") {
     let isNegative = size < 0;
     size = Math.abs(size);
-    let units = ["", "K", "M", "G", "T", "P", "E", "Z"];
+    let units = ["", "千", "兆", "吉", "太", "拍", "艾", "泽"];
     let unit = "";
 
     for (let i = 0; i < units.length; i++) {
@@ -254,20 +255,20 @@ function main() {
 
 
     cpuChart.setOption(createPieChartOption(`${localData['cpu']}\n${cpuData['percent'].toFixed(1)}%`, [
-        {name: 'used', value: cpuData['percent']},
-        {name: 'free', value: 100 - cpuData['percent']}
+        { name: 'used', value: cpuData['percent'] },
+        { name: 'free', value: 100 - cpuData['percent'] }
     ]))
 
     memChart.setOption(createPieChartOption(`${localData['memory']}\n${memData['percent'].toFixed(1)}%`, [
-        {name: 'process', value: memData['usedProcess']},
-        {name: 'used', value: memData['used'] - memData['usedProcess']},
-        {name: 'free', value: memData['free']}
+        { name: 'process', value: memData['usedProcess'] },
+        { name: 'used', value: memData['used'] - memData['usedProcess'] },
+        { name: 'free', value: memData['free'] }
     ]))
 
 
     swapChart.setOption(createPieChartOption(`${localData['swap']}\n${swapData['percent'].toFixed(1)}%`, [
-        {name: 'used', value: swapData['used']},
-        {name: 'free', value: swapData['free']}
+        { name: 'used', value: swapData['used'] },
+        { name: 'free', value: swapData['free'] }
     ]))
 
 
@@ -284,12 +285,12 @@ function main() {
             document.getElementById('disk-info').appendChild(createBarChart(diskTitle, disk['percent']))
         })
     // 随机一言
-    let motto = mottos[Math.floor(Math.random() * mottos.length)]
-    let mottoText = motto['text']
-    let mottoFrom = `${motto['author']} ${motto['source']}`
+    let mottoText = motto_['text']
+    let mottoFrom = motto_['source']
     document.getElementById('motto-text').innerText = mottoText
     document.getElementById('motto-from').innerText = mottoFrom
-
+    // 致谢
+    document.getElementById('addition-info').innerText = '感谢 锅炉 云裳工作室 提供服务器支持'
 
 }
 
