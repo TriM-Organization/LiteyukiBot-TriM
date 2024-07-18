@@ -32,7 +32,7 @@
 - 感谢[nonebot-plugin-alconna](https://github.com/ArcletProject/nonebot-plugin-alconna)提供的命令解析功能
 - 十分感谢[神羽SnowyKami](https://github.com/snowykami)提供的技术指导和服务器资源
 - 特别感谢[云裳工作室](https://doc.ysmcc.cn/doc/1/)提供的服务器挂载
-- 由衷的感谢我在学习生活中遇到的所有朋友们，你们身为我生命中的一处景色，不断地推进我此生的进程。
+- 由衷感谢我在学习生活中遇到的所有朋友们，你们身为我生命中的一处景色，不断地推进我此生的进程。
 
 ### 许可证
 

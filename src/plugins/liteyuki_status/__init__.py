@@ -1,7 +1,7 @@
 from nonebot.plugin import PluginMetadata
 from .status import *
 
-__author__ = "snowykami"
+__author__ = "snowykami & 金羿Eilles"
 __plugin_meta__ = PluginMetadata(
     name="状态查看器",
     description="",

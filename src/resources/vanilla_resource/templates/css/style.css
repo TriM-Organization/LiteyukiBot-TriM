@@ -50,7 +50,7 @@ body {
 }
 
 .bot-icon {
-    border-radius: 50%;
+    /* border-radius: 50%; */
     height: 200px;
     background-color: white;
 }
@@ -102,6 +102,6 @@ body {
 }
 
 .addition-info {
-    font-size: 36px;
+    font-size: 32px;
     color: #fff;
 }

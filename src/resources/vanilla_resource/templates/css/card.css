@@ -19,7 +19,7 @@ body {
 }
 
 .info-box {
-    border-radius: 60px;
+    /* border-radius: 60px; */
     padding: 40px;
     backdrop-filter: blur(10px);
     background-color: rgba(0, 0, 0, 0.5);
