@@ -1,7 +1,7 @@
 :root {
-    --main-text-color: #fff;
-    --sub-text-color: #ccc;
-    --tip-text-color: #999;
+    --main-text-color: #000;
+    --sub-text-color: #333;
+    --tip-text-color: #777;
     --device-info-width: 240px;
 }
 
@@ -9,17 +9,26 @@
     display: flex;
 }
 
+.bot-icon-tags {
+    display: flex;
+    flex-direction:row;
+    justify-content: space-between;
+    /* margin-left: auto; */
+}
+
 .bot-icon {
     display: flex;
     width: 220px;
     align-items: center;
     justify-content: center;
-    margin-right: 20px;
+    margin-right: 15px;
+    /* margin-left: 20px; */
 }
 
 .bot-icon-img {
-    height: 220px;
-    width: 220px;
+    display: flex;
+    height: 210px;
+    width: 210px;
     /* border-radius: 50%; */
 }
 
@@ -36,16 +45,19 @@
     color: var(--sub-text-color);
     font-size: 30px;
     font-weight: 700;
-    line-height: 1.6;
+    line-height: 1.4;
+    text-align: end;
+    /* width: 700px; */
 }
 
-.bot-tag[suffix="1"]::after {
-    content: "|";
+.bot-tag[suffix="1"]::before {
+    content: " | ";
     display: inline-block;
-    margin: 0 5px;
-    height: 30%;
-    line-height: 50%;
+    /* margin: 0 5px; */
+    height: 20%;
+    line-height: 30%;
     color: var(--tip-text-color);
+    /* text-align: end; */
 }
 
 /*修改bot-info 下hr样式*/
@@ -55,6 +67,7 @@
     background: var(--tip-text-color);
     margin: 10px 0;
     width: 100%;
+    /* text-align: end; */
 }
 
 #hardware-info {
@@ -87,13 +100,13 @@
     position: relative;
     width: 100%;
     height: 60px;
-    background-color: #ffffff44;
+    background-color: #00000044;
     /* border-radius: 30px; */
     align-items: center;
 }
 
 .disk-usage {
-    background-color: #a2d8f4;
+    background-color: #007ebd;
     height: 100%;
     /* border-radius: 30px; */
     position: absolute;
@@ -103,15 +116,15 @@
 .disk-title {
     position: absolute;
     color: var(--main-text-color);
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 25px;
+    margin-bottom: 7px;
     margin-left: 20px;
     text-align: left;
     z-index: 2;
 }
 
 #motto-text {
-    font-size: 36px;
+    font-size: 42px;
     word-wrap: break-word;
     color: var(--main-text-color);
     text-align: center;
@@ -119,16 +132,16 @@
 }
 
 #motto-from {
-    font-size: 30px;
+    font-size: 32px;
     font-style: italic;
     color: var(--sub-text-color);
     text-align: right;
 }
 
 #addition-info {
-    font-size: 36px;
+    font-size: 32px;
     word-wrap: break-word;
     color: var(--main-text-color);
     text-align: center;
-    margin: 30px 0 10px 0;
+    /* margin: 30px 0 10px 0; */
 }

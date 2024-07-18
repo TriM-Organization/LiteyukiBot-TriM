@@ -2,7 +2,7 @@ body {
     background-repeat: repeat-y;
     background-size: cover;
     background-position: center;
-    color: white;
+    color: black;
     /* // 上10px，左右10px，下0px // margin: 24 px; */
     margin: 20px;
 }
@@ -11,7 +11,7 @@ body {
     border-radius: 30px;
     padding: 30px;
     backdrop-filter: blur(10px);
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.3);
     margin-bottom: 20px;
 }
 
@@ -52,7 +52,7 @@ body {
 .bot-icon {
     /* border-radius: 50%; */
     height: 200px;
-    background-color: white;
+    background-color: black;
 }
 
 .bot-name,
@@ -87,21 +87,21 @@ body {
     margin: 0 5px;
     height: 50%;
     line-height: 50%;
-    color: #ccc;
+    color: #333;
 }
 
 .motto-text {
     font-size: 36px;
-    color: #fff;
+    color: #000;
 }
 
 .motto-author {
     font-size: 30px;
     font-style: italic;
-    color: #ccc;
+    color: #333;
 }
 
 .addition-info {
     font-size: 32px;
-    color: #fff;
+    color: #000;
 }

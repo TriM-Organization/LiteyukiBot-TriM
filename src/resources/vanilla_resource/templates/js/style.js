@@ -70,7 +70,7 @@
             botName.innerText = bot.name;
             if (bot.self) {
                 // 添加颜色
-                botName.style.color = '#d0e9ff';
+                botName.style.color = '#32383D';
             }
             botDetail.appendChild(botName);
 
@@ -88,7 +88,7 @@
                 tagSpan.className = 'tag';
                 if (bot.self) {
                     // 添加颜色
-                    tagSpan.style.color = '#a2d8f4';
+                    tagSpan.style.color = '#007ebd';
                 }
                 botTags.appendChild(tagSpan);
                 if (index === bot.tags.length - 1) {
@@ -147,17 +147,17 @@
                     //文字颜色
 
                     lineHeight: 36,
-                    color: '#fff',
+                    color: '#000',
                     fontSize: 30
                 }
             },
             tooltip: {
                 show: true,
                 trigger: "item",
-                backgroundColor: "#ffffff00",
+                backgroundColor: "#00000000",
                 // {a}（系列名称），{b}（数据项名称），{c}（数值）, {d}（百分比）
             },
-            color: ['#a2d8f4', "#ffffff44", '#00a6ff'],
+            color: ['#007ebd', "#00000044", '#053349'],
             series: [
                 {
                     name: 'info',
@@ -196,20 +196,20 @@
         }
         // data为百分比，最大值为100
         return {
-            background: '#d0e9ff',
+            background: '#32383D',
             title: {
                 text: title,
                 left: '5%',
                 top: 'center',
                 textStyle: {
-                    color: '#fff',
+                    color: '#000',
                     fontSize: 30
                 }
             },
             tooltip: {
                 show: true,
                 trigger: "item",
-                backgroundColor: "#ffffff",
+                backgroundColor: "#000000",
             },
             grid: {
                 left: '0',
@@ -234,7 +234,7 @@
                     data: [percent],
                     itemStyle: {
                         normal: {
-                            color: '#a2d8f4',
+                            color: '#007ebd',
                             barBorderRadius: [50, 0, 0, 50]
                         }
                     },
@@ -246,7 +246,7 @@
                     data: [100 - percent],
                     itemStyle: {
                         normal: {
-                            color: '#d0e9ff',
+                            color: '#32383D',
                             barBorderRadius: [fillet, 50, 50, fillet]
                         }
                     },

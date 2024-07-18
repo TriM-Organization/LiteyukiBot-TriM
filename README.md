@@ -4,8 +4,8 @@
 
 [![][banner]][lightyuki-link]
 
-<h2>>尹灵温<<a href="https://bot.liteyuki.icu"> <span style="color: #a2d8f4">轻雪</span> <span style="color: #d0e9ff">6</span></a></h2>
-<h4> <span style="color: #a2d8f4">✨ 轻量，高效，易于扩展✨</span></h4>
+<h2>>尹灵温<<a href="https://bot.liteyuki.icu"> <span style="color: #007ebd">轻雪</span> <span style="color: #32383D">6</span></a></h2>
+<h4> <span style="color: #007ebd">✨ 轻量，高效，易于扩展✨</span></h4>
 
 [![][OneBot]][onebot-link]
 [![][NoneBot2]][nonebot-link]

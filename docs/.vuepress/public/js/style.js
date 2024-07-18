@@ -4,7 +4,7 @@ function applyStyle() {
         // 插入现成的html文本
         let title = item.getAttribute('data-title')
         let tabStr =
-            "<div class='tab' style='display: flex; background-color: #d0e9ff'>" +
+            "<div class='tab' style='display: flex; background-color: #32383D'>" +
             "   <div class='tab-buttons'>" +
             "       <div class='tab-button' style='background-color: #FF5F57'></div>" +
             "       <div class='tab-button' style='background-color: #FFBD2E'></div>" +

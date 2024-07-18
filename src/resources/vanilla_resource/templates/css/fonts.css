@@ -31,7 +31,7 @@
 }
 
 /*MapleMono*/
-@font-face {
+/* @font-face {
     font-family: 'MapleMono';
     src: url('../fonts/MapleMono/MapleMono-Light.woff2') format('woff2');
     font-weight: 200;
@@ -69,8 +69,8 @@
     src: url('../fonts/MapleMono/MapleMono-BoldItalic.woff2') format('woff2');
     font-weight: 700;
     font-style: italic;
-}
+} */
 
 * {
-    font-family: 'MapleMono', 'MiSans', sans-serif;
+    font-family:  'MiSans', sans-serif;
 }

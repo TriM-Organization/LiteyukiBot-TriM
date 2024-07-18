@@ -19,7 +19,7 @@ function createPieChartOption(title, data) {
             left: 'center',
             top: 'center',
             textStyle: {
-                color: '#fff',
+                color: '#000',
                 fontSize: 30,
                 lineHeight: 36
             }
@@ -27,9 +27,9 @@ function createPieChartOption(title, data) {
         tooltip: {
             show: true,
             trigger: 'item',
-            backgroundColor: '#fff',
+            backgroundColor: '#000',
         },
-        color: data.length === 3 ? ['#00a6ff', '#a2d8f4', "#ffffff44"] : ['#a2d8f4', '#ffffff44'],
+        color: data.length === 3 ? ['#053349', '#007ebd', "#00000044"] : ['#007ebd', '#00000044'],
         series: [
             {
                 name: 'info',
@@ -128,11 +128,11 @@ function main() {
             botInfoDiv.querySelector('.bot-name').innerText = bot['name']
             let tagArray = [
                 bot['protocol_name'],
-                bot['app_name'],
-                `${localData['groups']} ${bot['groups']}`,
-                `${localData['friends']} ${bot['friends']}`,
-                `${localData['message_sent']} ${bot['message_sent']}`,
-                `${localData['message_received']} ${bot['message_received']}`,
+                `${bot['app_name']}`,
+                `${localData['groups']}${bot['groups']}`,
+                `${localData['friends']}${bot['friends']}`,
+                `${localData['message_sent']}${bot['message_sent']}`,
+                `${localData['message_received']}${bot['message_received']}`,
             ]
             // 添加一些标签
             tagArray.forEach(
@@ -141,7 +141,7 @@ function main() {
                     tagSpan.className = 'bot-tag'
                     tagSpan.innerText = tag
                     // 给最后一个标签不添加后缀
-                    tagSpan.setAttribute('suffix', index === tagArray.length - 1 ? '0' : '1')
+                    tagSpan.setAttribute('suffix', (index === 0)||(tag[0] == '\n') ? '0' : '1')
                     botInfoDiv.querySelector('.bot-tags').appendChild(tagSpan)
                 }
             )
@@ -154,16 +154,16 @@ function main() {
     let liteyukiInfoDiv = document.importNode(document.getElementById('bot-template').content, true)   // 复制模板
     liteyukiInfoDiv.className = 'info-box bot-info'
     liteyukiInfoDiv.querySelector('.bot-icon-img').setAttribute('src', './img/liteyuki.png')
-    liteyukiInfoDiv.querySelector('.bot-name').innerText = liteyukiData['name']
+    liteyukiInfoDiv.querySelector('.bot-name').innerText = `${liteyukiData['name']} - 睿乐`
 
     let tagArray = [
-        `Liteyuki ${liteyukiData['version']}`,
+        `灵温 ${liteyukiData['version']}`,
         `Nonebot ${liteyukiData['nonebot']}`,
-        liteyukiData['python'],
+        `${liteyukiData['python']}`,
         liteyukiData['system'],
-        `${localData['plugins']} ${liteyukiData['plugins']}`,
-        `${localData['resources']} ${liteyukiData['resources']}`,
-        `${localData['bots']} ${liteyukiData['bots']}`,
+        `${localData['plugins']}${liteyukiData['plugins']}`,
+        `${localData['resources']}${liteyukiData['resources']}`,
+        `${localData['bots']}${liteyukiData['bots']}`,
         `${localData['runtime']} ${secondsToTextTime(liteyukiData['runtime'])}`,
     ]
     tagArray.forEach(
@@ -172,7 +172,7 @@ function main() {
             tagSpan.className = 'bot-tag'
             tagSpan.innerText = tag
             // 给最后一个标签不添加后缀
-            tagSpan.setAttribute('suffix', index === tagArray.length - 1 ? '0' : '1')
+            tagSpan.setAttribute('suffix', (index === 0)||(tag[0] == '\n') ? '0' : '1')
             liteyukiInfoDiv.querySelector('.bot-tags').appendChild(tagSpan)
         }
     )
