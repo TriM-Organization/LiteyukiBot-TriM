@@ -2,7 +2,8 @@ import os
 import sys
 import time
 import json
-import uuid
+
+# import uuid
 import shutil
 import requests
 from io import StringIO
@@ -61,12 +62,12 @@ nonebot.require("nonebot_plugin_apscheduler")
 from nonebot_plugin_alconna import (
     on_alconna,
     Alconna,
-    Subcommand,
+    # Subcommand,
     UniMessage,
     Option,
     store_true,
-    store_false,
-    store_value,
+    # store_false,
+    # store_value,
     Arparma,
     Args,
 )
@@ -518,13 +519,13 @@ linglun_convert = on_alconna(
             default="@a",
             args=Args["player-selector", str, "@a"],
         ),
-        Option("-h|--height-limit", default=32, args=Args["height-limit", int, 32]),
+        Option("-l|--height-limit", default=32, args=Args["height-limit", int, 32]),
         Option("-a|--author", default="Eilles", args=Args["author", str, "Eilles"]),
         Option(
             "-fa|--forward-axis", default="z+", args=Args["forward-axis", str, "z+"]
         ),
     ),
-    permission=SUPERUSER,
+    # permission=SUPERUSER,
 )
 
 
@@ -534,6 +535,8 @@ async def _(
     event: GroupMessageEvent | PrivateMessageEvent,
     bot: T_Bot,
 ):
+
+    nonebot.logger.info(result.options)
 
     usr_id = str(event.user_id)
 
@@ -829,10 +832,10 @@ async def _(
                 nonebot.logger.warning(
                     "文件类型错误：{}".format(file_to_convert),
                 )
-                buffer.write("文件 {} 已跳过".format(file_to_convert))
+                buffer.write("文件 {} 已跳过\n".format(file_to_convert))
 
             if people_convert_times[usr_id] > configdict["maxPersonConvert"]["music"]:
-                buffer.write("中途退出：转换点不足")
+                buffer.write("中途退出：转换点不足\n")
                 await linglun_convert.send(
                     UniMessage.text(
                         "今日音乐转换点数超限： {}/{}".format(
@@ -854,7 +857,7 @@ async def _(
 
     except Exception as e:
         nonebot.logger.error("转换存在错误：{}".format(e))
-        buffer.write("[ERROR] {}".format(e))
+        buffer.write("[ERROR] {}\n".format(e))
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
