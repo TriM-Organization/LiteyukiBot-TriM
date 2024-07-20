@@ -4,7 +4,7 @@
 .pycharm/
 .cache/
 node_modules/
-data/
+/data/
 db/
 /resources/
 __pycache__/

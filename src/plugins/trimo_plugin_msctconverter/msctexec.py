@@ -1,8 +1,8 @@
-
 import os
 import sys
 import time
 import json
+import uuid
 import shutil
 import requests
 from io import StringIO
@@ -14,6 +14,7 @@ from typing import Annotated, Any
 import zhDateTime
 import Musicreater
 
+import Musicreater.plugin.archive
 from Musicreater.plugin.bdxfile import to_BDX_file_in_delay, to_BDX_file_in_score
 from Musicreater.plugin.addonpack import (
     to_addon_pack_in_delay,
@@ -37,13 +38,18 @@ import nonebot.rule
 
 from nonebot.params import CommandArg
 from nonebot.permission import SUPERUSER
-from nonebot.adapters.onebot.v11.event import GroupUploadNoticeEvent, GroupMessageEvent
+from nonebot.adapters.onebot.v11.event import (
+    GroupUploadNoticeEvent,
+    GroupMessageEvent,
+    PrivateMessageEvent,
+)
 
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 
 from src.utils import event as event_utils
 from src.utils.base.language import get_user_lang
 from src.utils.base.config import get_config
+from src.utils.message.message import MarkdownMessage
 
 from .execute_auto_translator import auto_translate  # type: ignore
 
@@ -143,7 +149,7 @@ people_convert_times = {}
 
 
 # 每天1点更新
-@scheduler.scheduled_job("cron", hour=0)
+@scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     # ulang = Language(get_default_lang_code(), "zh-WY")
     global people_convert_times
@@ -318,6 +324,35 @@ async def _(
         )
 
 
+on_convert_help = on_alconna(
+    command=Alconna("查看帮助"),
+    aliases={
+        "转换帮助",
+        "查看转换帮助",
+        "cvt_help",
+        "convert_help",
+        "cvthlp",
+    },
+    rule=nonebot.rule.to_me(),
+)
+
+
+@on_convert_help.handle()
+async def _(
+    event: GroupMessageEvent,
+    bot: T_Bot,
+):
+    await on_clear_cache.finish(
+        UniMessage.image(path=(Path(__file__).parent / "convert_helper.png")),
+        at_sender=True,
+    )
+    # await MarkdownMessage.send_md(
+    #     (Path(__file__).parent / "convert_helper.md").read_text(encoding="utf-8"),
+    #     bot,
+    #     event=event,
+    # )
+
+
 on_clear_cache = on_alconna(
     command=Alconna("清除缓存"),
     aliases={
@@ -420,10 +455,16 @@ async def _(
 #         vol_processing_func: Musicreater.FittingFunctionType = Musicreater.natural_curve,
 #     )
 
-musicreater_convert = on_alconna(
-    aliases={"musicreater_convert", "音乐转换", "midi转换"},
+linglun_convert = on_alconna(
+    aliases={
+        "linglun_convert",
+        "音乐转换",
+        "midi转换",
+        "转换音乐",
+        "linglun_music_convert",
+    },
     command=Alconna(
-        "msctcvt",
+        "llmscvt",
         Option("-f|--file", default="all", args=Args["file", str, "all"]),  # ALL
         Option("-emr|--enable-mismatch-error", default=False, action=store_true),
         Option("-ps|--play-speed", default=1.0, args=Args["play-speed", float, 1.0]),
@@ -454,6 +495,7 @@ musicreater_convert = on_alconna(
             args=Args["volume-processing-function", str, "natural"],
         ),
         Option("-t|-type", default="all", args=Args["type", str, "all"]),
+        Option("-htp|--high-time-precision", default=False, action=store_true),
         Option(
             "-pgb|--progress-bar",
             default={
@@ -478,18 +520,42 @@ musicreater_convert = on_alconna(
         ),
         Option("-h|--height-limit", default=32, args=Args["height-limit", int, 32]),
         Option("-a|--author", default="Eilles", args=Args["author", str, "Eilles"]),
-        Option("-fa|--forward-axis", default="x+", args=Args["forward-axis", str, "x+"]),
+        Option(
+            "-fa|--forward-axis", default="z+", args=Args["forward-axis", str, "z+"]
+        ),
     ),
     permission=SUPERUSER,
 )
 
 
-@musicreater_convert.handle()
+@linglun_convert.handle()
 async def _(
     result: Arparma,
-    event: GroupMessageEvent,
+    event: GroupMessageEvent | PrivateMessageEvent,
     bot: T_Bot,
 ):
+
+    usr_id = str(event.user_id)
+
+    if usr_id not in people_convert_times.keys():
+        people_convert_times[usr_id] = 0
+    else:
+        if people_convert_times[usr_id] > configdict["maxPersonConvert"]["music"]:
+            await linglun_convert.finish(
+                UniMessage.text(
+                    "你今天音乐转换点数超限： {}/{}".format(
+                        people_convert_times[usr_id],
+                        configdict["maxPersonConvert"]["music"],
+                    )
+                ),
+                at_sender=True,
+            )
+
+    if usr_id not in filesaves.keys():
+        await linglun_convert.finish(
+            UniMessage.text("服务器内未存入你的任何文件，请先使用上传midi文件吧")
+        )
+
     _args: dict = {
         "file": "all",
         "enable-mismatch-error": False,
@@ -501,6 +567,7 @@ async def _(
         "minimal-volume": 0.1,
         "volume-processing-function": "natural",
         "type": "all",
+        "high-time-precision": False,
         "progress-bar": {
             "base_s": r"▶ %%N [ %%s/%^s %%% §e__________§r %%t|%^t ]",
             "to_play_s": r"§7=",
@@ -511,6 +578,7 @@ async def _(
         "player-selector": "@a",
         "height-limit": 32,
         "author": "Eilles",
+        "forward-axis": "z+",
     }
     for arg in _args.keys():
         _args[arg] = (
@@ -526,41 +594,86 @@ async def _(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
 
-    usr_id = str(event.user_id)
     usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
 
-    if (_ppnt:=_args["pitched-note-table"].lower() )in ["touch","classic","dislink"]:
-        pitched_notechart = Musicreater.MM_DISLINK_PITCHED_INSTRUMENT_TABLE if _ppnt == "dislink" else (Musicreater.MM_CLASSIC_PITCHED_INSTRUMENT_TABLE if _ppnt == "classic" else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE)
-    elif (_ppnt:=(usr_data_path / _args["pitched-note-table"])).exists():
+    if (_ppnt := _args["pitched-note-table"].lower()) in [
+        "touch",
+        "classic",
+        "dislink",
+    ]:
+        pitched_notechart = (
+            Musicreater.MM_DISLINK_PITCHED_INSTRUMENT_TABLE
+            if _ppnt == "dislink"
+            else (
+                Musicreater.MM_CLASSIC_PITCHED_INSTRUMENT_TABLE
+                if _ppnt == "classic"
+                else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
+            )
+        )
+    elif (_ppnt := (usr_data_path / _args["pitched-note-table"])).exists():
         pitched_notechart = Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE.copy()
         pitched_notechart.update(json.load(_ppnt.open("r")))
     else:
-        await musicreater_convert.finish(UniMessage.text("乐器对照表 {} 不存在".format(_args["pitched-note-table"])))
+        await linglun_convert.finish(
+            UniMessage.text("乐器对照表 {} 不存在".format(_args["pitched-note-table"]))
+        )
         return
-    
-    
-    if (_ppnt:=_args["percussion-note-table"].lower() )in ["touch","classic","dislink"]:
-        percussion_notechart = Musicreater.MM_DISLINK_PERCUSSION_INSTRUMENT_TABLE if _ppnt == "dislink" else (Musicreater.MM_CLASSIC_PERCUSSION_INSTRUMENT_TABLE if _ppnt == "classic" else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE)
-    elif (_ppnt:=(usr_data_path / _args["percussion-note-table"])).exists():
+
+    if (_ppnt := _args["percussion-note-table"].lower()) in [
+        "touch",
+        "classic",
+        "dislink",
+    ]:
+        percussion_notechart = (
+            Musicreater.MM_DISLINK_PERCUSSION_INSTRUMENT_TABLE
+            if _ppnt == "dislink"
+            else (
+                Musicreater.MM_CLASSIC_PERCUSSION_INSTRUMENT_TABLE
+                if _ppnt == "classic"
+                else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
+            )
+        )
+    elif (_ppnt := (usr_data_path / _args["percussion-note-table"])).exists():
         percussion_notechart = Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE.copy()
         percussion_notechart.update(json.load(_ppnt.open("r")))
     else:
-        await musicreater_convert.finish(UniMessage.text("乐器对照表 {} 不存在".format(_args["percussion-note-table"])))
+        await linglun_convert.finish(
+            UniMessage.text(
+                "乐器对照表 {} 不存在".format(_args["percussion-note-table"])
+            )
+        )
         return
-    
-    if (_ppnt:=_args["volume-processing-function"].lower()) in ["natural","straight"]:
-        volume_curve = Musicreater.straight_line if _ppnt == "straight" else Musicreater.natural_curve
-    else:
-        await musicreater_convert.finish(UniMessage.text("音量处理曲线 {} 不存在".format(_args["volume-processing-function"])))
-        return 
 
-    if (_ppnt:=_args["type"].lower()) == "all":
-        all_cvt_types = ["addon-delay","addon-score","mcstructure-dalay","mcstructure-score","bdx-delay","bdx-score",]
+    if (_ppnt := _args["volume-processing-function"].lower()) in [
+        "natural",
+        "straight",
+    ]:
+        volume_curve = (
+            Musicreater.straight_line
+            if _ppnt == "straight"
+            else Musicreater.natural_curve
+        )
+    else:
+        await linglun_convert.finish(
+            UniMessage.text(
+                "音量处理曲线 {} 不存在".format(_args["volume-processing-function"])
+            )
+        )
+        return
+
+    if (_ppnt := _args["type"].lower()) == "all":
+        all_cvt_types = [
+            "addon-delay",
+            "addon-score",
+            "mcstructure-dalay",
+            "mcstructure-score",
+            "bdx-delay",
+            "bdx-score",
+            "msq",
+        ]
     else:
         all_cvt_types = _ppnt.split("&")
-
-    
 
     # 重定向标准输出
     buffer = StringIO()
@@ -571,7 +684,7 @@ async def _(
 
         progress_bar_style = Musicreater.ProgressBarStyle(**_args["progress-bar"])
 
-        all_files = []
+        all_files: dict[str, dict[str, dict[str, int | tuple | str | list]]] = {}
 
         for file_to_convert in (
             filesaves[usr_id].keys()
@@ -579,8 +692,8 @@ async def _(
             else _args["file"].split("&")
         ):
             if file_to_convert.endswith(".mid") or file_to_convert.endswith(".midi"):
-                nonebot.logger.info("载入转换文件：", file_to_convert)
-                all_files.append(file_to_convert)
+                nonebot.logger.info("载入转换文件：{}".format(file_to_convert))
+                all_files[file_to_convert] = {}
                 msct_obj = Musicreater.MidiConvert.from_midi_file(
                     midi_file_path=usr_data_path / file_to_convert,
                     mismatch_error_ignorance=not _args["enable-mismatch-error"],
@@ -593,30 +706,223 @@ async def _(
                     vol_processing_func=volume_curve,
                 )
 
-                a = ["mcstructure-dalay","mcstructure-score","bdx-delay","bdx-score",]
-                if "addon-delay" in all_cvt_types:
-                    to_addon_pack_in_delay(
-                        midi_cvt=msct_obj,
-                        dist_path=str(usr_temp_path),
-                        progressbar_style=progress_bar_style,
-                        player=_args["player-selector"],
-                        max_height=_args["height-limit"],
+                people_convert_times[usr_id] += 0.5
+
+                if "msq" in all_cvt_types:
+                    all_files[file_to_convert]["msq"] = {"MSQ版本": "2-MSQ@"}
+                    (usr_temp_path / "{}.msq".format(msct_obj.music_name)).open(
+                        "wb"
+                    ).write(
+                        msct_obj.encode_dump(
+                            high_time_precision=_args["high-time-precision"]
+                        )
                     )
-                    all_cvt_types.remove("addon-delay")
+
+                if "addon-delay" in all_cvt_types:
+                    all_files[file_to_convert]["addon-delay"] = dict(
+                        zip(
+                            ["指令数量", "音乐刻长"],
+                            to_addon_pack_in_delay(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                progressbar_style=progress_bar_style,
+                                player=_args["player-selector"],
+                                max_height=_args["height-limit"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("addon-delay")
+
                 if "addon-score" in all_cvt_types:
-                    to_addon_pack_in_score()
+                    all_files[file_to_convert]["addon-score"] = dict(
+                        zip(
+                            ["指令数量", "音乐刻长"],
+                            to_addon_pack_in_score(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                progressbar_style=progress_bar_style,
+                                scoreboard_name=_args["scoreboard-name"],
+                                auto_reset=not _args["disable-scoreboard-autoreset"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("addon-score")
+
+                if "mcstructure-dalay" in all_cvt_types:
+                    all_files[file_to_convert]["mcstructure-dalay"] = dict(
+                        zip(
+                            ["结构尺寸", "音乐刻长"],
+                            to_mcstructure_file_in_delay(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                player=_args["player-selector"],
+                                max_height=_args["height-limit"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("mcstructure-dalay")
+
+                if "mcstructure-score" in all_cvt_types:
+                    all_files[file_to_convert]["mcstructure-score"] = dict(
+                        zip(
+                            ["结构尺寸", "音乐刻长", "指令数量"],
+                            to_mcstructure_file_in_score(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                scoreboard_name=_args["scoreboard-name"],
+                                auto_reset=not _args["disable-scoreboard-autoreset"],
+                                max_height=_args["height-limit"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("mcstructure-score")
+
+                if "bdx-delay" in all_cvt_types:
+                    all_files[file_to_convert]["bdx-delay"] = dict(
+                        zip(
+                            [
+                                "指令数量",
+                                "音乐刻长",
+                                "结构尺寸",
+                                "终点坐标",
+                            ],
+                            to_BDX_file_in_delay(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                progressbar_style=progress_bar_style,
+                                player=_args["player-selector"],
+                                author=_args["author"],
+                                max_height=_args["height-limit"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("bdx-delay")
+
+                if "bdx-score" in all_cvt_types:
+                    all_files[file_to_convert]["bdx-score"] = dict(
+                        zip(
+                            [
+                                "指令数量",
+                                "音乐刻长",
+                                "结构尺寸",
+                                "终点坐标",
+                            ],
+                            to_BDX_file_in_score(
+                                midi_cvt=msct_obj,
+                                dist_path=str(usr_temp_path),
+                                progressbar_style=progress_bar_style,
+                                scoreboard_name=_args["scoreboard-name"],
+                                auto_reset=not _args["disable-scoreboard-autoreset"],
+                                author=_args["author"],
+                                max_height=_args["height-limit"],
+                            ),
+                        )
+                    )
+                    people_convert_times[usr_id] += 0.5
+                    # all_cvt_types.remove("bdx-score")
+            elif file_to_convert != "totalSize":
+                nonebot.logger.warning(
+                    "文件类型错误：{}".format(file_to_convert),
+                )
+                buffer.write("文件 {} 已跳过".format(file_to_convert))
+
+            if people_convert_times[usr_id] > configdict["maxPersonConvert"]["music"]:
+                buffer.write("中途退出：转换点不足")
+                await linglun_convert.send(
+                    UniMessage.text(
+                        "今日音乐转换点数超限： {}/{}".format(
+                            people_convert_times[usr_id],
+                            configdict["maxPersonConvert"]["music"],
+                        )
+                    ),
+                    at_sender=True,
+                )
+                break
 
         if not all_files:
-            nonebot.logger.warning("无可供转换的文件",)
-            await musicreater_convert.send(UniMessage("不是哥们，空气咱这转不成面包，那是中科院的事。"))
+            nonebot.logger.warning(
+                "无可供转换的文件",
+            )
+            await linglun_convert.finish(
+                UniMessage("不是哥们，空气咱这转不成面包，那是中科院的事。")
+            )
 
     except Exception as e:
-        nonebot.logger.error("转换存在错误：",e)
-
+        nonebot.logger.error("转换存在错误：{}".format(e))
+        buffer.write("[ERROR] {}".format(e))
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
 
+    Musicreater.plugin.archive.compress_zipfile(
+        usr_temp_path,
+        fp := str(temporary_dir / (fn := "result-{}.zip".format(usr_id))),
+    )
+
+    shutil.rmtree(usr_temp_path)
+
+    if isinstance(event, GroupMessageEvent) or isinstance(
+        event, GroupUploadNoticeEvent
+    ):
+        await bot.call_api(
+            "upload_group_file", group_id=event.group_id, name=fn, file=fp
+        )
+    else:
+        await bot.call_api(
+            "upload_private_file", user_id=event.user_id, name=fn, file=fp
+        )
+
+    await MarkdownMessage.send_md(
+        "##{}\n\n```\n{}\n```".format(
+            MarkdownMessage.escape("日志信息："),
+            buffer.getvalue().replace("\\", "/"),
+        ),
+        bot,
+        event=event,
+    )
+
+    # nonebot.logger.info(buffer.getvalue())
+
+    await MarkdownMessage.send_md(
+        "## 转换结果\n\n"
+        + ("\n\n\n").join(
+            [
+                "###{}\n\n{}".format(
+                    fn,
+                    "\n\n".join(
+                        [
+                            "- {}\n\t{}".format(
+                                tn,
+                                "\n\t".join(
+                                    ["- {} : {}".format(i, j) for i, j in rps.items()]
+                                ),
+                            )
+                            for tn, rps in res.items()
+                        ]
+                    ),
+                )
+                for fn, res in all_files.items()
+            ]
+        ),
+        bot,
+        event=event,
+    )
+
+    os.remove(fp)
+
+    await linglun_convert.finish(
+        UniMessage.text(
+            "转换结束，当前所用转换点数： {}/{}".format(
+                people_convert_times[usr_id], configdict["maxPersonConvert"]["music"]
+            )
+        ),
+        at_sender=True,
+    )
 
 
 execute_cmd_convert_ablity = on_alconna(
