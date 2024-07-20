@@ -18,6 +18,10 @@ config.yml
 config.example.yml
 compile.bat
 src/resources/templates/latest-debug.html
+
+src/plugins/trimo_plugin_msctconverter/config
+src/plugins/trimo_plugin_msctconverter/temp
+
 # vuepress
 .github
 pyproject.toml

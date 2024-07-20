@@ -23,12 +23,22 @@ from ..utils.base.ly_function import get_function
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_apscheduler")
-from nonebot_plugin_alconna import UniMessage, on_alconna, Alconna, Args, Subcommand, Arparma, MultiVar
+from nonebot_plugin_alconna import (
+    UniMessage,
+    on_alconna,
+    Alconna,
+    Args,
+    Subcommand,
+    Arparma,
+    MultiVar,
+)
 from nonebot_plugin_apscheduler import scheduler
 
 driver = get_driver()
 
-markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).config.get("markdown_image", False)
+markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).config.get(
+    "markdown_image", False
+)
 
 
 @on_alconna(
@@ -36,42 +46,38 @@ markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).con
         "ryounecho",
         Args["text", str, ""],
     ),
-    permission=SUPERUSER
+    permission=SUPERUSER,
 ).handle()
 # Satori OK
 async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
     if result.main_args.get("text"):
-        await matcher.finish(Message(unescape(result.main_args.get("text"))))
+        await matcher.finish(Message(unescape(result.main_args.get("text"))))  # type: ignore
     else:
         await matcher.finish(f"君安！灵温向你问好~\n此机 {bot.self_id}")
+
 
 @on_alconna(
     command=Alconna(
         "liteecho",
-        Args["text", str, ""],
+        # Args["text", str, ""],
     ),
-    permission=SUPERUSER
+    # permission=SUPERUSER
 ).handle()
 # Satori OK
 async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
-    if result.main_args.get("text"):
-        await matcher.finish(Message(unescape(result.main_args.get("text"))))
-    else:
-        await matcher.finish(f"Hello! TriM-Liteyuki!\nRyBot {bot.self_id}")
+    await matcher.finish(f"Hello! TriMO-Liteyuki!\nRyBot {bot.self_id}")
 
 
 @on_alconna(
-    aliases={"更新灵温"},
-    command=Alconna(
-        "update-ryoun"
-    ),
-    permission=SUPERUSER
+    aliases={"更新灵温"}, command=Alconna("update-ryoun"), permission=SUPERUSER
 ).handle()
 # Satori OK
 async def _(bot: T_Bot, event: T_MessageEvent):
     # 使用git pull更新
 
-    ulang = get_user_lang(str(event.user.id if isinstance(event, satori.event.Event) else event.user_id))
+    ulang = get_user_lang(
+        str(event.user.id if isinstance(event, satori.event.Event) else event.user_id)
+    )
     success, logs = update_liteyuki()
     reply = "尹灵温 更新完成！\n"
     reply += f"```\n{logs}\n```\n"
@@ -82,11 +88,11 @@ async def _(bot: T_Bot, event: T_MessageEvent):
 
 
 @on_alconna(
-    aliases={"重启灵温","重启尹灵温", "重载灵温"},
+    aliases={"重启灵温", "重启尹灵温", "重载灵温"},
     command=Alconna(
         "reload-ryoun",
     ),
-    permission=SUPERUSER
+    permission=SUPERUSER,
 ).handle()
 # Satori OK
 async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
@@ -95,13 +101,16 @@ async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
 
     temp_data.data.update(
         {
-                "reload"             : True,
-                "reload_time"        : time.time(),
-                "reload_bot_id"      : bot.self_id,
-                "reload_session_type": event_utils.get_message_type(event),
-                "reload_session_id"  : (event.group_id if event.message_type == "group" else event.user_id) if not isinstance(event,
-                                                                                                                              satori.event.Event) else event.channel.id,
-                "delta_time"         : 0
+            "reload": True,
+            "reload_time": time.time(),
+            "reload_bot_id": bot.self_id,
+            "reload_session_type": event_utils.get_message_type(event),
+            "reload_session_id": (
+                (event.group_id if event.message_type == "group" else event.user_id)
+                if not isinstance(event, satori.event.Event)
+                else event.channel.id
+            ),
+            "delta_time": 0,
         }
     )
 
@@ -117,34 +126,31 @@ async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
             "set",
             Args["key", str]["value", Any],
             alias=["设置"],
-
         ),
-        Subcommand(
-            "get",
-            Args["key", str, None],
-            alias=["查询", "获取"]
-        ),
-        Subcommand(
-            "remove",
-            Args["key", str],
-            alias=["删除"]
-        )
+        Subcommand("get", Args["key", str, None], alias=["查询", "获取"]),
+        Subcommand("remove", Args["key", str], alias=["删除"]),
     ),
-    permission=SUPERUSER
+    permission=SUPERUSER,
 ).handle()
 # Satori OK
 async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, matcher: Matcher):
     ulang = get_user_lang(str(event_utils.get_user_id(event)))
-    stored_config: StoredConfig = common_db.where_one(StoredConfig(), default=StoredConfig())
+    stored_config: StoredConfig = common_db.where_one(
+        StoredConfig(), default=StoredConfig()
+    )
     if result.subcommands.get("set"):
-        key, value = result.subcommands.get("set").args.get("key"), result.subcommands.get("set").args.get("value")
+        key, value = result.subcommands.get("set").args.get(
+            "key"
+        ), result.subcommands.get("set").args.get("value")
         try:
             value = eval(value)
         except:
             pass
         stored_config.config[key] = value
         common_db.save(stored_config)
-        await matcher.finish(f"{ulang.get('liteyuki.config_set_success', KEY=key, VAL=value)}")
+        await matcher.finish(
+            f"{ulang.get('liteyuki.config_set_success', KEY=key, VAL=value)}"
+        )
     elif result.subcommands.get("get"):
         key = result.subcommands.get("get").args.get("key")
         file_config = load_from_yaml("config.yml")
@@ -168,29 +174,36 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, matcher: Matcher
         if key in stored_config.config:
             stored_config.config.pop(key)
             common_db.save(stored_config)
-            await matcher.finish(f"{ulang.get('liteyuki.config_remove_success', KEY=key)}")
+            await matcher.finish(
+                f"{ulang.get('liteyuki.config_remove_success', KEY=key)}"
+            )
         else:
             await matcher.finish(f"{ulang.get('liteyuki.invalid_command', TEXT=key)}")
 
 
 @on_alconna(
-    aliases={"切换图片模式"},
-    command=Alconna(
-        "switch-image-mode"
-    ),
-    permission=SUPERUSER
+    aliases={"切换图片模式"}, command=Alconna("switch-image-mode"), permission=SUPERUSER
 ).handle()
 # Satori OK
 async def _(event: T_MessageEvent, matcher: Matcher):
     global markdown_image
     # 切换图片模式，False以图片形式发送，True以markdown形式发送
     ulang = get_user_lang(str(event_utils.get_user_id(event)))
-    stored_config: StoredConfig = common_db.where_one(StoredConfig(), default=StoredConfig())
-    stored_config.config["markdown_image"] = not stored_config.config.get("markdown_image", False)
+    stored_config: StoredConfig = common_db.where_one(
+        StoredConfig(), default=StoredConfig()
+    )
+    stored_config.config["markdown_image"] = not stored_config.config.get(
+        "markdown_image", False
+    )
     markdown_image = stored_config.config["markdown_image"]
     common_db.save(stored_config)
     await matcher.finish(
-        ulang.get("liteyuki.image_mode_on" if stored_config.config["markdown_image"] else "liteyuki.image_mode_off"))
+        ulang.get(
+            "liteyuki.image_mode_on"
+            if stored_config.config["markdown_image"]
+            else "liteyuki.image_mode_off"
+        )
+    )
 
 
 # @on_alconna(
@@ -209,7 +222,7 @@ async def _(event: T_MessageEvent, matcher: Matcher):
         "/function",
         Args["function", str]["args", MultiVar(str), ()],
     ),
-    permission=SUPERUSER
+    permission=SUPERUSER,
 ).handle()
 async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher):
     """
@@ -226,9 +239,9 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
     args: tuple[str] = result.main_args.get("args", ())
     _args = []
     _kwargs = {
-            "USER_ID" : str(event.user_id),
-            "GROUP_ID": str(event.group_id) if event.message_type == "group" else "0",
-            "BOT_ID"  : str(bot.self_id)
+        "USER_ID": str(event.user_id),
+        "GROUP_ID": str(event.group_id) if event.message_type == "group" else "0",
+        "BOT_ID": str(bot.self_id),
     }
 
     for arg in args:
@@ -256,7 +269,7 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
         "/api",
         Args["api", str]["args", MultiVar(AnyStr), ()],
     ),
-    permission=SUPERUSER
+    permission=SUPERUSER,
 ).handle()
 async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher):
     """
@@ -270,7 +283,9 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
 
     """
     api_name = result.main_args.get("api")
-    args: tuple[str] = result.main_args.get("args", ())  # 类似于url参数，但每个参数间用空格分隔，空格是%20
+    args: tuple[str] = result.main_args.get(
+        "args", ()
+    )  # 类似于url参数，但每个参数间用空格分隔，空格是%20
     args_dict = {}
 
     for arg in args:
@@ -280,7 +295,11 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
 
     if api_name in need_user_id and "user_id" not in args_dict:
         args_dict["user_id"] = str(event.user_id)
-    if api_name in need_group_id and "group_id" not in args_dict and event.message_type == "group":
+    if (
+        api_name in need_group_id
+        and "group_id" not in args_dict
+        and event.message_type == "group"
+    ):
         args_dict["group_id"] = str(event.group_id)
 
     if "message" in args_dict:
@@ -303,29 +322,53 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
 @Bot.on_calling_api  # 图片模式检测
 async def test_for_md_image(bot: T_Bot, api: str, data: dict):
     # 截获大图发送，转换为markdown发送
-    if api in ["send_msg", "send_private_msg", "send_group_msg"] and markdown_image and data.get(
-            "user_id") != bot.self_id:
-        if api == "send_msg" and data.get("message_type") == "private" or api == "send_private_msg":
+    if (
+        api in ["send_msg", "send_private_msg", "send_group_msg"]
+        and markdown_image
+        and data.get("user_id") != bot.self_id
+    ):
+        if (
+            api == "send_msg"
+            and data.get("message_type") == "private"
+            or api == "send_private_msg"
+        ):
             session_type = "private"
             session_id = data.get("user_id")
-        elif api == "send_msg" and data.get("message_type") == "group" or api == "send_group_msg":
+        elif (
+            api == "send_msg"
+            and data.get("message_type") == "group"
+            or api == "send_group_msg"
+        ):
             session_type = "group"
             session_id = data.get("group_id")
         else:
             return
-        if len(data.get("message", [])) == 1 and data["message"][0].get("type") == "image":
+        if (
+            len(data.get("message", [])) == 1
+            and data["message"][0].get("type") == "image"
+        ):
             file: str = data["message"][0].data.get("file")
             # file:// http:// base64://
             if file.startswith("http"):
-                result = await md.send_md(await md.image_async(file), bot, message_type=session_type,
-                                          session_id=session_id)
+                result = await md.send_md(
+                    await md.image_async(file),
+                    bot,
+                    message_type=session_type,
+                    session_id=session_id,
+                )
             elif file.startswith("file"):
                 file = file.replace("file://", "")
-                result = await md.send_image(open(file, "rb").read(), bot, message_type=session_type,
-                                             session_id=session_id)
+                result = await md.send_image(
+                    open(file, "rb").read(),
+                    bot,
+                    message_type=session_type,
+                    session_id=session_id,
+                )
             elif file.startswith("base64"):
                 file_bytes = base64.b64decode(file.replace("base64://", ""))
-                result = await md.send_image(file_bytes, bot, message_type=session_type, session_id=session_id)
+                result = await md.send_image(
+                    file_bytes, bot, message_type=session_type, session_id=session_id
+                )
             else:
                 return
             raise MockApiException(result=result)
@@ -364,7 +407,7 @@ async def _(bot: T_Bot):
         if isinstance(bot, satori.Bot):
             await bot.send_message(
                 channel_id=reload_session_id,
-                message="灵温 重载耗时 %.2f 秒" % delta_time
+                message="灵温 重载耗时 %.2f 秒" % delta_time,
             )
         else:
             await bot.call_api(
@@ -372,7 +415,7 @@ async def _(bot: T_Bot):
                 message_type=reload_session_type,
                 user_id=reload_session_id,
                 group_id=reload_session_id,
-                message="灵温 重载耗时 %.2f 秒" % delta_time
+                message="灵温 重载耗时 %.2f 秒" % delta_time,
             )
 
 
@@ -392,22 +435,21 @@ async def every_day_update():
 
 # 需要用户id的api
 need_user_id = (
-        "send_private_msg",
-        "send_msg",
-        "set_group_card",
-        "set_group_special_title",
-        "get_stranger_info",
-        "get_group_member_info"
+    "send_private_msg",
+    "send_msg",
+    "set_group_card",
+    "set_group_special_title",
+    "get_stranger_info",
+    "get_group_member_info",
 )
 
 need_group_id = (
-        "send_group_msg",
-        "send_msg",
-        "set_group_card",
-        "set_group_name",
-
-        "set_group_special_title",
-        "get_group_member_info",
-        "get_group_member_list",
-        "get_group_honor_info"
+    "send_group_msg",
+    "send_msg",
+    "set_group_card",
+    "set_group_name",
+    "set_group_special_title",
+    "get_group_member_info",
+    "get_group_member_list",
+    "get_group_honor_info",
 )

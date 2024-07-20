@@ -6,7 +6,7 @@ import time
 
 import nonebot
 
-__NAME__ = "LiteyukiBot-Trim"
+__NAME__ = "LiteyukiBot-TriMO"
 __VERSION__ = "6.3.3"  # 60201
 # __VERSION_I__ = 99060303
 

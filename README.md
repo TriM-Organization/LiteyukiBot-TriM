@@ -42,7 +42,7 @@
 版权所有 © 2024 SnowyKami & EillesWan
 
 
-轻雪机器人睿乐定制版(LiteyukiBot-TriM)根据 第一版 汉钰律许可协议（“本协议”）授权。\
+轻雪机器人睿乐定制版(LiteyukiBot-TriMO)根据 第一版 汉钰律许可协议（“本协议”）授权。\
 任何人皆可从以下地址获得本协议副本：[汉钰律许可协议 第一版](https://gitee.com/EillesWan/YulvLicenses/raw/master/%E6%B1%89%E9%92%B0%E5%BE%8B%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE/%E6%B1%89%E9%92%B0%E5%BE%8B%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE.MD)。\
 若非因法律要求或经过了特殊准许，此作品在根据本协议“原样”提供的基础上，不予提供任何形式的担保、任何明示、任何暗示或类似承诺。也就是说，用户将自行承担因此作品的质量或性能问题而产生的全部风险。\
 详细的准许和限制条款请见原协议文本。
@@ -57,4 +57,4 @@
 [lightyuki-link]: /
 [python-link]: https://www.python.org/
 [usage-link]: https://bot.liteyuki.icu/
-[banner]: https://socialify.git.ci/TriM-Organization/LiteyukiBot-TriM/image?description=1&forks=1&issues=1&Plus&pulls=1&stargazers=1&theme=Auto&logo=https://gitee.com/TriM-Organization/Linglun-Converter/raw/master/resources/TriMO_LOGO.png
+[banner]: https://socialify.git.ci/TriM-Organization/LiteyukiBot-TriM/image?description=1&forks=1&issues=1&Plus&pulls=1&stargazers=1&theme=Auto&logo=https://raw.githubusercontent.com/TriM-Organization/Linglun-Converter/master/resources/TriMO_LOGO.png

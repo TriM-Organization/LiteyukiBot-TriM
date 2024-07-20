@@ -34,7 +34,9 @@ async def broadcast_to_superusers(message: str | T_Message, markdown: bool = Fal
     for bot in nonebot.get_bots().values():
         for user_id in config.get("superusers", []):
             if markdown:
-                await MarkdownMessage.send_md(message, bot, message_type="private", session_id=user_id)
+                await MarkdownMessage.send_md(
+                    message, bot, message_type="private", session_id=user_id
+                )
             else:
                 await bot.send_private_msg(user_id=user_id, message=message)
 
@@ -42,13 +44,14 @@ async def broadcast_to_superusers(message: str | T_Message, markdown: bool = Fal
 class MarkdownMessage:
     @staticmethod
     async def send_md(
-            markdown: str,
-            bot: T_Bot, *,
-            message_type: str = None,
-            session_id: str | int = None,
-            event: T_MessageEvent = None,
-            retry_as_image: bool = True,
-            **kwargs
+        markdown: str,
+        bot: T_Bot,
+        *,
+        message_type: str = None,
+        session_id: str | int = None,
+        event: T_MessageEvent = None,
+        retry_as_image: bool = True,
+        **kwargs,
     ) -> dict[str, Any] | None:
         """
         发送Markdown消息，支持自动转为图片发送
@@ -64,7 +67,7 @@ class MarkdownMessage:
         Returns:
 
         """
-        formatted_md = v11.unescape(markdown).replace("\n", r"\n").replace('"', r'\\\"')
+        formatted_md = v11.unescape(markdown).replace("\n", r"\n").replace('"', r"\\\"")
         if event is not None and message_type is None:
             if isinstance(event, satori.event.Event):
                 message_type = "private" if event.guild is None else "group"
@@ -73,83 +76,81 @@ class MarkdownMessage:
                 assert event is not None
                 message_type = event.message_type
                 group_id = event.group_id if message_type == "group" else None
-            user_id = event.user.id if isinstance(event, satori.event.Event) else event.user_id
+            user_id = (
+                event.user.id
+                if isinstance(event, satori.event.Event)
+                else event.user_id
+            )
             session_id = user_id if message_type == "private" else group_id
-        
-        
-        try:
-            raise TencentBannedMarkdownError("Tencent banned markdown")
-            forward_id = await bot.call_api(
-                "send_private_forward_msg",
-                messages=[
-                    {
-                        "type": "node",
-                        "data": {
-                            "content": [
-                                {
-                                    "data": {
-                                        "content": "{\"content\":\"%s\"}" % formatted_md,
-                                    },
-                                    "type": "markdown"
-                                }
-                            ],
-                            "name": "[]",
-                            "uin": bot.self_id
-                        }
-                    }
-                ],
-                user_id=bot.self_id
 
-            )
+        # try:
+        #     raise TencentBannedMarkdownError("Tencent banned markdown")
+        #     forward_id = await bot.call_api(
+        #         "send_private_forward_msg",
+        #         messages=[
+        #             {
+        #                 "type": "node",
+        #                 "data": {
+        #                     "content": [
+        #                         {
+        #                             "data": {
+        #                                 "content": "{\"content\":\"%s\"}" % formatted_md,
+        #                             },
+        #                             "type": "markdown"
+        #                         }
+        #                     ],
+        #                     "name": "[]",
+        #                     "uin": bot.self_id
+        #                 }
+        #             }
+        #         ],
+        #         user_id=bot.self_id
+
+        #     )
+        #     data = await bot.send_msg(
+        #         user_id=session_id,
+        #         group_id=session_id,
+        #         message_type=message_type,
+        #         message=[
+        #             {
+        #                 "type": "longmsg",
+        #                 "data": {
+        #                     "id": forward_id
+        #                 }
+        #             },
+        #         ],
+        #         **kwargs
+        #     )
+        # except BaseException as e:
+
+        nonebot.logger.error(f"因未能发送Markdown消息，已转为图片发送。")
+        # 发送失败，渲染为图片发送
+        # if not retry_as_image:
+        #     return None
+
+        # plain_markdown = markdown.replace("[🔗", "[")
+        md_image_bytes = await md_to_pic(md=markdown, width=540, device_scale_factor=4)
+        if isinstance(bot, satori.Bot):
+            msg_seg = satori.MessageSegment.image(raw=md_image_bytes, mime="image/png")
+            data = await bot.send(event=event, message=msg_seg)
+        else:
             data = await bot.send_msg(
-                user_id=session_id,
-                group_id=session_id,
                 message_type=message_type,
-                message=[
-                    {
-                        "type": "longmsg",
-                        "data": {
-                            "id": forward_id
-                        }
-                    },
-                ],
-                **kwargs
+                group_id=session_id,
+                user_id=session_id,
+                message=v11.MessageSegment.image(md_image_bytes),
             )
-        except BaseException as e:
-            nonebot.logger.error(f"send markdown error, retry as image: {e}")
-            # 发送失败，渲染为图片发送
-            # if not retry_as_image:
-            #     return None
-
-            plain_markdown = markdown.replace("[🔗", "[")
-            md_image_bytes = await md_to_pic(
-                md=plain_markdown,
-                width=540,
-                device_scale_factor=4
-            )
-            if isinstance(bot, satori.Bot):
-                msg_seg = satori.MessageSegment.image(raw=md_image_bytes,mime="image/png")
-                data = await bot.send(
-                    event=event,
-                    message=msg_seg
-                )
-            else:
-                data = await bot.send_msg(
-                    message_type=message_type,
-                    group_id=session_id,
-                    user_id=session_id,
-                    message=v11.MessageSegment.image(md_image_bytes),
-                )
         return data
 
     @staticmethod
     async def send_image(
-            image: bytes | str,
-            bot: T_Bot, *,
-            message_type: str = None,
-            session_id: str | int = None,
-            event: T_MessageEvent = None,
-            **kwargs
+        image: bytes | str,
+        bot: T_Bot,
+        *,
+        message_type: str = None,
+        session_id: str | int = None,
+        event: T_MessageEvent = None,
+        **kwargs,
     ) -> dict:
         """
         发送单张装逼大图
@@ -181,23 +182,35 @@ class MarkdownMessage:
         if method == 2:
             base64_string = base64.b64encode(image).decode("utf-8")
             data = await bot.call_api("upload_image", file=f"base64://{base64_string}")
-            await MarkdownMessage.send_md(MarkdownMessage.image(data, Image.open(io.BytesIO(image)).size), bot,
-                                          event=event, message_type=message_type,
-                                          session_id=session_id, **kwargs)
+            await MarkdownMessage.send_md(
+                MarkdownMessage.image(data, Image.open(io.BytesIO(image)).size),
+                bot,
+                event=event,
+                message_type=message_type,
+                session_id=session_id,
+                **kwargs,
+            )
 
         # 其他实现端方案
         else:
-            image_message_id = (await bot.send_private_msg(
-                user_id=bot.self_id,
-                message=[
-                    v11.MessageSegment.image(file=image)
-                ]
-            ))["message_id"]
-            image_url = (await bot.get_msg(message_id=image_message_id))["message"][0]["data"]["url"]
+            image_message_id = (
+                await bot.send_private_msg(
+                    user_id=bot.self_id, message=[v11.MessageSegment.image(file=image)]
+                )
+            )["message_id"]
+            image_url = (await bot.get_msg(message_id=image_message_id))["message"][0][
+                "data"
+            ]["url"]
             image_size = Image.open(io.BytesIO(image)).size
             image_md = MarkdownMessage.image(image_url, image_size)
-            return await MarkdownMessage.send_md(image_md, bot, message_type=message_type, session_id=session_id,
-                                                 event=event, **kwargs)
+            return await MarkdownMessage.send_md(
+                image_md,
+                bot,
+                message_type=message_type,
+                session_id=session_id,
+                event=event,
+                **kwargs,
+            )
 
         if data is None:
             data = await bot.send_msg(
@@ -205,7 +218,7 @@ class MarkdownMessage:
                 group_id=session_id,
                 user_id=session_id,
                 message=v11.MessageSegment.image(image),
-                **kwargs
+                **kwargs,
             )
         return data
 
@@ -232,7 +245,9 @@ class MarkdownMessage:
             markdown格式的可点击回调按钮
 
         """
-        if "" not in config.get("command_start", ["/"]) and config.get("alconna_use_command_start", False):
+        if "" not in config.get("command_start", ["/"]) and config.get(
+            "alconna_use_command_start", False
+        ):
             cmd = f"{config['command_start'][0]}{cmd}"
         return f"[{name}](mqqapi://aio/inlinecmd?command={quote(cmd)}&reply={str(reply).lower()}&enter={str(enter).lower()})"
 

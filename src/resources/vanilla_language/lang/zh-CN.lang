@@ -164,3 +164,6 @@ yanlun.errtype.net=互联网连接
 yanlun.errtype.unknown=未知
 yanlun.count.head=出处ttt数量(占比)
 yanlun.count.tail=...(共 {NUM} 条)
+yanlun.length.toolong=言·论过长
+yanlun.length.tooshort=言·论过短
+yanlun.length.float=言·论不可是非整数长度

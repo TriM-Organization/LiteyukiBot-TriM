@@ -18,6 +18,7 @@ from nonebot_plugin_alconna import (
     # AlconnaQuery,
     # Query,
     Arparma,
+    Args,
 )
 
 require("nonebot_plugin_apscheduler")
@@ -59,12 +60,18 @@ yanlun = on_alconna(
             action=store_true,
         ),
         Option("-c|--count", default=False, alias={"统计"}, action=store_true),
+        Option("-l|--length", default=1.0, args=Args["length", float | int, 1.0]),
     ),
 )
 
 
-# 每天4点更新
-@scheduler.scheduled_job("cron", hour=4)
+yanlun_path = (
+    "https://gitee.com/TriM-Organization/LinglunStudio/raw/master/resources/myWords.txt"
+)
+
+
+# 每天1点更新
+@scheduler.scheduled_job("cron", hour=1)
 async def every_day_update():
     ulang = Language(get_default_lang_code(), "zh-WY")
     nonebot.logger.success(ulang.get("yanlun.refresh.success", COUNT=update_yanlun()))
@@ -79,15 +86,17 @@ def update_yanlun():
     lunar_date = (lunar_datetime.lunar_month, lunar_datetime.lunar_day)
 
     if solar_date == (4, 3):
-        yanlun_texts = ["金羿ELS 生日快乐~！"]
+        yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
     elif solar_date == (8, 6):
-        yanlun_texts = ["诸葛八卦 生日快乐~！"]
+        yanlun_texts = ["诸葛亮与八卦阵 生日快乐~！", "Happy Birthday, bgArray~!"]
+    elif solar_date == (8, 16):
+        yanlun_texts = ["鱼旧梦 生日快乐~！", "Happy Birthday, ElapsingDreams~!"]
 
     else:
         try:
             yanlun_texts = (
                 requests.get(
-                    "https://gitee.com/TriM-Organization/LinglunStudio/raw/master/resources/myWords.txt",
+                    yanlun_path,
                 )
                 .text.strip("\n")
                 .split("\n")
@@ -165,13 +174,13 @@ async def _(
     # count: Query[bool] = AlconnaQuery("count.value", False),
 ):
     # print(result.options)
+    ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
     if result.options["refresh"].value:
-        ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
         global yanlun_texts
         try:
             yanlun_texts = (
                 requests.get(
-                    "https://gitee.com/TriM-Organization/LinglunStudio/raw/master/resources/myWords.txt",
+                    yanlun_path,
                 )
                 .text.strip("\n")
                 .split("\n")
@@ -205,7 +214,6 @@ async def _(
             )
             yanlun_texts = ["灵光焕发 深艺献心"]
     if result.options["count"].value:
-        ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
         authors = [
             (
                 ("B站")
@@ -250,4 +258,27 @@ async def _(
                 + ulang.get("yanlun.count.tail", NUM=total)
             )
         )
-    await yanlun.finish(UniMessage.text(random.choice(yanlun_texts)))
+
+    final_length = 0
+    try:
+        final_length += result.options["length"].args["length"]
+    except:
+        final_length = 1
+
+    (
+        (
+            await yanlun.finish(
+                UniMessage.text(
+                    "\n".join([random.choice(yanlun_texts) for i in range(iill)])
+                    if iill <= 100
+                    else ulang.get("yanlun.length.toolong")
+                )
+            )
+            if iill > 0
+            else await yanlun.finish(
+                UniMessage.text(ulang.get("yanlun.length.tooshort"))
+            )
+        )
+        if (iill := int(final_length)) == final_length
+        else await yanlun.finish(UniMessage.text(ulang.get("yanlun.length.float")))
+    )

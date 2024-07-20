@@ -183,4 +183,7 @@ async def _(bot: T_Bot, event: T_MessageEvent, result: Arparma, matcher: Matcher
     if send_as_md:
         await md.send_md(reply, bot, event=event)
     else:
-        await matcher.finish(reply)
+        if reply:
+            await matcher.finish(reply)
+        else:
+            await matcher.finish("其实，还没做help\t——神羽")

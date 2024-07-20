@@ -43,9 +43,9 @@ def load_from_lang(file_path: str, lang_code: str = None):
             if lang_code not in _language_data:
                 _language_data[lang_code] = {}
             _language_data[lang_code].update(data)
-        nonebot.logger.debug(f"Loaded language data from {file_path}")
+        nonebot.logger.debug(f"已从 {file_path} 读取语言文件")
     except Exception as e:
-        nonebot.logger.error(f"Failed to load language data from {file_path}: {e}")
+        nonebot.logger.error(f"无法读取以下目录中的语言文件 {file_path}，详阅：{e}")
 
 
 def load_from_json(file_path: str, lang_code: str = None):
@@ -196,7 +196,7 @@ def get_user_lang(user_id: str) -> Language:
     user_id = str(user_id)
 
     if user_id not in _user_lang:
-        nonebot.logger.debug(f"Loading user language for {user_id}")
+        nonebot.logger.debug(f"正为 {user_id} 加载语言包…")
         user = user_db.where_one(
             User(),
             "user_id = ?",

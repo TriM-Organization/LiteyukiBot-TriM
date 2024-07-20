@@ -6,7 +6,7 @@ from os import getcwd
 import aiofiles
 import nonebot
 
-from nonebot_plugin_htmlrender import *
+from nonebot_plugin_htmlrender import * # type: ignore
 from .tools import random_hex_string
 
 # import imgkit
