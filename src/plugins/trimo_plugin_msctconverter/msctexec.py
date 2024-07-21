@@ -974,7 +974,7 @@ async def _(
         else str(event.user_id)
     )
     cd_value = (
-        0 if result.options["value"].value else result.options["value"].args["value"]
+        result.options["value"].args["value"] if result.options["value"].args else 0
     )
     people_convert_times[to_change] = cd_value
 
