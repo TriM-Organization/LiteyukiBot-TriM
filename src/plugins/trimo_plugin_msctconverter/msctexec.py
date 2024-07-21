@@ -929,8 +929,21 @@ async def _(
         at_sender=True,
     )
 
+
 reset_point = on_alconna(
-    command=Alconna("设置点数"),
+    command=Alconna(
+        "设置点数",
+        Option(
+            "-p|--people",
+            default="Now",
+            args=Args["people", str, "Now"],
+        ),
+        Option(
+            "-v|--value",
+            default=0,
+            args=Args["people", float | int, 0],
+        ),
+    ),
     aliases={
         "设置转换点数",
         "set_convert_point",
@@ -946,10 +959,33 @@ reset_point = on_alconna(
 
 @reset_point.handle()
 async def _(
-    event: T_MessageEvent,
+    result: Arparma,
+    event: GroupMessageEvent | PrivateMessageEvent,
     bot: T_Bot,
 ):
-    pass
+    # event.user_id
+    to_change = (
+        (
+            str(event.user_id)
+            if result.options["people"].args["people"] == "Now"
+            else result.options["people"].args["people"]
+        )
+        if result.options["people"].args
+        else str(event.user_id)
+    )
+    cd_value = (
+        0 if result.options["value"].value else result.options["value"].args["value"]
+    )
+    people_convert_times[to_change] = cd_value
+
+    await linglun_convert.finish(
+        UniMessage.text(
+            "修改成功！当前 {} 剩余点数： {}/{}".format(
+                to_change, cd_value, configdict["maxPersonConvert"]["music"]
+            )
+        ),
+        # at_sender=True,
+    )
 
 
 execute_cmd_convert_ablity = on_alconna(
