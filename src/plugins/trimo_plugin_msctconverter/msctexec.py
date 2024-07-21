@@ -497,13 +497,10 @@ linglun_convert = on_alconna(
         ),
         Option("-t|-type", default="all", args=Args["type", str, "all"]),
         Option("-htp|--high-time-precision", default=False, action=store_true),
+        # Option("-dpb|--disable-progress-bar", default=False, action=store_true),
         Option(
             "-pgb|--progress-bar",
-            default={
-                "base_s": r"▶ %%N [ %%s/%^s %%% §e__________§r %%t|%^t ]",
-                "to_play_s": r"§7=",
-                "played_s": r"=",
-            },
+            default=None,
             args=Args["base_s", str, r"▶ %%N [ %%s/%^s %%% §e__________§r %%t|%^t ]"][
                 "to_play_s", str, r"§7="
             ]["played_s", str, r"="],
@@ -596,6 +593,7 @@ async def _(
     # await musicreater_convert.finish(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
+    nonebot.logger.info(_args)
 
     usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
@@ -685,7 +683,11 @@ async def _(
 
     try:
 
-        progress_bar_style = Musicreater.ProgressBarStyle(**_args["progress-bar"])
+        progress_bar_style = (
+            Musicreater.ProgressBarStyle(**_args["progress-bar"])
+            if _args["progress-bar"]
+            else None
+        )
 
         all_files: dict[str, dict[str, dict[str, int | tuple | str | list]]] = {}
 
@@ -926,6 +928,28 @@ async def _(
         ),
         at_sender=True,
     )
+
+reset_point = on_alconna(
+    command=Alconna("设置点数"),
+    aliases={
+        "设置转换点数",
+        "set_convert_point",
+        "reset_cvt_pnt",
+        "setcp",
+        "set_convert_point",
+        "重设转换点数",
+    },
+    permission=SUPERUSER,
+    rule=nonebot.rule.to_me(),
+)
+
+
+@reset_point.handle()
+async def _(
+    event: T_MessageEvent,
+    bot: T_Bot,
+):
+    pass
 
 
 execute_cmd_convert_ablity = on_alconna(
