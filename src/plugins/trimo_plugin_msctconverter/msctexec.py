@@ -941,7 +941,7 @@ reset_point = on_alconna(
         Option(
             "-v|--value",
             default=0,
-            args=Args["people", float | int, 0],
+            args=Args["value", float | int, 0],
         ),
     ),
     aliases={
