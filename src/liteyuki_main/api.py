@@ -41,7 +41,7 @@ def update_liteyuki() -> tuple[bool, str]:
                 except:
                     continue
         else:
-            return False, "Nothing Changed"
+            return False, "未有更新内容"
 
     else:
-        raise PermissionError("Update is not allowed.")
+        raise PermissionError("更新已被禁用")

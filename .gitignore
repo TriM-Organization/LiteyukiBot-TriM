@@ -21,6 +21,7 @@ src/resources/templates/latest-debug.html
 
 src/plugins/trimo_plugin_msctconverter/config
 src/plugins/trimo_plugin_msctconverter/temp
+src/plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
 
 # vuepress
 .github

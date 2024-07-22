@@ -2,6 +2,7 @@
 
 from nonebot.plugin import PluginMetadata
 from .msctexec import *
+from .mspvexec import *
 
 __author__ = "金羿Eilles"
 __plugin_meta__ = PluginMetadata(

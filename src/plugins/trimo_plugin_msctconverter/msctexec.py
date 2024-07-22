@@ -2,16 +2,18 @@ import os
 import sys
 import time
 import json
+import random
 
 # import uuid
 import shutil
-import requests
+
 from io import StringIO
 from pathlib import Path
 from typing import Annotated, Any
 
 # from nonebot import require
 
+import requests
 import zhDateTime
 import Musicreater
 
@@ -49,7 +51,8 @@ from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 
 from src.utils import event as event_utils
 from src.utils.base.language import get_user_lang
-from src.utils.base.config import get_config
+
+# from src.utils.base.config import get_config
 from src.utils.message.message import MarkdownMessage
 
 from .execute_auto_translator import auto_translate  # type: ignore
@@ -95,7 +98,7 @@ else:
             ".json": 8192,
         },
         "maxPersonConvert": {
-            "music": 20,
+            "music": 25,
             "structure": 20,
         },
     }
@@ -146,15 +149,43 @@ save_filesaves()
 
 enable_auto_exe_translate = {}
 
-people_convert_times = {}
+people_convert_point: dict[str, dict[str, dict[str, float | Any]]] = {}
+
+
+def query_convert_points(
+    usr_id: str, item: str, decline: float = 0, store: Any = None
+) -> tuple[Any, float]:
+    global people_convert_point
+    if usr_id in people_convert_point:
+        if item in people_convert_point[usr_id]:
+            if store:
+                people_convert_point[usr_id][item][item] = store
+            if people_convert_point[usr_id][item]["point"] >= decline:
+                people_convert_point[usr_id][item]["point"] -= decline
+                return (
+                    people_convert_point[usr_id][item].get(item, None),
+                    people_convert_point[usr_id][item]["point"],
+                )
+            else:
+                return False, people_convert_point[usr_id][item]["point"]
+        else:
+            people_convert_point[usr_id][item] = {
+                "point": configdict["maxPersonConvert"][item] - decline,
+                item: store,
+            }
+            return store, people_convert_point[usr_id][item]["point"]
+    people_convert_point[usr_id] = {
+        item: {"point": configdict["maxPersonConvert"][item] - decline, item: store}
+    }
+    return store, people_convert_point[usr_id][item]["point"]
 
 
 # 每天1点更新
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     # ulang = Language(get_default_lang_code(), "zh-WY")
-    global people_convert_times
-    people_convert_times = {}
+    global people_convert_point
+    people_convert_point = {}
     nonebot.logger.success("已重置每日转换次数")
 
 
@@ -193,6 +224,9 @@ async def _():
                     os.remove(database_dir / qqid / name)
                 except:
                     pass
+                
+                if qqid in people_convert_point:
+                    del people_convert_point[qqid]
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
                 nonebot.logger.info(
                     "\t删除{}".format(name),
@@ -372,7 +406,10 @@ async def _(
     event: GroupMessageEvent,
     bot: T_Bot,
 ):
-    if (usr_id := str(event.user_id)) in filesaves.keys():
+    if (usr_id := str(event.user_id)) in people_convert_point:
+        del people_convert_point[usr_id]
+
+    if usr_id in filesaves.keys():
         shutil.rmtree(database_dir / usr_id)
         genText = (
             "、".join([i if i != "totalSize" else "" for i in filesaves[usr_id].keys()])
@@ -537,19 +574,16 @@ async def _(
 
     usr_id = str(event.user_id)
 
-    if usr_id not in people_convert_times.keys():
-        people_convert_times[usr_id] = 0
-    else:
-        if people_convert_times[usr_id] > configdict["maxPersonConvert"]["music"]:
-            await linglun_convert.finish(
-                UniMessage.text(
-                    "你今天音乐转换点数超限： {}/{}".format(
-                        people_convert_times[usr_id],
-                        configdict["maxPersonConvert"]["music"],
-                    )
-                ),
-                at_sender=True,
-            )
+    if (qres := query_convert_points(usr_id, "music"))[0] is False:
+        await linglun_convert.finish(
+            UniMessage.text(
+                "转换点数不足，当前剩余：{}|{}点".format(
+                    qres[1],
+                    configdict["maxPersonConvert"]["music"],
+                )
+            ),
+            at_sender=True,
+        )
 
     if usr_id not in filesaves.keys():
         await linglun_convert.finish(
@@ -681,6 +715,19 @@ async def _(
     sys.stdout = buffer
     sys.stderr = buffer
 
+    def go_chk_point() -> bool:
+        res, pnt = query_convert_points(
+            usr_id,
+            "music",
+            random.random() % 0.5 + 0.3,
+        )
+        if res is False:
+            buffer.write("中途退出，转换点不足：{}\n".format(pnt))
+            return False
+        else:
+            return True
+        # return res, pnt
+
     try:
 
         progress_bar_style = (
@@ -698,20 +745,78 @@ async def _(
         ):
             if file_to_convert.endswith(".mid") or file_to_convert.endswith(".midi"):
                 nonebot.logger.info("载入转换文件：{}".format(file_to_convert))
-                all_files[file_to_convert] = {}
-                msct_obj = Musicreater.MidiConvert.from_midi_file(
-                    midi_file_path=usr_data_path / file_to_convert,
-                    mismatch_error_ignorance=not _args["enable-mismatch-error"],
-                    play_speed=_args["play-speed"],
-                    default_tempo=_args["default-tempo"],
-                    pitched_note_table=pitched_notechart,
-                    percussion_note_table=percussion_notechart,
-                    old_exe_format=_args["old-execute-format"],
-                    min_volume=_args["minimal-volume"],
-                    vol_processing_func=volume_curve,
-                )
 
-                people_convert_times[usr_id] += 0.5
+                all_files[file_to_convert] = {}
+
+                if (
+                    ((msct_obj := query_convert_points(usr_id, "music", 0)[0]) is None)
+                    or (
+                        isinstance(msct_obj, tuple)
+                        and (
+                            isinstance(msct_obj[0], Musicreater.MidiConvert)
+                            and msct_obj[1]
+                            != (
+                                not _args["enable-mismatch-error"],
+                                _args["play-speed"],
+                                _args["default-tempo"],
+                                pitched_notechart,
+                                percussion_notechart,
+                                volume_curve,
+                            )
+                        )
+                    )
+                ) and go_chk_point():
+                    msct_obj = Musicreater.MidiConvert.from_midi_file(
+                        midi_file_path=usr_data_path / file_to_convert,
+                        mismatch_error_ignorance=not _args["enable-mismatch-error"],
+                        play_speed=_args["play-speed"],
+                        default_tempo=_args["default-tempo"],
+                        pitched_note_table=pitched_notechart,
+                        percussion_note_table=percussion_notechart,
+                        old_exe_format=_args["old-execute-format"],
+                        min_volume=_args["minimal-volume"],
+                        vol_processing_func=volume_curve,
+                    )
+                    query_convert_points(
+                        usr_id,
+                        "music",
+                        0,
+                        (
+                            msct_obj,
+                            (
+                                not _args["enable-mismatch-error"],
+                                _args["play-speed"],
+                                _args["default-tempo"],
+                                pitched_notechart,
+                                percussion_notechart,
+                                volume_curve,
+                            ),
+                        ),
+                    )
+                elif isinstance(msct_obj, tuple) and (
+                    isinstance(msct_obj[0], Musicreater.MidiConvert)
+                    and msct_obj[1]
+                    == (
+                        not _args["enable-mismatch-error"],
+                        _args["play-speed"],
+                        _args["default-tempo"],
+                        pitched_notechart,
+                        percussion_notechart,
+                        volume_curve,
+                    )
+                ):
+                    msct_obj = msct_obj[0]
+                    msct_obj.redefine_execute_format(_args["old-execute-format"])
+                    msct_obj.set_min_volume(_args["minimal-volume"])
+                    # msct_obj.set_deviation()
+                else:
+                    buffer.write(
+                        "点数不足或出现错误：{}".format(
+                            _args,
+                        )
+                    )
+                    break
+                # people_convert_point[usr_id] += 0.5
 
                 if "msq" in all_cvt_types:
                     all_files[file_to_convert]["msq"] = {"MSQ版本": "2-MSQ@"}
@@ -723,7 +828,7 @@ async def _(
                         )
                     )
 
-                if "addon-delay" in all_cvt_types:
+                if go_chk_point() and "addon-delay" in all_cvt_types:
                     all_files[file_to_convert]["addon-delay"] = dict(
                         zip(
                             ["指令数量", "音乐刻长"],
@@ -736,10 +841,10 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("addon-delay")
 
-                if "addon-score" in all_cvt_types:
+                if go_chk_point() and "addon-score" in all_cvt_types:
                     all_files[file_to_convert]["addon-score"] = dict(
                         zip(
                             ["指令数量", "音乐刻长"],
@@ -752,10 +857,10 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("addon-score")
 
-                if "mcstructure-dalay" in all_cvt_types:
+                if go_chk_point() and "mcstructure-dalay" in all_cvt_types:
                     all_files[file_to_convert]["mcstructure-dalay"] = dict(
                         zip(
                             ["结构尺寸", "音乐刻长"],
@@ -767,10 +872,10 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("mcstructure-dalay")
 
-                if "mcstructure-score" in all_cvt_types:
+                if go_chk_point() and "mcstructure-score" in all_cvt_types:
                     all_files[file_to_convert]["mcstructure-score"] = dict(
                         zip(
                             ["结构尺寸", "音乐刻长", "指令数量"],
@@ -783,10 +888,10 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("mcstructure-score")
 
-                if "bdx-delay" in all_cvt_types:
+                if go_chk_point() and "bdx-delay" in all_cvt_types:
                     all_files[file_to_convert]["bdx-delay"] = dict(
                         zip(
                             [
@@ -805,10 +910,10 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("bdx-delay")
 
-                if "bdx-score" in all_cvt_types:
+                if go_chk_point() and "bdx-score" in all_cvt_types:
                     all_files[file_to_convert]["bdx-score"] = dict(
                         zip(
                             [
@@ -828,26 +933,13 @@ async def _(
                             ),
                         )
                     )
-                    people_convert_times[usr_id] += 0.5
+                    # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("bdx-score")
             elif file_to_convert != "totalSize":
                 nonebot.logger.warning(
                     "文件类型错误：{}".format(file_to_convert),
                 )
                 buffer.write("文件 {} 已跳过\n".format(file_to_convert))
-
-            if people_convert_times[usr_id] > configdict["maxPersonConvert"]["music"]:
-                buffer.write("中途退出：转换点不足\n")
-                await linglun_convert.send(
-                    UniMessage.text(
-                        "今日音乐转换点数超限： {}/{}".format(
-                            people_convert_times[usr_id],
-                            configdict["maxPersonConvert"]["music"],
-                        )
-                    ),
-                    at_sender=True,
-                )
-                break
 
         if not all_files:
             nonebot.logger.warning(
@@ -922,8 +1014,9 @@ async def _(
 
     await linglun_convert.finish(
         UniMessage.text(
-            "转换结束，当前所用转换点数： {}/{}".format(
-                people_convert_times[usr_id], configdict["maxPersonConvert"]["music"]
+            "转换结束，当前剩余转换点数： {}|{}".format(
+                query_convert_points(usr_id, "music", 0, None)[1],
+                configdict["maxPersonConvert"]["music"],
             )
         ),
         at_sender=True,
@@ -943,14 +1036,20 @@ reset_point = on_alconna(
             default=0,
             args=Args["value", float | int, 0],
         ),
+        Option(
+            "-i|--item",
+            default="music",
+            args=Args["item", str, "music"],
+        ),
     ),
     aliases={
-        "设置转换点数",
-        "set_convert_point",
-        "reset_cvt_pnt",
-        "setcp",
-        "set_convert_point",
-        "重设转换点数",
+        "增加转换点数",
+        "add_convert_point",
+        "increase_cvt_pnt",
+        "addcp",
+        "icrcp",
+        "icr_convert_point",
+        "重设并增加转换点数",
     },
     permission=SUPERUSER,
     rule=nonebot.rule.to_me(),
@@ -976,12 +1075,25 @@ async def _(
     cd_value = (
         result.options["value"].args["value"] if result.options["value"].args else 0
     )
-    people_convert_times[to_change] = cd_value
+    v_item = (
+        result.options["item"].args["item"] if result.options["item"].args else "music"
+    )
+
+    if v_item not in configdict["maxPersonConvert"]:
+        await linglun_convert.finish(
+            UniMessage.text(
+                "错误！没有名为 {} 的项目。".format(v_item),
+            ),
+            at_sender=True,
+        )
 
     await linglun_convert.finish(
         UniMessage.text(
-            "修改成功！当前 {} 剩余点数： {}/{}".format(
-                to_change, cd_value, configdict["maxPersonConvert"]["music"]
+            "重置转换状况并修改点数成功！当前{}的{}点数为：{}|{}".format(
+                to_change,
+                v_item,
+                query_convert_points(to_change, v_item, -cd_value, None)[1],
+                configdict["maxPersonConvert"][v_item],
             )
         ),
         # at_sender=True,
