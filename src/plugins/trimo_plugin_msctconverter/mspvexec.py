@@ -13,6 +13,7 @@ import nonebot
 import soundfile
 import Musicreater
 import Musicreater.plugin
+import nonebot.adapters.onebot.v11.exception
 
 from .MusicPreview.main import PreviewMusic
 
@@ -392,16 +393,19 @@ async def _(
             fp := str(temporary_dir / (fn := "mpr-wav-{}.zip".format(usr_id))),
         )
 
-        if isinstance(event, GroupMessageEvent) or isinstance(
-            event, GroupUploadNoticeEvent
-        ):
-            await bot.call_api(
-                "upload_group_file", group_id=event.group_id, name=fn, file=fp
-            )
-        else:
-            await bot.call_api(
-                "upload_private_file", user_id=event.user_id, name=fn, file=fp
-            )
+        try:
+            if isinstance(event, GroupMessageEvent) or isinstance(
+                event, GroupUploadNoticeEvent
+            ):
+                await bot.call_api(
+                    "upload_group_file", group_id=event.group_id, name=fn, file=fp
+                )
+            else:
+                await bot.call_api(
+                    "upload_private_file", user_id=event.user_id, name=fn, file=fp
+                )
+        except nonebot.adapters.onebot.v11.exception.NetworkError as E:
+            buffer.write("文件上传发生网络错误：\n{}".format(E))
 
         os.remove(fp)
 
