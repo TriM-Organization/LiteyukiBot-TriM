@@ -224,7 +224,7 @@ async def _():
                     os.remove(database_dir / qqid / name)
                 except:
                     pass
-                
+
                 if qqid in people_convert_point:
                     del people_convert_point[qqid]
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
@@ -753,15 +753,23 @@ async def _(
                     or (
                         isinstance(msct_obj, tuple)
                         and (
-                            isinstance(msct_obj[0], Musicreater.MidiConvert)
-                            and msct_obj[1]
-                            != (
-                                not _args["enable-mismatch-error"],
-                                _args["play-speed"],
-                                _args["default-tempo"],
-                                pitched_notechart,
-                                percussion_notechart,
-                                volume_curve,
+                            (
+                                isinstance(msct_obj[0], Musicreater.MidiConvert)
+                                and msct_obj[1]
+                                != (
+                                    not _args["enable-mismatch-error"],
+                                    _args["play-speed"],
+                                    _args["default-tempo"],
+                                    pitched_notechart,
+                                    percussion_notechart,
+                                    volume_curve,
+                                )
+                            )
+                            or (
+                                msct_obj[0].music_name
+                                != os.path.splitext(
+                                    os.path.basename(usr_data_path / file_to_convert)
+                                )[0].replace(" ", "_")
                             )
                         )
                     )
@@ -803,6 +811,12 @@ async def _(
                         pitched_notechart,
                         percussion_notechart,
                         volume_curve,
+                    )
+                    and (
+                        msct_obj[0].music_name
+                        != os.path.splitext(
+                            os.path.basename(usr_data_path / file_to_convert)
+                        )[0].replace(" ", "_")
                     )
                 ):
                     msct_obj = msct_obj[0]

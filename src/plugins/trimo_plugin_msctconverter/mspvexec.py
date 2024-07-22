@@ -257,15 +257,23 @@ async def _(
                     or (
                         isinstance(msct_obj, tuple)
                         and (
-                            isinstance(msct_obj[0], Musicreater.MidiConvert)
-                            and msct_obj[1]
-                            != (
-                                not _args["enable-mismatch-error"],
-                                _args["play-speed"],
-                                _args["default-tempo"],
-                                pitched_notechart,
-                                percussion_notechart,
-                                volume_curve,
+                            (
+                                isinstance(msct_obj[0], Musicreater.MidiConvert)
+                                and msct_obj[1]
+                                != (
+                                    not _args["enable-mismatch-error"],
+                                    _args["play-speed"],
+                                    _args["default-tempo"],
+                                    pitched_notechart,
+                                    percussion_notechart,
+                                    volume_curve,
+                                )
+                            )
+                            or (
+                                msct_obj[0].music_name
+                                != os.path.splitext(
+                                    os.path.basename(usr_data_path / file_to_convert)
+                                )[0].replace(" ", "_")
                             )
                         )
                     )
@@ -305,6 +313,12 @@ async def _(
                         pitched_notechart,
                         percussion_notechart,
                         volume_curve,
+                    )
+                    and (
+                        msct_obj[0].music_name
+                        != os.path.splitext(
+                            os.path.basename(usr_data_path / file_to_convert)
+                        )[0].replace(" ", "_")
                     )
                 ):
                     nonebot.logger.info("载入已有缓存。")
