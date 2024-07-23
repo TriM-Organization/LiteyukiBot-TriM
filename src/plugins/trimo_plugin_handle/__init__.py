@@ -75,7 +75,11 @@ def game_not_running(user_id: UserId) -> bool:
 
 
 handle = on_alconna(
-    Alconna("handle", Option("-s|--strict", default=False, action=store_true)),
+    Alconna(
+        "handle",
+        Option("-s|--strict", default=False, action=store_true),
+        Option("-d|--hard", default=False, action=store_true),
+    ),
     aliases=("猜成语",),
     rule=to_me() & game_not_running,
     use_cmd_start=True,
@@ -168,9 +172,10 @@ async def _(
     matcher: Matcher,
     user_id: UserId,
     strict: Query[bool] = AlconnaQuery("strict.value", False),
+    hard: Query[bool] = AlconnaQuery("hard.value", False),
 ):
     is_strict = handle_config.handle_strict_mode or strict.result
-    idiom, explanation = random_idiom()
+    idiom, explanation = random_idiom(hard.result)
     game = Handle(idiom, explanation, strict=is_strict)
 
     games[user_id] = game

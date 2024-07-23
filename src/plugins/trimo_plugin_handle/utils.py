@@ -17,13 +17,18 @@ fonts_dir = resource_dir / "fonts"
 data_dir = resource_dir / "data"
 idiom_path = data_dir / "idioms.txt"
 answer_path = data_dir / "answers.json"
+answer_hard_path = data_dir / "answers_hard.json"
 
 
 LEGAL_PHRASES = [
     idiom.strip() for idiom in idiom_path.open("r", encoding="utf-8").readlines()
 ]
-ANSWER_PHRASES: List[Dict[str, str]] = json.load(answer_path.open("r", encoding="utf-8"))
-
+ANSWER_PHRASES: List[Dict[str, str]] = json.load(
+    answer_path.open("r", encoding="utf-8")
+)
+HARD_ANSWER_PHRASES: List[Dict[str, str]] = json.load(
+    answer_hard_path.open("r", encoding="utf-8")
+)
 
 # class LegalPhrasesModifiedHandler(FileSystemEventHandler):
 #     """
@@ -57,8 +62,8 @@ def legal_idiom(word: str) -> bool:
     return word in LEGAL_PHRASES
 
 
-def random_idiom() -> Tuple[str, str]:
-    answer = random.choice(ANSWER_PHRASES)
+def random_idiom(is_hard: bool = False) -> Tuple[str, str]:
+    answer = random.choice(HARD_ANSWER_PHRASES if is_hard else ANSWER_PHRASES)
     return answer["word"], answer["explanation"]
 
 
