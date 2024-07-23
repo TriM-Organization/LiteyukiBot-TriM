@@ -180,7 +180,7 @@ def query_convert_points(
     return store, people_convert_point[usr_id][item]["point"]
 
 
-# 每天1点更新
+# 每天4点更新
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     # ulang = Language(get_default_lang_code(), "zh-WY")
@@ -238,8 +238,7 @@ async def _():
                 except:
                     pass
 
-                if qqid in people_convert_point:
-                    del people_convert_point[qqid]
+                query_convert_points(qqid,"music",0,False)
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
                 nonebot.logger.info(
                     "\t删除{}".format(name),
