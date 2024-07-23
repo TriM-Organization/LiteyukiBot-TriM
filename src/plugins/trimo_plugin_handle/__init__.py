@@ -2,6 +2,7 @@ import asyncio
 from asyncio import TimerHandle
 from typing import Any, Dict
 
+import nonebot
 from nonebot import on_regex, require, on_command
 from nonebot.matcher import Matcher
 from nonebot.params import RegexDict
@@ -169,13 +170,13 @@ def set_timeout(matcher: Matcher, user_id: str, timeout: float = 300):
 
 @handle.handle()
 async def _(
+    result: Arparma,
     matcher: Matcher,
     user_id: UserId,
-    strict: Query[bool] = AlconnaQuery("strict.value", False),
-    hard: Query[bool] = AlconnaQuery("hard.value", False),
 ):
-    is_strict = handle_config.handle_strict_mode or strict.result
-    idiom, explanation = random_idiom(hard.result)
+    nonebot.logger.info(result.options)
+    is_strict = handle_config.handle_strict_mode or result.options["strict"].value
+    idiom, explanation = random_idiom(result.options["hard"].value)
     game = Handle(idiom, explanation, strict=is_strict)
 
     games[user_id] = game
