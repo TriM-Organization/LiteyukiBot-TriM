@@ -204,11 +204,23 @@ async def _():
     nonebot.logger.success("删除临时文件目录完成")
 
 
+file_to_delete = []
+
 @scheduler.scheduled_job("interval", seconds=30)
 async def _():
     nonebot.logger.info(
         "-删除文件检测-",
     )
+    global file_to_delete
+    for path_d in file_to_delete.copy():
+        try:
+            if os.path.exists(path_d):
+                os.remove(path_d)
+            file_to_delete.remove(path_d)
+            nonebot.logger.success("删除临时文件：{}".format(path_d))
+        except:
+            nonebot.logger.warning("跳过临时文件删除：{}".format(path_d))
+    global filesaves
     qqidlist = list(filesaves.keys()).copy()
     save_file = False
     for qqid in qqidlist:
@@ -577,7 +589,7 @@ async def _(
     if (qres := query_convert_points(usr_id, "music"))[0] is False:
         await linglun_convert.finish(
             UniMessage.text(
-                "转换点数不足，当前剩余：{}|{}点".format(
+                "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
                     qres[1],
                     configdict["maxPersonConvert"]["music"],
                 )
@@ -728,6 +740,8 @@ async def _(
             return True
         # return res, pnt
 
+    await linglun_convert.send(UniMessage.text("转换开始……"))
+    
     try:
 
         progress_bar_style = (
@@ -1024,11 +1038,13 @@ async def _(
         event=event,
     )
 
-    os.remove(fp)
+    global file_to_delete
+    file_to_delete.append(fp)
+    # os.remove(fp)
 
     await linglun_convert.finish(
         UniMessage.text(
-            "转换结束，当前剩余转换点数： {}|{}".format(
+            "转换结束，当前剩余转换点数：⌊p⌋≈{:.2f}|{}".format(
                 query_convert_points(usr_id, "music", 0, None)[1],
                 configdict["maxPersonConvert"]["music"],
             )
@@ -1103,7 +1119,7 @@ async def _(
 
     await linglun_convert.finish(
         UniMessage.text(
-            "重置转换状况并修改点数成功！当前{}的{}点数为：{}|{}".format(
+            "重置转换状况并修改点数成功！当前{}的{}点数为：⌊p⌋≈{:.2f}|{}".format(
                 to_change,
                 v_item,
                 query_convert_points(to_change, v_item, -cd_value, None)[1],

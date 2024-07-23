@@ -5,7 +5,7 @@ import shutil
 import random
 
 from io import StringIO
-from pathlib import Path
+# from pathlib import Path
 
 # import nonebot.rule
 
@@ -24,15 +24,15 @@ from nonebot.adapters.onebot.v11.event import (
 )
 from nonebot_plugin_alconna import (
     Alconna,
-    AlconnaQuery,
+    # AlconnaQuery,
     Args,
-    Image,
+    # Image,
     Option,
-    Query,
-    Text,
+    # Query,
+    # Text,
     UniMessage,
     on_alconna,
-    Voice,
+    # Voice,
     Arparma,
     Args,
     store_true,
@@ -42,12 +42,13 @@ from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage
 
 from .msctexec import (
-    people_convert_point,
+    # people_convert_point,
     query_convert_points,
     filesaves,
     configdict,
     database_dir,
     temporary_dir,
+    file_to_delete,
 )
 
 mspv_sync = on_alconna(
@@ -111,7 +112,7 @@ async def _(
     if (qres := query_convert_points(usr_id, "music"))[0] is False:
         await mspv_sync.finish(
             UniMessage.text(
-                "转换点数不足，当前剩余：{}|{}点".format(
+                "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
                     qres[1],
                     configdict["maxPersonConvert"]["music"],
                 )
@@ -240,6 +241,8 @@ async def _(
         else:
             return True
 
+    await mspv_sync.send(UniMessage.text("转换开始……"))
+    
     try:
 
         all_files = []
@@ -407,7 +410,8 @@ async def _(
         except nonebot.adapters.onebot.v11.exception.NetworkError as E:
             buffer.write("文件上传发生网络错误：\n{}".format(E))
 
-        os.remove(fp)
+        global file_to_delete
+        file_to_delete.append(fp)
 
     await MarkdownMessage.send_md(
         "##{}\n\n```\n{}\n```".format(
@@ -420,13 +424,13 @@ async def _(
 
     # nonebot.logger.info(buffer.getvalue())
 
-    await mspv_sync.send(UniMessage.text("成功转换：{}".format("、".join(all_files))))
 
     shutil.rmtree(usr_temp_path)
 
     await mspv_sync.finish(
         UniMessage.text(
-            "转换结束，当前剩余转换点数： {}|{}".format(
+            "成功转换：{}\n当前剩余转换点数：⌊p⌋≈{:.2f}|{}".format(
+                "、".join(all_files),
                 query_convert_points(usr_id, "music", 0, None)[1],
                 configdict["maxPersonConvert"]["music"],
             )
