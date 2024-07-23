@@ -5,12 +5,14 @@ import shutil
 import random
 
 from io import StringIO
+
 # from pathlib import Path
 
 # import nonebot.rule
 
 import nonebot
 import soundfile
+import zhDateTime
 import Musicreater
 import Musicreater.plugin
 import nonebot.adapters.onebot.v11.exception
@@ -50,12 +52,16 @@ from .msctexec import (
     temporary_dir,
     file_to_delete,
 )
+from .utils import utime_hanzify
 
 mspv_sync = on_alconna(
     Alconna(
         "音乐合成",
-        Option("-n|--file-name", default="all", args=Args["file-name", str, "all"]),
+        Option("-n|-f|--file-name", default="all", args=Args["file-name", str, "all"]),
         Option("-m|--mode", default=0, args=Args["mode", int, 0]),
+        Option(
+            "-g|--get-value-method", default=1, args=Args["get-value-method", int, 1]
+        ),
         Option("-o|--output-file", default=False, action=store_true),
         Option("-emr|--enable-mismatch-error", default=False, action=store_true),
         Option("-ps|--play-speed", default=1.0, args=Args["play-speed", float, 1.0]),
@@ -129,6 +135,7 @@ async def _(
         "file-name": "all",
         "output-file": False,
         "mode": 0,
+        "get-value-method": 1,
         "enable-mismatch-error": False,
         "play-speed": 1.0,
         "default-tempo": 500000,
@@ -154,6 +161,16 @@ async def _(
     if _args["mode"] not in [0, 1, 2, 3, 4]:
         await mspv_sync.finish(
             UniMessage.text("模式 {} 不存在，请详阅文档。".format(_args["mode"]))
+        )
+
+    if _args["get-value-method"] not in [
+        0,
+        1,
+    ]:
+        await mspv_sync.finish(
+            UniMessage.text(
+                "取值法 {} 不存在，请详阅文档。".format(_args["get-value-method"])
+            )
         )
 
     usr_data_path = database_dir / usr_id
@@ -242,7 +259,7 @@ async def _(
             return True
 
     await mspv_sync.send(UniMessage.text("转换开始……"))
-    
+
     try:
 
         all_files = []
@@ -256,71 +273,25 @@ async def _(
                 nonebot.logger.info("载入待合成文件：{}".format(file_to_convert))
                 # print("1")
                 # await mspv_sync.finish("处理中")
-                if (
-                    ((msct_obj := query_convert_points(usr_id, "music", 0)[0]) is None)
-                    or (
-                        isinstance(msct_obj, tuple)
-                        and (
-                            (
-                                isinstance(msct_obj[0], Musicreater.MidiConvert)
-                                and msct_obj[1]
-                                != (
-                                    not _args["enable-mismatch-error"],
-                                    _args["play-speed"],
-                                    _args["default-tempo"],
-                                    pitched_notechart,
-                                    percussion_notechart,
-                                    volume_curve,
-                                )
-                            )
-                            or (
-                                msct_obj[0].music_name
-                                != os.path.splitext(
-                                    os.path.basename(usr_data_path / file_to_convert)
-                                )[0].replace(" ", "_")
-                            )
-                        )
-                    )
-                ) and go_chk_point():
-                    msct_obj = Musicreater.MidiConvert.from_midi_file(
-                        midi_file_path=usr_data_path / file_to_convert,
-                        mismatch_error_ignorance=not _args["enable-mismatch-error"],
-                        play_speed=_args["play-speed"],
-                        default_tempo=_args["default-tempo"],
-                        pitched_note_table=pitched_notechart,
-                        percussion_note_table=percussion_notechart,
-                        vol_processing_func=volume_curve,
-                    )
-                    query_convert_points(
-                        usr_id,
-                        "music",
-                        0,
-                        (
-                            msct_obj,
-                            (
-                                not _args["enable-mismatch-error"],
-                                _args["play-speed"],
-                                _args["default-tempo"],
-                                pitched_notechart,
-                                percussion_notechart,
-                                volume_curve,
-                            ),
-                        ),
-                    )
-                elif isinstance(msct_obj, tuple) and (
+
+                if isinstance(
+                    msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
+                ) and (
                     isinstance(msct_obj[0], Musicreater.MidiConvert)
-                    and msct_obj[1]
-                    == (
-                        not _args["enable-mismatch-error"],
-                        _args["play-speed"],
-                        _args["default-tempo"],
-                        pitched_notechart,
-                        percussion_notechart,
-                        volume_curve,
+                    and (
+                        msct_obj[1]
+                        == (
+                            not _args["enable-mismatch-error"],
+                            _args["play-speed"],
+                            _args["default-tempo"],
+                            pitched_notechart,
+                            percussion_notechart,
+                            volume_curve,
+                        )
                     )
                     and (
                         msct_obj[0].music_name
-                        != os.path.splitext(
+                        == os.path.splitext(
                             os.path.basename(usr_data_path / file_to_convert)
                         )[0].replace(" ", "_")
                     )
@@ -328,19 +299,47 @@ async def _(
                     nonebot.logger.info("载入已有缓存。")
                     msct_obj = msct_obj[0]
                 else:
-                    buffer.write(
-                        "点数不足或出现错误：\n{}".format(
-                            _args,
+
+                    if go_chk_point():
+                        msct_obj = Musicreater.MidiConvert.from_midi_file(
+                            midi_file_path=usr_data_path / file_to_convert,
+                            mismatch_error_ignorance=not _args["enable-mismatch-error"],
+                            play_speed=_args["play-speed"],
+                            default_tempo=_args["default-tempo"],
+                            pitched_note_table=pitched_notechart,
+                            percussion_note_table=percussion_notechart,
+                            vol_processing_func=volume_curve,
                         )
-                    )
-                    break
+                        query_convert_points(
+                            usr_id,
+                            "music",
+                            0,
+                            (
+                                msct_obj,
+                                (
+                                    not _args["enable-mismatch-error"],
+                                    _args["play-speed"],
+                                    _args["default-tempo"],
+                                    pitched_notechart,
+                                    percussion_notechart,
+                                    volume_curve,
+                                ),
+                            ),
+                        )
+                    else:
+                        buffer.write(
+                            "点数不足或出现错误：\n{}".format(
+                                _args,
+                            )
+                        )
+                        break
 
                 all_files.append(file_to_convert)
 
                 music_temp = PreviewMusic(
                     msct_obj,
-                    mode=1,
-                    gvm=1,
+                    mode=_args["mode"],
+                    gvm=_args["get-value-method"],
                     default_channel_num=1,
                     overlay_channels=1,
                     out_sr=44100,
@@ -385,7 +384,11 @@ async def _(
 
     except Exception as e:
         nonebot.logger.error("合成存在错误：{}".format(e))
-        buffer.write("[ERROR] {}\n".format(e))
+        buffer.write(
+            "[ERROR] {}\n".format(e).replace(
+                "C:\\Users\\Administrator\\Desktop\\RyBot\\", "[]"
+            )
+        )
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
@@ -393,7 +396,14 @@ async def _(
     if _args["output-file"]:
         Musicreater.plugin.archive.compress_zipfile(
             usr_temp_path,
-            fp := str(temporary_dir / (fn := "mpr-wav-{}.zip".format(usr_id))),
+            fp := str(
+                temporary_dir
+                / (
+                    fn := "mprwav[{}]{}.zip".format(
+                        utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
+                    )
+                )
+            ),
         )
 
         try:
@@ -423,7 +433,6 @@ async def _(
     )
 
     # nonebot.logger.info(buffer.getvalue())
-
 
     shutil.rmtree(usr_temp_path)
 
