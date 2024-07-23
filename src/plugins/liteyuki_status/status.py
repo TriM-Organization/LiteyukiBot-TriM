@@ -70,8 +70,8 @@ yanlun_path = (
 )
 
 
-# 每天1点更新
-@scheduler.scheduled_job("cron", hour=1)
+# 每天4点更新
+@scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     ulang = Language(get_default_lang_code(), "zh-WY")
     nonebot.logger.success(ulang.get("yanlun.refresh.success", COUNT=update_yanlun()))
@@ -281,4 +281,23 @@ async def _(
         )
         if (iill := int(final_length)) == final_length
         else await yanlun.finish(UniMessage.text(ulang.get("yanlun.length.float")))
+    )
+
+
+time_query = on_alconna(
+    command=Alconna(
+        "时间",
+    ),
+    aliases={"时间查询", "timeq", "timequery"},
+)
+
+
+@time_query.handle()
+async def _(
+    event: T_MessageEvent,
+    bot: T_Bot,
+):
+    # ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
+    await time_query.finish(
+        UniMessage.text(zhDateTime.DateTime.now().to_lunar().hanzify())
     )

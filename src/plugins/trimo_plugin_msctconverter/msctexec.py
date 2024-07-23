@@ -56,7 +56,7 @@ from src.utils.base.language import get_user_lang
 from src.utils.message.message import MarkdownMessage
 
 from .execute_auto_translator import auto_translate  # type: ignore
-
+from .utils import utime_hanzify
 
 nonebot.require("nonebot_plugin_alconna")
 nonebot.require("nonebot_plugin_apscheduler")
@@ -180,7 +180,7 @@ def query_convert_points(
     return store, people_convert_point[usr_id][item]["point"]
 
 
-# 每天1点更新
+# 每天4点更新
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     # ulang = Language(get_default_lang_code(), "zh-WY")
@@ -205,6 +205,7 @@ async def _():
 
 
 file_to_delete = []
+
 
 @scheduler.scheduled_job("interval", seconds=30)
 async def _():
@@ -237,8 +238,7 @@ async def _():
                 except:
                     pass
 
-                if qqid in people_convert_point:
-                    del people_convert_point[qqid]
+                query_convert_points(qqid,"music",0,False)
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
                 nonebot.logger.info(
                     "\t删除{}".format(name),
@@ -741,7 +741,7 @@ async def _(
         # return res, pnt
 
     await linglun_convert.send(UniMessage.text("转换开始……"))
-    
+
     try:
 
         progress_bar_style = (
@@ -762,60 +762,9 @@ async def _(
 
                 all_files[file_to_convert] = {}
 
-                if (
-                    ((msct_obj := query_convert_points(usr_id, "music", 0)[0]) is None)
-                    or (
-                        isinstance(msct_obj, tuple)
-                        and (
-                            (
-                                isinstance(msct_obj[0], Musicreater.MidiConvert)
-                                and msct_obj[1]
-                                != (
-                                    not _args["enable-mismatch-error"],
-                                    _args["play-speed"],
-                                    _args["default-tempo"],
-                                    pitched_notechart,
-                                    percussion_notechart,
-                                    volume_curve,
-                                )
-                            )
-                            or (
-                                msct_obj[0].music_name
-                                != os.path.splitext(
-                                    os.path.basename(usr_data_path / file_to_convert)
-                                )[0].replace(" ", "_")
-                            )
-                        )
-                    )
-                ) and go_chk_point():
-                    msct_obj = Musicreater.MidiConvert.from_midi_file(
-                        midi_file_path=usr_data_path / file_to_convert,
-                        mismatch_error_ignorance=not _args["enable-mismatch-error"],
-                        play_speed=_args["play-speed"],
-                        default_tempo=_args["default-tempo"],
-                        pitched_note_table=pitched_notechart,
-                        percussion_note_table=percussion_notechart,
-                        old_exe_format=_args["old-execute-format"],
-                        min_volume=_args["minimal-volume"],
-                        vol_processing_func=volume_curve,
-                    )
-                    query_convert_points(
-                        usr_id,
-                        "music",
-                        0,
-                        (
-                            msct_obj,
-                            (
-                                not _args["enable-mismatch-error"],
-                                _args["play-speed"],
-                                _args["default-tempo"],
-                                pitched_notechart,
-                                percussion_notechart,
-                                volume_curve,
-                            ),
-                        ),
-                    )
-                elif isinstance(msct_obj, tuple) and (
+                if isinstance(
+                    msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
+                ) and (
                     isinstance(msct_obj[0], Musicreater.MidiConvert)
                     and msct_obj[1]
                     == (
@@ -828,22 +777,53 @@ async def _(
                     )
                     and (
                         msct_obj[0].music_name
-                        != os.path.splitext(
+                        == os.path.splitext(
                             os.path.basename(usr_data_path / file_to_convert)
                         )[0].replace(" ", "_")
                     )
                 ):
+                    nonebot.logger.info("载入已有缓存。")
                     msct_obj = msct_obj[0]
                     msct_obj.redefine_execute_format(_args["old-execute-format"])
                     msct_obj.set_min_volume(_args["minimal-volume"])
                     # msct_obj.set_deviation()
                 else:
-                    buffer.write(
-                        "点数不足或出现错误：{}".format(
-                            _args,
+                    if go_chk_point():
+                        msct_obj = Musicreater.MidiConvert.from_midi_file(
+                            midi_file_path=usr_data_path / file_to_convert,
+                            mismatch_error_ignorance=not _args["enable-mismatch-error"],
+                            play_speed=_args["play-speed"],
+                            default_tempo=_args["default-tempo"],
+                            pitched_note_table=pitched_notechart,
+                            percussion_note_table=percussion_notechart,
+                            old_exe_format=_args["old-execute-format"],
+                            min_volume=_args["minimal-volume"],
+                            vol_processing_func=volume_curve,
                         )
-                    )
-                    break
+                        query_convert_points(
+                            usr_id,
+                            "music",
+                            0,
+                            (
+                                msct_obj,
+                                (
+                                    not _args["enable-mismatch-error"],
+                                    _args["play-speed"],
+                                    _args["default-tempo"],
+                                    pitched_notechart,
+                                    percussion_notechart,
+                                    volume_curve,
+                                ),
+                            ),
+                        )
+                    else:
+                        buffer.write(
+                            "点数不足或出现错误：{}".format(
+                                _args,
+                            )
+                        )
+                        break
+
                 # people_convert_point[usr_id] += 0.5
 
                 if "msq" in all_cvt_types:
@@ -974,19 +954,30 @@ async def _(
                 "无可供转换的文件",
             )
             await linglun_convert.finish(
-                UniMessage("不是哥们，空气咱这转不成面包，那是中科院的事。")
+                UniMessage("不是哥们，二氧化碳咱这转不成面包，那是中科院的事。")
             )
 
     except Exception as e:
         nonebot.logger.error("转换存在错误：{}".format(e))
-        buffer.write("[ERROR] {}\n".format(e))
+        buffer.write(
+            "[ERROR] {}\n".format(e).replace(
+                "C:\\Users\\Administrator\\Desktop\\RyBot\\", "[]"
+            )
+        )
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
 
     Musicreater.plugin.archive.compress_zipfile(
         usr_temp_path,
-        fp := str(temporary_dir / (fn := "result-{}.zip".format(usr_id))),
+        fp := str(
+            temporary_dir
+            / (
+                fn := "msctr[{}]-{}.zip".format(
+                    utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
+                )
+            )
+        ),
     )
 
     shutil.rmtree(usr_temp_path)
