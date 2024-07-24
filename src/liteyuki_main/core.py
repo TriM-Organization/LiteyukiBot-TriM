@@ -16,9 +16,12 @@ from src.utils.base.data_manager import StoredConfig, TempConfig, common_db
 from src.utils.base.language import get_user_lang
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage as md, broadcast_to_superusers
-from src.utils.base.reloader import Reloader
+
+# from src.liteyuki.core import Reloader
 from src.utils import event as event_utils, satori_utils
+from liteyuki.core import ProcessingManager
 from .api import update_liteyuki
+from liteyuki.bot import get_bot
 from ..utils.base.ly_function import get_function
 
 require("nonebot_plugin_alconna")
@@ -115,7 +118,9 @@ async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
     )
 
     common_db.save(temp_data)
-    Reloader.reload(0)
+    # Reloader.reload(0)
+    bot = get_bot()
+    bot.restart()
 
 
 @on_alconna(
@@ -314,7 +319,6 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
         result = str(e)
 
     args_show = "\n".join("- %s: %s" % (k, v) for k, v in args_dict.items())
-    print(f"API: {api_name}\n\nArgs: \n{args_show}\n\nResult: {result}")
     await matcher.finish(f"API: {api_name}\n\nArgs: \n{args_show}\n\nResult: {result}")
 
 
@@ -376,12 +380,19 @@ async def test_for_md_image(bot: T_Bot, api: str, data: dict):
 
 @driver.on_startup
 async def on_startup():
-    temp_data = common_db.where_one(TempConfig(), default=TempConfig())
-    # 储存重启信息
-    if temp_data.data.get("reload", False):
-        delta_time = time.time() - temp_data.data.get("reload_time", 0)
-        temp_data.data["delta_time"] = delta_time
-        common_db.save(temp_data)  # 更新数据
+    # temp_data = common_db.where_one(TempConfig(), default=TempConfig())
+    # # 储存重启信息
+    # if temp_data.data.get("reload", False):
+    #     delta_time = time.time() - temp_data.data.get("reload_time", 0)
+    #     temp_data.data["delta_time"] = delta_time
+    #     common_db.save(temp_data)  # 更新数据
+    """
+    该部分迁移至轻雪生命周期
+    Returns:
+
+    """
+
+    pass
 
 
 @driver.on_shutdown
@@ -407,7 +418,7 @@ async def _(bot: T_Bot):
         if isinstance(bot, satori.Bot):
             await bot.send_message(
                 channel_id=reload_session_id,
-                message="灵温 重载耗时 %.2f 秒" % delta_time,
+                message="轻雪核心 重载耗时 {:.2f} 秒\n*此数据仅作参考，具体计时请以实际为准\n灵温 预计体感重载耗时 {:.2f} 秒".format(delta_time,time.time() - temp_data.data.get("reload_time", 0)),
             )
         else:
             await bot.call_api(
@@ -415,7 +426,7 @@ async def _(bot: T_Bot):
                 message_type=reload_session_type,
                 user_id=reload_session_id,
                 group_id=reload_session_id,
-                message="灵温 重载耗时 %.2f 秒" % delta_time,
+                message="轻雪核心 重载耗时 {:.2f} 秒\n*此数据仅作参考，具体计时请以实际为准\n灵温 预计体感重载耗时 {:.2f} 秒".format(delta_time,time.time() - temp_data.data.get("reload_time", 0)),
             )
 
 
@@ -426,9 +437,9 @@ async def every_day_update():
         result, logs = update_liteyuki()
         pip.main(["install", "-r", "requirements.txt"])
         if result:
-            await broadcast_to_superusers(f"灵温已更新： ```\n{logs}\n```")
-            nonebot.logger.info(f"灵温已更新： {logs}")
-            Reloader.reload(5)
+            await broadcast_to_superusers(f"灵温已更新：```\n{logs}\n```")
+            nonebot.logger.info(f"灵温已更新：{logs}")
+            ProcessingManager.restart(3)
         else:
             nonebot.logger.info(logs)
 

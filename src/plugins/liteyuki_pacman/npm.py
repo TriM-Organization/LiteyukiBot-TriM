@@ -554,7 +554,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
         Subcommand(
             disable,
             Args["group_id", str, None],
-            alias=["d", "停用"],
+            alias=["d", "停用","禁用"],
         ),
     ),
     permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,

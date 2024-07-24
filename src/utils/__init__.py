@@ -6,8 +6,8 @@ import time
 
 import nonebot
 
-__NAME__ = "LiteyukiBot-TriMO"
-__VERSION__ = "6.3.3"  # 60201
+__NAME__ = "尹灵温|轻雪-睿乐"
+__VERSION__ = "6.3.4"  # 60201
 # __VERSION_I__ = 99060303
 
 import requests

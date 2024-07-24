@@ -20,8 +20,9 @@ class LiteyukiAPI:
                 self.data = json.loads(f.read())
                 self.liteyuki_id = self.data.get("liteyuki_id")
         self.report = load_from_yaml("config.yml").get("auto_report", True)
+
         if self.report:
-            nonebot.logger.info("Auto bug report is enabled")
+            nonebot.logger.info("已启用自动上报")
 
     @property
     def device_info(self) -> dict:
@@ -37,10 +38,10 @@ class LiteyukiAPI:
                 "python"      : f"{platform.python_implementation()} {platform.python_version()}",
                 "os"          : f"{platform.system()} {platform.version()} {platform.machine()}",
                 "cpu"         : f"{psutil.cpu_count(logical=False)}c{psutil.cpu_count()}t{psutil.cpu_freq().current}MHz",
-                "memory_total": f"{psutil.virtual_memory().total / 1024 / 1024 / 1024:.2f}GB",
-                "memory_used" : f"{psutil.virtual_memory().used / 1024 / 1024 / 1024:.2f}GB",
-                "memory_bot"  : f"{psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024:.2f}MB",
-                "disk"        : f"{psutil.disk_usage('/').total / 1024 / 1024 / 1024:.2f}GB"
+                "memory_total": f"{psutil.virtual_memory().total / 1024 ** 3:.2f}吉字节",
+                "memory_used" : f"{psutil.virtual_memory().used / 1024 ** 3:.2f}吉字节",
+                "memory_bot"  : f"{psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2:.2f}兆字节",
+                "disk"        : f"{psutil.disk_usage('/').total / 1024 ** 3:.2f}吉字节"
         }
 
     def bug_report(self, content: str):
@@ -53,7 +54,7 @@ class LiteyukiAPI:
 
         """
         if self.report:
-            nonebot.logger.warning(f"Reporting bug...: {content}")
+            nonebot.logger.warning(f"正在上报查误：{content}")
             url = "https://api.liteyuki.icu/bug_report"
             data = {
                     "liteyuki_id": self.liteyuki_id,
@@ -62,11 +63,11 @@ class LiteyukiAPI:
             }
             resp = requests.post(url, json=data)
             if resp.status_code == 200:
-                nonebot.logger.success(f"Bug report sent successfully, report_id: {resp.json().get('report_id')}")
+                nonebot.logger.success(f"成功上报差误信息，报文ID为：{resp.json().get('report_id')}")
             else:
-                nonebot.logger.error(f"Bug report failed: {resp.text}")
+                nonebot.logger.error(f"差误上报错误：{resp.text}")
         else:
-            nonebot.logger.warning(f"Bug report is disabled: {content}")
+            nonebot.logger.warning(f"已禁用自动上报：{content}")
 
     async def heartbeat_report(self):
         """
@@ -77,14 +78,11 @@ class LiteyukiAPI:
         url = "https://api.liteyuki.icu/heartbeat"
         data = {
                 "liteyuki_id": self.liteyuki_id,
-                "version": __VERSION__,
+                "version"    : __VERSION__,
         }
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=data) as resp:
                 if resp.status == 200:
-                    nonebot.logger.success("Heartbeat sent successfully")
+                    nonebot.logger.success("心跳成功送达。")
                 else:
-                    nonebot.logger.error(f"Heartbeat failed: {await resp.text()}")
-
-
-liteyuki_api = LiteyukiAPI()
+                    nonebot.logger.error(f"休克：{await resp.text()}")

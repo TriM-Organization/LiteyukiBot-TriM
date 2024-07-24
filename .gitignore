@@ -25,7 +25,7 @@ src/plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
 
 # vuepress
 .github
-pyproject.toml
+# pyproject.toml
 
 test.py
 line_count.py

@@ -11,24 +11,15 @@ __plugin_meta__ = PluginMetadata(
     usage="",
     homepage="https://github.com/snowykami/LiteyukiBot",
     extra={
-            "liteyuki"  : True,
-            "toggleable": False,
-    }
+        "liteyuki": True,
+        "toggleable": False,
+    },
 )
 
 from ..utils.base.language import Language, get_default_lang_code
 
-print("\033[34m" + r"""
- __        ______  ________  ________  __      __  __    __  __    __  ______ 
-/  |      /      |/        |/        |/  \    /  |/  |  /  |/  |  /  |/      |
-$$ |      $$$$$$/ $$$$$$$$/ $$$$$$$$/ $$  \  /$$/ $$ |  $$ |$$ | /$$/ $$$$$$/ 
-$$ |        $$ |     $$ |   $$ |__     $$  \/$$/  $$ |  $$ |$$ |/$$/    $$ |  
-$$ |        $$ |     $$ |   $$    |     $$  $$/   $$ |  $$ |$$  $$<     $$ |  
-$$ |        $$ |     $$ |   $$$$$/       $$$$/    $$ |  $$ |$$$$$  \    $$ |  
-$$ |_____  _$$ |_    $$ |   $$ |_____     $$ |    $$ \__$$ |$$ |$$  \  _$$ |_ 
-$$       |/ $$   |   $$ |   $$       |    $$ |    $$    $$/ $$ | $$  |/ $$   |
-$$$$$$$$/ $$$$$$/    $$/    $$$$$$$$/     $$/      $$$$$$/  $$/   $$/ $$$$$$/ 
-""" + "\033[0m")
 
 sys_lang = Language(get_default_lang_code())
-nonebot.logger.info(sys_lang.get("main.current_language", LANG=sys_lang.get("language.name")))
+nonebot.logger.info(
+    sys_lang.get("main.current_language", LANG=sys_lang.get("language.name"))
+)

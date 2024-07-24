@@ -20,25 +20,26 @@ class SatoriNodeConfig(BaseModel):
 
 
 class SatoriConfig(BaseModel):
-    comment: str = "These features are still in development. Do not enable in production environment."
+    comment: str = "此皆正处于开发之中，切勿在生产环境中启用。"
     enable: bool = False
     hosts: List[SatoriNodeConfig] = [SatoriNodeConfig()]
 
 
 class BasicConfig(BaseModel):
     host: str = "127.0.0.1"
-    port: int = 20216
+    port: int = 20247
     superusers: list[str] = []
     command_start: list[str] = ["/", ""]
-    nickname: list[str] = [f"LiteyukiBot-{random_hex_string(6)}"]
+    nickname: list[str] = [f"灵温-{random_hex_string(6)}"]
     satori: SatoriConfig = SatoriConfig()
+    data_path: str = "data/liteyuki"
 
 
 def load_from_yaml(file: str) -> dict:
     global config
     nonebot.logger.debug("Loading config from %s" % file)
     if not os.path.exists(file):
-        nonebot.logger.warning(f"Config file {file} not found, created default config, please modify it and restart")
+        nonebot.logger.warning(f"未找到配置文件 {file} ，已创建默认配置，请修改后重启。")
         with open(file, "w", encoding="utf-8") as f:
             yaml.dump(BasicConfig().dict(), f, default_flow_style=False)
 
@@ -46,7 +47,7 @@ def load_from_yaml(file: str) -> dict:
         conf = init_conf(yaml.load(f, Loader=yaml.FullLoader))
         config = conf
         if conf is None:
-            nonebot.logger.warning(f"Config file {file} is empty, use default config. please modify it and restart")
+            nonebot.logger.warning(f"配置文件 {file} 为空，已创建默认配置，请修改后重启。")
             conf = BasicConfig().dict()
         return conf
 
@@ -95,6 +96,8 @@ def init_conf(conf: dict) -> dict:
 
     """
     # 若command_start中无""，则添加必要命令头，开启alconna_use_command_start防止冲突
-    if "" not in conf.get("command_start", []):
-        conf["alconna_use_command_start"] = True
+    # 以下内容由于issue #53 被注释
+    # if "" not in conf.get("command_start", []):
+    #     conf["alconna_use_command_start"] = True
     return conf
+    pass
