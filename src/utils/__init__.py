@@ -8,7 +8,6 @@ import nonebot
 
 __NAME__ = "尹灵温|轻雪-睿乐"
 __VERSION__ = "6.3.4"  # 60201
-# __VERSION_I__ = 99060303
 
 import requests
 

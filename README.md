@@ -29,18 +29,19 @@
 
 - 感谢[NoneBot2](https://nonebot.dev)提供的框架支持
 - 感谢[nonebot-plugin-htmlrender](https://github.com/kexue-z/nonebot-plugin-htmlrender)提供的渲染功能
+- 讨厌上述项目提供的**基于 Chromium 浏览器**的 HTML 渲染功能，就功能本身而言很好，但我讨厌一声不响在我电脑里装浏览器这个行为，虽然这并不妨碍我感谢之 ——金羿
 - 感谢[nonebot-plugin-alconna](https://github.com/ArcletProject/nonebot-plugin-alconna)提供的命令解析功能
-- 十分感谢[神羽SnowyKami](https://github.com/snowykami)提供的技术指导和服务器资源
+- 十分感谢[神羽 SnowyKami](https://github.com/snowykami)提供的技术指导和服务器资源
 - 特别感谢[云裳工作室](https://doc.ysmcc.cn/doc/1/)提供的服务器挂载
 - 由衷感谢我在学习生活中遇到的所有朋友们，你们身为我生命中的一处景色，不断地推进我此生的进程。
 
 ### 许可证
 
 本特定版本的 轻雪机器人 以 汉玉律许可协议 授权开源\
-兼容并继承自LSO license (LiteyukiStudio Opensource license)
+兼容并继承自 LSO license (LiteyukiStudio Opensource license)
 
-版权所有 © 2024 SnowyKami & EillesWan
-
+版权所有 © 2024 神羽 SnowyKami & 金羿 Eilles\
+保留所有权利
 
 轻雪机器人睿乐定制版(LiteyukiBot-TriMO)根据 第一版 汉钰律许可协议（“本协议”）授权。\
 任何人皆可从以下地址获得本协议副本：[汉钰律许可协议 第一版](https://gitee.com/EillesWan/YulvLicenses/raw/master/%E6%B1%89%E9%92%B0%E5%BE%8B%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE/%E6%B1%89%E9%92%B0%E5%BE%8B%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE.MD)。\

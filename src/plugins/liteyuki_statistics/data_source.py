@@ -17,22 +17,18 @@ async def count_msg_by_bot_id(bot_id: str) -> int:
     condition = " AND bot_id = ?"
     condition_args = [bot_id]
 
-    msg_rows = msg_db.where_all(
-        MessageEventModel(),
-        condition,
-        *condition_args
-    )
+    msg_rows = msg_db.where_all(MessageEventModel(), condition, *condition_args)
 
     return len(msg_rows)
 
 
 async def get_stat_msg_image(
-        duration: int,
-        period: int,
-        group_id: str = None,
-        bot_id: str = None,
-        user_id: str = None,
-        ulang: Language = Language()
+    duration: int,
+    period: int,
+    group_id: str = None,
+    bot_id: str = None,
+    user_id: str = None,
+    ulang: Language = Language(),
 ) -> bytes:
     """
     获取统计消息
@@ -48,7 +44,7 @@ async def get_stat_msg_image(
         tuple: [int,], [int,] 两个列表，分别为周期中心时间戳和消息数量
     """
     now = int(time.time())
-    start_time = (now - duration)
+    start_time = now - duration
 
     condition = "time > ?"
     condition_args = [start_time]
@@ -64,11 +60,7 @@ async def get_stat_msg_image(
         condition += " AND user_id = ?"
         condition_args.append(user_id)
 
-    msg_rows = msg_db.where_all(
-        MessageEventModel(),
-        condition,
-        *condition_args
-    )
+    msg_rows = msg_db.where_all(MessageEventModel(), condition, *condition_args)
     timestamps = []
     msg_count = []
     msg_rows.sort(key=lambda x: x.time)
@@ -86,26 +78,30 @@ async def get_stat_msg_image(
         msg_count[index] += 1
 
     templates = {
-            "data": [
-                    {
-                            "name"  : ulang.get("stat.message")
-                                      + f"    Period {convert_seconds_to_time(period)}" + f"    Duration {convert_seconds_to_time(duration)}"
-                                      + (f"    Group {group_id}" if group_id else "") + (f"    Bot {bot_id}" if bot_id else "") + (
-                                              f"    User {user_id}" if user_id else ""),
-                            "times" : timestamps,
-                            "counts": msg_count
-                    }
-            ]
+        "data": [
+            {
+                "name": "以{}为分割，在{}范围内的 {}".format(
+                    convert_seconds_to_time(period),
+                    convert_seconds_to_time(duration),
+                    ulang.get("stat.message"),
+                )
+                + (f"    群聊：{group_id}" if group_id else "")
+                + (f"    机器：{bot_id}" if bot_id else "")
+                + (f"    用户：{user_id}" if user_id else ""),
+                "times": timestamps,
+                "counts": msg_count,
+            }
+        ]
     }
 
     return await template2image(get_path("templates/stat_msg.html"), templates)
 
 
 async def get_stat_rank_image(
-        rank_type: str,
-        limit: dict[str, Any],
-        ulang: Language = Language(),
-        bot: Bot = None,
+    rank_type: str,
+    limit: dict[str, Any],
+    ulang: Language = Language(),
+    bot: Bot = None,
 ) -> bytes:
     if rank_type == "user":
         condition = "user_id != ''"
@@ -129,11 +125,7 @@ async def get_stat_rank_image(
                 condition += " AND time > ?"
                 condition_args.append(v)
 
-    msg_rows = msg_db.where_all(
-        MessageEventModel(),
-        condition,
-        *condition_args
-    )
+    msg_rows = msg_db.where_all(MessageEventModel(), condition, *condition_args)
 
     """
         {
@@ -150,23 +142,27 @@ async def get_stat_rank_image(
     sorted_data = sorted(ranking_counter.items(), key=lambda x: x[1], reverse=True)
 
     ranking: list[dict[str, Any]] = [
-            {
-                    "name" : _[0],
-                    "count": _[1],
-                    "icon" : await (get_group_icon(platform="qq", group_id=_[0]) if rank_type == "group" else get_user_icon(
-                        platform="qq", user_id=_[0]
-                    ))
-            }
-            for _ in sorted_data[0:min(len(sorted_data), limit["rank"])]
+        {
+            "name": _[0],
+            "count": _[1],
+            "icon": await (
+                get_group_icon(platform="qq", group_id=_[0])
+                if rank_type == "group"
+                else get_user_icon(platform="qq", user_id=_[0])
+            ),
+        }
+        for _ in sorted_data[0 : min(len(sorted_data), limit["rank"])]
     ]
 
     templates = {
-            "data":
-                {
-                        "name"   : ulang.get("stat.rank") + f"    Type {rank_type}" + f"    Limit {limit}",
-                        "ranking": ranking
-                }
-
+        "data": {
+            "name": ulang.get("stat.rank")
+            + f"    类别：{rank_type}"
+            + f"    制约：{limit}",
+            "ranking": ranking,
+        }
     }
 
-    return await template2image(get_path("templates/stat_rank.html"), templates, debug=True)
+    return await template2image(
+        get_path("templates/stat_rank.html"), templates, debug=True
+    )

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns="http://www.w3.org/1999/html">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Liteyuki Stats Message</title>
-    <link rel="stylesheet" href="./css/card.css">
-    <link rel="stylesheet" href="./css/fonts.css">
-    <link rel="stylesheet" href="./css/stat_rank.css">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <title>Liteyuki Stats Message</title>
+        <link rel="stylesheet" href="./css/card.css">
+        <link rel="stylesheet" href="./css/fonts.css">
+        <link rel="stylesheet" href="./css/stat_rank.css">
+        <style>
         .row {
             height: 100px;
             display: flex;
@@ -36,22 +36,23 @@
             margin-left: auto;
         }
     </style>
-</head>
+    </head>
 
-<body>
+    <body>
 
-    <template id="row-template">
-        <div class="row">
-            <img src="./img/arrow-up.svg" alt="up" class="row-icon">
-            <div class="row-name"></div>
-            <div class="row-count"></div>
-        </div>
-    </template>
+        <template id="row-template">
+            <div class="row">
+                <img src="./img/arrow-up.svg" alt="up" class="row-icon">
+                <div class="row-name"></div>
+                <div class="row-count"></div>
+            </div>
+        </template>
 
-    <div class="data-storage" id="data">{{ data | tojson }}</div>
-    
-    <div class="info-box" id="addition-info"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
-    <script src="./js/stat_rank.js"></script>
-    <script src="./js/card.js"></script>
-</body>
+        <div class="data-storage" id="data">{{ data | tojson }}</div>
+
+        <div class="info-box" id="addition-info"></div>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+        <script src="./js/stat_rank.js"></script>
+        <script src="./js/card.js"></script>
+    </body>

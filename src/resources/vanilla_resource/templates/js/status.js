@@ -141,7 +141,7 @@ function main() {
                     tagSpan.className = 'bot-tag'
                     tagSpan.innerText = tag
                     // 给最后一个标签不添加后缀
-                    tagSpan.setAttribute('suffix', (index === 0)||(tag[0] == '\n') ? '0' : '1')
+                    tagSpan.setAttribute('suffix', (index === 0) || (tag[0] == '\n') ? '0' : '1')
                     botInfoDiv.querySelector('.bot-tags').appendChild(tagSpan)
                 }
             )
@@ -153,7 +153,7 @@ function main() {
     // 添加轻雪信息
     let liteyukiInfoDiv = document.importNode(document.getElementById('bot-template').content, true)   // 复制模板
     liteyukiInfoDiv.className = 'info-box bot-info'
-    liteyukiInfoDiv.querySelector('.bot-icon-img').setAttribute('src', './img/liteyuki.png')
+    liteyukiInfoDiv.querySelector('.bot-icon-img').setAttribute('src', './img/litetrimo.png')
     liteyukiInfoDiv.querySelector('.bot-name').innerText = `${liteyukiData['name']} - 睿乐`
 
     let tagArray = [
@@ -172,7 +172,7 @@ function main() {
             tagSpan.className = 'bot-tag'
             tagSpan.innerText = tag
             // 给最后一个标签不添加后缀
-            tagSpan.setAttribute('suffix', (index === 0)||(tag[0] == '\n') ? '0' : '1')
+            tagSpan.setAttribute('suffix', (index === 0) || (tag[0] == '\n') ? '0' : '1')
             liteyukiInfoDiv.querySelector('.bot-tags').appendChild(tagSpan)
         }
     )
@@ -186,7 +186,7 @@ function main() {
     const cpuTagArray = [
         cpuData['name'],
         `${cpuData['cores']}${localData['cores']} ${cpuData['threads']}${localData['threads']}`,
-        `${(cpuData['freq'] / 1000).toFixed(2)}GHz`
+        `${(cpuData['freq'] / 1000).toFixed(2)}吉赫兹`
     ]
 
     const memTagArray = [

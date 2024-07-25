@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns="http://www.w3.org/1999/html">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Liteyuki Stats Message</title>
-    <link rel="stylesheet" href="./css/card.css">
-    <link rel="stylesheet" href="./css/fonts.css">
-    <link rel="stylesheet" href="./css/stat_msg.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>Liteyuki Stats Message</title>
+        <link rel="stylesheet" href="./css/card.css">
+        <link rel="stylesheet" href="./css/fonts.css">
+        <link rel="stylesheet" href="./css/stat_msg.css">
+    </head>
 
-<body>
+    <body>
 
-    <template id="sign-chart-template">
-        <div class="info-box sign-chart">
-        </div>
-    </template>
+        <template id="sign-chart-template">
+            <div class="info-box sign-chart">
+            </div>
+        </template>
 
-    <div class="data-storage" id="data">{{ data | tojson }}</div>
+        <div class="data-storage" id="data">{{ data | tojson }}</div>
 
-    <div class="info-box" id="addition-info"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
-    <script src="./js/stat_msg.js"></script>
-    <script src="./js/card.js"></script>
-</body>
+        <div class="info-box" id="addition-info"></div>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+        <script src="./js/stat_msg.js"></script>
+        <script src="./js/card.js"></script>
+    </body>

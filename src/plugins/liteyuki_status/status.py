@@ -137,7 +137,7 @@ async def _(
         or ulang.lang_code not in status_card_cache.keys()
         or (
             ulang.lang_code in status_card_cache.keys()
-            and time.time() - status_card_cache[ulang.lang_code][1] > 60
+            and time.time() - status_card_cache[ulang.lang_code][1] > 300  # 缓存
         )
     ):
         status_card_cache[ulang.lang_code] = (

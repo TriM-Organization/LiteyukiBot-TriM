@@ -23,12 +23,12 @@ from git import Repo
 commit_hash = Repo(".").head.commit.hexsha
 
 protocol_names = {
-    0: "iPad",
-    1: "Android Phone",
-    2: "Android Watch",
-    3: "Mac",
-    5: "iPad",
-    6: "Android Pad",
+    0: "苹果iPad",
+    1: "安卓掌机",
+    2: "安卓穿戴",
+    3: "Mac主机",
+    5: "苹果iPad",
+    6: "安卓平板",
 }
 
 """
@@ -175,7 +175,7 @@ async def get_bots_data(self_id: str = "0") -> dict:
                 pass
 
         statistics = status.get("stat", {})
-        app_name = version_info.get("app_name", "UnknownImplementation")
+        app_name = version_info.get("app_name", "未知应用接口")
         if app_name in ["Lagrange.OneBot", "LLOneBot", "Shamrock", "NapCat.Onebot"]:
             icon = f"https://q.qlogo.cn/g?b=qq&nk={bot_id}&s=640"
         elif isinstance(bot, satori.Bot):
@@ -188,7 +188,7 @@ async def get_bots_data(self_id: str = "0") -> dict:
             "icon": icon,
             "id": bot_id,
             "protocol_name": protocol_names.get(
-                version_info.get("protocol_name"), "Online"
+                version_info.get("protocol_name"), "在线"
             ),
             "groups": groups,
             "friends": friends,
@@ -226,17 +226,19 @@ async def get_hardware_data() -> dict:
         except Exception:
             pass
     swap = psutil.swap_memory()
-    cpu_brand_raw = cpuinfo.get_cpu_info().get("brand_raw", "Unknown")
+    cpu_brand_raw = cpuinfo.get_cpu_info().get("brand_raw", "未知处理器")
     if "AMD" in cpu_brand_raw:
         brand = "AMD"
     elif "Intel" in cpu_brand_raw:
-        brand = "Intel"
+        brand = "英特尔"
+    elif "Nvidia" in cpu_brand_raw:
+        brand = "英伟达"
     else:
-        brand = "Unknown"
+        brand = "未知处理器"
     result = {
         "cpu": {
             "percent": psutil.cpu_percent(),
-            "name": f"{brand} {cpuinfo.get_cpu_info().get('arch', 'Unknown')}",
+            "name": f"{brand} {cpuinfo.get_cpu_info().get('arch', '未知架构')}",
             "cores": psutil.cpu_count(logical=False),
             "threads": psutil.cpu_count(logical=True),
             "freq": psutil.cpu_freq().current,  # MHz

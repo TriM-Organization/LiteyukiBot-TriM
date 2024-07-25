@@ -15,7 +15,7 @@ from nonebot_plugin_alconna import (
     Subcommand,
     Arparma,
     Option,
-    MultiVar
+    MultiVar,
 )
 
 stat_msg = on_alconna(
@@ -40,17 +40,11 @@ stat_msg = on_alconna(
                 help_text="是否指定机器人",
             ),
             Option(
-                "-g|--group",
-                Args["group_id", str, "current"],
-                help_text="指定群组"
+                "-g|--group", Args["group_id", str, "current"], help_text="指定群组"
             ),
-            Option(
-                "-u|--user",
-                Args["user_id", str, "current"],
-                help_text="指定用户"
-            ),
+            Option("-u|--user", Args["user_id", str, "current"], help_text="指定用户"),
             alias={"msg", "m"},
-            help_text="查看统计次数内的消息"
+            help_text="查看统计次数内的消息",
         ),
         Subcommand(
             "rank",
@@ -78,9 +72,9 @@ stat_msg = on_alconna(
                 help_text="指定排名",
             ),
             alias={"r"},
-        )
+        ),
     ),
-    aliases={"stat"}
+    aliases={"stat"},
 )
 
 
@@ -88,10 +82,14 @@ stat_msg = on_alconna(
 async def _(result: Arparma, event: T_MessageEvent, bot: Bot):
     ulang = Language(event_utils.get_user_id(event))
     try:
-        duration = convert_time_to_seconds(result.other_args.get("duration", "2d"))  # 秒数
+        duration = convert_time_to_seconds(
+            result.other_args.get("duration", "2d")
+        )  # 秒数
         period = convert_time_to_seconds(result.other_args.get("period", "1m"))
     except BaseException as e:
-        await stat_msg.send(ulang.get("liteyuki.invalid_command", TEXT=str(e.__str__())))
+        await stat_msg.send(
+            ulang.get("liteyuki.invalid_command", TEXT=str(e.__str__()))
+        )
         return
 
     group_id = result.other_args.get("group_id")
@@ -110,7 +108,14 @@ async def _(result: Arparma, event: T_MessageEvent, bot: Bot):
     if user_id in ["current", "c"]:
         user_id = str(event_utils.get_user_id(event))
 
-    img = await get_stat_msg_image(duration=duration, period=period, group_id=group_id, bot_id=bot_id, user_id=user_id, ulang=ulang)
+    img = await get_stat_msg_image(
+        duration=duration,
+        period=period,
+        group_id=group_id,
+        bot_id=bot_id,
+        user_id=user_id,
+        ulang=ulang,
+    )
     await stat_msg.send(UniMessage.image(raw=img))
 
 
