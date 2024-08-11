@@ -238,7 +238,7 @@ async def _():
                 except:
                     pass
 
-                query_convert_points(qqid,"music",0,False)
+                query_convert_points(qqid, "music", 0, False)
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
                 nonebot.logger.info(
                     "\t删除{}".format(name),
@@ -971,23 +971,29 @@ async def _(
     Musicreater.plugin.archive.compress_zipfile(
         usr_temp_path,
         fp := str(
-            temporary_dir
-            / (
-                fn := "msctr[{}]-{}.zip".format(
-                    utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
+            (
+                temporary_dir
+                / (
+                    fn := "msctr[{}]-{}.zip".format(
+                        utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
+                    )
                 )
-            )
+            ).resolve()
         ),
     )
 
     shutil.rmtree(usr_temp_path)
 
+    # await linglun_convert.send(UniMessage.file(name=fn, path=fp))
+
     if isinstance(event, GroupMessageEvent) or isinstance(
         event, GroupUploadNoticeEvent
     ):
-        await bot.call_api(
+        res_id = await bot.call_api(
             "upload_group_file", group_id=event.group_id, name=fn, file=fp
         )
+        await linglun_convert.send(UniMessage.text("文件已上传群文件，请在群文件查看。"))
+        # await linglun_convert.send(UniMessage.file(res_id,path=fp,name=fn))
     else:
         await bot.call_api(
             "upload_private_file", user_id=event.user_id, name=fn, file=fp

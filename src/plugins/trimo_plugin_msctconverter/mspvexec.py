@@ -413,6 +413,7 @@ async def _(
                 await bot.call_api(
                     "upload_group_file", group_id=event.group_id, name=fn, file=fp
                 )
+                await mspv_sync.send(UniMessage.text("文件已上传群文件，请在群文件查看。"))
             else:
                 await bot.call_api(
                     "upload_private_file", user_id=event.user_id, name=fn, file=fp
