@@ -5,7 +5,7 @@ from src.utils.base.config import get_config
 
 remote_urls = [
         "https://gitee.com/TriM-Organization/LiteyukiBot-TriM.git",
-        "https://github.com/TriM-Organization/LiteyukiBot-TriM.git"
+        # "https://github.com/TriM-Organization/LiteyukiBot-TriM.git"
 ]
 
 
@@ -17,7 +17,7 @@ def detect_update() -> bool:
         repo.remotes.origin.fetch()
         if repo.head.commit != repo.commit('origin/main'):
             return True
-
+    return False
 
 def update_liteyuki() -> tuple[bool, str]:
     """更新轻雪
@@ -45,3 +45,4 @@ def update_liteyuki() -> tuple[bool, str]:
 
     else:
         raise PermissionError("更新已被禁用")
+        return False, "更新已被禁用"
