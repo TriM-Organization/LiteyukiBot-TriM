@@ -29,6 +29,7 @@ src/plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
 
 test.py
 line_count.py
+mypy.ini
 
 # nuitka
 main.build/

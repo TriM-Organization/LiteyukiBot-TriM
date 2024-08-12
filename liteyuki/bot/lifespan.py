@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2020-2024 LiteyukiStudio. All rights reserved
-
-版权所有 © 2020-2024 神羽SnowyKami & 金羿Eilles with LiteyukiStudio & TriM Org.
-保留所有权利 
+Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved 
 
 @Time    : 2024/7/23 下午8:24
 @Author  : snowykami
@@ -13,6 +10,7 @@ Copyright (C) 2020-2024 LiteyukiStudio. All rights reserved
 """
 from typing import Any, Awaitable, Callable, TypeAlias
 
+from liteyuki.log import logger
 from liteyuki.utils import is_coroutine_callable
 
 SYNC_LIFESPAN_FUNC: TypeAlias = Callable[[], Any]
@@ -138,6 +136,7 @@ class Lifespan:
         启动前
         Returns:
         """
+        logger.debug("正在运行 before_start 之函数")
         await self._run_funcs(self._before_start_funcs)
 
     async def after_start(self) -> None:
@@ -145,6 +144,7 @@ class Lifespan:
         启动后
         Returns:
         """
+        logger.debug("正在运行 after_start 之函数")
         await self._run_funcs(self._after_start_funcs)
 
     async def before_shutdown(self) -> None:
@@ -152,6 +152,7 @@ class Lifespan:
         停止前
         Returns:
         """
+        logger.debug("正在运行 before_shutdown 之函数")
         await self._run_funcs(self._before_shutdown_funcs)
 
     async def after_shutdown(self) -> None:
@@ -159,6 +160,7 @@ class Lifespan:
         停止后
         Returns:
         """
+        logger.debug("正在运行 after_shutdown 之函数")
         await self._run_funcs(self._after_shutdown_funcs)
 
     async def before_restart(self) -> None:
@@ -166,6 +168,7 @@ class Lifespan:
         重启前
         Returns:
         """
+        logger.debug("正在运行 before_restart 之函数")
         await self._run_funcs(self._before_restart_funcs)
 
     async def after_restart(self) -> None:
@@ -174,6 +177,7 @@ class Lifespan:
         Returns:
 
         """
+        logger.debug("正在运行 after_restart 之函数")
         await self._run_funcs(self._after_restart_funcs)
 
     async def after_nonebot_init(self) -> None:
@@ -181,4 +185,5 @@ class Lifespan:
         NoneBot 初始化后
         Returns:
         """
+        logger.debug("正在运行 after_nonebot_init 之函数")
         await self._run_funcs(self._after_nonebot_init_funcs)

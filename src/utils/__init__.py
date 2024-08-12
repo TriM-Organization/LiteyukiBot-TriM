@@ -13,7 +13,6 @@ import requests
 
 from src.utils.base.config import load_from_yaml, config
 from src.utils.base.log import init_log
-from src.utils.base.data_manager import TempConfig, auto_migrate, common_db
 from git import Repo
 
 
@@ -53,11 +52,10 @@ def init():
 
     """
     # 检测python版本是否高于3.10
-    auto_migrate()
     init_log()
     if sys.version_info < (3, 10):
         nonebot.logger.error(
-            "此应用需要 Python3.10 以上的版本运行，你需要更新自己的 Python 运行环境了。"
+            "此应用需要 Python3.10 以上的版本运行，你需要抱怨神羽的 Python 兼容性了。"
         )
         exit(1)
 
@@ -69,9 +67,9 @@ def init():
             f"无法读取 Git 仓库 {e}，你是否是从仓库内下载的Zip文件？请使用git clone。"
         )
 
-    temp_data: TempConfig = common_db.where_one(TempConfig(), default=TempConfig())  # type: ignore
-    temp_data.data["start_time"] = time.time()
-    common_db.save(temp_data)
+    # temp_data: TempConfig = common_db.where_one(TempConfig(), default=TempConfig())
+    # temp_data.data["start_time"] = time.time()
+    # common_db.save(temp_data)
 
     # 在加载完成语言后再初始化日志
     nonebot.logger.info("尹灵温 正在初始化…")
@@ -84,6 +82,13 @@ def init():
             f.write("[tool.nonebot]\n")
 
     nonebot.logger.info(
-        f"正在 {sys.executable} Python{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro} 上运行 尹灵温"
+        "正在 {} Python{}.{}.{} 上运行 尹灵温".format(
+            sys.executable,
+            sys.version_info.major,
+            sys.version_info.minor,
+            sys.version_info.micro,
+        )
     )
-    nonebot.logger.info(f"{__NAME__} {__VERSION__}({__VERSION_I__}) 正在运行")
+    nonebot.logger.info(
+        "{} {}({}) 正在运行".format(__NAME__, __VERSION__, __VERSION_I__)
+    )

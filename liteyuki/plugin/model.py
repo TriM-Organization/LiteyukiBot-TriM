@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2020-2024 LiteyukiStudio. All rights reserved
-
-版权所有 © 2020-2024 神羽SnowyKami & 金羿Eilles with LiteyukiStudio & TriM Org.
-保留所有权利 
+Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved 
 
 @Time    : 2024/7/24 上午12:02
 @Author  : snowykami
@@ -19,10 +16,10 @@ from pydantic import BaseModel
 
 class PluginMetadata(BaseModel):
     """
-    轻雪插件元数据，由插件编写者提供
+    轻雪插件元数据，由插件编写者提供，name为必填项
     """
     name: str
-    description: str
+    description: str = ""
     usage: str = ""
     type: str = ""
     homepage: str = ""

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2020-2024 LiteyukiStudio. All rights reserved
-
-版权所有 © 2020-2024 神羽SnowyKami & 金羿Eilles with LiteyukiStudio & TriM Org.
-保留所有权利 
+Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved 
 
 @Time    : 2024/7/23 下午11:59
 @Author  : snowykami
@@ -24,6 +21,11 @@ from importlib import import_module
 from liteyuki.utils import path_to_module_name
 
 _plugins: dict[str, Plugin] = {}
+
+__all__ = [
+    "load_plugin",
+    "load_plugins",
+]
 
 
 def load_plugin(module_path: str | Path) -> Optional[Plugin]:

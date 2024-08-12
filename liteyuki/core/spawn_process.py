@@ -1,37 +1,56 @@
-import threading
-from multiprocessing import get_context, Event
+from typing import Optional, TYPE_CHECKING
 
 import nonebot
-from nonebot import logger
 
-from liteyuki.plugin.load import load_plugins
+from liteyuki.core.nb import adapter_manager, driver_manager
+from liteyuki.comm.channel import set_channel
+
+if TYPE_CHECKING:
+    from liteyuki.comm.channel import Channel
 
 timeout_limit: int = 20
-__all__ = [
-        "ProcessingManager",
-        "nb_run",
-]
+
+"""导出对象，用于主进程与nonebot通信"""
+_channels = {}
 
 
-class ProcessingManager:
-    event: Event = None
+def nb_run(chan_active: "Channel", chan_passive: "Channel", *args, **kwargs):
+    """
+    初始化NoneBot并运行在子进程
+    Args:
 
-    @classmethod
-    def restart(cls, delay: int = 0):
-        """
-        发送终止信号
-        Args:
-            delay: 延迟时间，默认为0，单位秒
-        Returns:
-        """
-        if cls.event is None:
-            raise RuntimeError("ProcessingManager 未初始化。")
-        if delay > 0:
-            threading.Timer(delay, function=cls.event.set).start()
-            return
-        cls.event.set()
+        chan_active:
+        chan_passive:
+        **kwargs:
+
+    Returns:
+
+    """
+    set_channel("nonebot-active", chan_active)
+    set_channel("nonebot-passive", chan_passive)
+    nonebot.init(**kwargs)
+    driver_manager.init(config=kwargs)
+    adapter_manager.init(kwargs)
+    adapter_manager.register()
+    nonebot.load_plugin("src.liteyuki_main")
+    nonebot.run()
 
 
-def nb_run(event, *args, **kwargs):
-    ProcessingManager.event = event
-    nonebot.run(*args, **kwargs)
+def mb_run(chan_active: "Channel", chan_passive: "Channel", *args, **kwargs):
+    """
+    初始化MeloBot并运行在子进程
+    Args:
+        chan_active
+        chan_passive
+        *args:
+        **kwargs:
+
+    Returns:
+
+    """
+    set_channel("melobot-active", chan_active)
+    set_channel("melobot-passive", chan_passive)
+
+    # bot = MeloBot(__name__)
+    # bot.init(AbstractConnector(cd_time=0))
+    # bot.run()

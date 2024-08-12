@@ -4,17 +4,15 @@ from pydantic import Field
 
 from .data import Database, LiteModel, Database
 
+print("导入数据库模块")
 DATA_PATH = "data/liteyuki"
-
 user_db: Database = Database(os.path.join(DATA_PATH, "users.ldb"))
 group_db: Database = Database(os.path.join(DATA_PATH, "groups.ldb"))
 plugin_db: Database = Database(os.path.join(DATA_PATH, "plugins.ldb"))
 common_db: Database = Database(os.path.join(DATA_PATH, "common.ldb"))
 
 # 内存数据库，临时用于存储数据
-memory_database = {
-
-}
+memory_database = {}
 
 
 class User(LiteModel):
@@ -57,6 +55,7 @@ class StoredConfig(LiteModel):
 
 class TempConfig(LiteModel):
     """储存临时键值对的表"""
+
     TABLE_NAME: str = "temp_data"
     data: dict = {}
 
@@ -66,6 +65,9 @@ def auto_migrate():
     group_db.auto_migrate(Group())
     plugin_db.auto_migrate(InstalledPlugin(), GlobalPlugin())
     common_db.auto_migrate(GlobalPlugin(), StoredConfig(), TempConfig())
+
+
+auto_migrate()
 
 
 def set_memory_data(key: str, value) -> None:
@@ -78,9 +80,7 @@ def set_memory_data(key: str, value) -> None:
     Returns:
 
     """
-    return memory_database.update({
-            key: value
-    })
+    return memory_database.update({key: value})
 
 
 def get_memory_data(key: str, default=None) -> any:

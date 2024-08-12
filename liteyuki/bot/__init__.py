@@ -1,147 +1,137 @@
 import asyncio
-import multiprocessing
-from typing import Any, Coroutine, Optional
+import os
+import platform
+import sys
+import threading
+import time
+from typing import Any, Optional
 
-import nonebot
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
-from liteyuki.plugin.load import load_plugin, load_plugins
-from src.utils import (
-    adapter_manager,
-    driver_manager,
-)
-from src.utils.base.log import logger
-from liteyuki.bot.lifespan import (
-    Lifespan,
-    LIFESPAN_FUNC,
-)
-from liteyuki.core.spawn_process import nb_run, ProcessingManager
+from liteyuki.bot.lifespan import LIFESPAN_FUNC, Lifespan
+from liteyuki.core import IS_MAIN_PROCESS
+from liteyuki.core.manager import ProcessManager
+from liteyuki.core.spawn_process import mb_run, nb_run
+from liteyuki.log import init_log, logger
+from liteyuki.plugin import load_plugins
 
-__all__ = [
-        "LiteyukiBot",
-        "get_bot"
-]
-
-_MAIN_PROCESS = multiprocessing.current_process().name == "MainProcess"
+__all__ = ["LiteyukiBot", "get_bot"]
 
 
 class LiteyukiBot:
     def __init__(self, *args, **kwargs):
-
         global _BOT_INSTANCE
         _BOT_INSTANCE = self  # 引用
-        self.running = False
         self.config: dict[str, Any] = kwargs
-        self.lifespan: Lifespan = Lifespan()
         self.init(**self.config)  # 初始化
 
-    def run(self, *args, **kwargs):
+        self.lifespan: Lifespan = Lifespan()
 
-        if _MAIN_PROCESS:
-            load_plugins("liteyuki/plugins")
-            asyncio.run(self.lifespan.before_start())
-            self._run_nb_in_spawn_process(*args, **kwargs)
-        else:
-            # 子进程启动
+        self.process_manager: ProcessManager = ProcessManager(bot=self)
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+        self.loop_thread = threading.Thread(target=self.loop.run_forever, daemon=True)
+        self.call_restart_count = 0
 
-            driver_manager.init(config=self.config)
-            adapter_manager.init(self.config)
-            adapter_manager.register()
-            nonebot.load_plugin("src.liteyuki_main")
+    def run(self):
+        load_plugins("liteyuki/plugins")  # 加载轻雪插件
 
-    def _run_nb_in_spawn_process(self, *args, **kwargs):
-        """
-        在新的进程中运行nonebot.run方法
-        Args:
-            *args:
-            **kwargs:
+        self.loop_thread.start()  # 启动事件循环
+        asyncio.run(self.lifespan.before_start())  # 启动前钩子
 
-        Returns:
-        """
+        self.process_manager.add_target("nonebot", nb_run, **self.config)
+        self.process_manager.start("nonebot")
 
-        timeout_limit: int = 20
-        should_exit = False
+        self.process_manager.add_target("melobot", mb_run, **self.config)
+        self.process_manager.start("melobot")
 
-        while not should_exit:
-            ctx = multiprocessing.get_context("spawn")
-            event = ctx.Event()
-            ProcessingManager.event = event
-            process = ctx.Process(
-                target=nb_run,
-                args=(event,) + args,
-                kwargs=kwargs,
+        asyncio.run(self.lifespan.after_start())  # 启动后钩子
+
+        self.start_watcher()  # 启动文件监视器
+
+    def start_watcher(self):
+        if self.config.get("debug", False):
+
+            src_directories = (
+                "liteyuki",
+                "src/liteyuki_main",
+                "src/liteyuki_plugins",
+                "src/nonebot_plugins",
+                "src/utils",
             )
-            process.start()  # 启动进程
+            src_excludes_extensions = ("pyc",)
 
-            asyncio.run(self.lifespan.after_start())
+            logger.debug("轻雪重载 已启用，正在加载文件修改监测……")
+            restart = self.restart_process
 
-            while not should_exit:
-                if ProcessingManager.event.wait(1):
-                    logger.info("接收到重启活动信息")
-                    process.terminate()
-                    process.join(timeout_limit)
-                    if process.is_alive():
-                        logger.warning(
-                            f"进程 {process.pid} 在 {timeout_limit} 秒后依旧存在，强制清灭。"
-                        )
-                        process.kill()
-                    break
-                elif process.is_alive():
-                    continue
-                else:
-                    should_exit = True
+            class CodeModifiedHandler(FileSystemEventHandler):
+                """
+                Handler for code file changes
+                """
 
-    @staticmethod
-    def _run_coroutine(*coro: Coroutine):
+                def on_modified(self, event):
+                    if (
+                        event.src_path.endswith(src_excludes_extensions)
+                        or event.is_directory
+                        or "__pycache__" in event.src_path
+                    ):
+                        return
+                    logger.info(f"文件 {event.src_path} 已修改，机器人自动重启……")
+                    restart()
+
+            code_modified_handler = CodeModifiedHandler()
+
+            observer = Observer()
+            for directory in src_directories:
+                observer.schedule(code_modified_handler, directory, recursive=True)
+            observer.start()
+
+    def restart(self, delay: int = 0):
         """
-        运行协程
-        Args:
-            coro:
-
+        重启轻雪本体
         Returns:
 
         """
-        # 检测是否有现有的事件循环
-        new_loop = False
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            new_loop = True
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
 
-        if new_loop:
-            for c in coro:
-                loop.run_until_complete(c)
-            loop.close()
+        if self.call_restart_count < 1:
+            executable = sys.executable
+            args = sys.argv
+            logger.info("正在重启 尹灵温...")
+            time.sleep(delay)
+            if platform.system() == "Windows":
+                cmd = "start"
+            elif platform.system() == "Linux":
+                cmd = "nohup"
+            elif platform.system() == "Darwin":
+                cmd = "open"
+            else:
+                cmd = "nohup"
+            self.process_manager.terminate_all()
+            # 进程退出后重启
+            threading.Thread(
+                target=os.system, args=(f"{cmd} {executable} {' '.join(args)}",)
+            ).start()
+            sys.exit(0)
+        self.call_restart_count += 1
 
-        else:
-            for c in coro:
-                loop.create_task(c)
-
-    @property
-    def status(self) -> int:
-        """
-        获取轻雪状态
-        Returns:
-            int: 0:未启动 1:运行中
-        """
-        return 1 if self.running else 0
-
-    def restart(self):
+    def restart_process(self, name: Optional[str] = None):
         """
         停止轻雪
+        Args:
+            name: 进程名称, 默认为None, 所有进程
         Returns:
 
         """
-        logger.info("正在停止灵温活动…")
+        logger.info("Stopping LiteyukiBot...")
 
-        logger.debug("正在启动 before_restart 的函数…")
-        self._run_coroutine(self.lifespan.before_restart())
-        logger.debug("正在启动 before_shutdown 的函数…")
-        self._run_coroutine(self.lifespan.before_shutdown())
+        self.loop.create_task(self.lifespan.before_shutdown())  # 重启前钩子
+        self.loop.create_task(self.lifespan.before_shutdown())  # 停止前钩子
 
-        ProcessingManager.restart()
-        self.running = False
+        if name:
+            self.process_manager.terminate(name)
+        else:
+            self.process_manager.terminate_all()
 
     def init(self, *args, **kwargs):
         """
@@ -151,18 +141,12 @@ class LiteyukiBot:
         """
         self.init_config()
         self.init_logger()
-        if not _MAIN_PROCESS:
-            nonebot.init(**kwargs)
-            asyncio.run(self.lifespan.after_nonebot_init())
 
     def init_logger(self):
-        from src.utils.base.log import init_log
-        init_log()
+        # 修改nonebot的日志配置
+        init_log(config=self.config)
 
     def init_config(self):
-        pass
-
-    def register_adapters(self, *args):
         pass
 
     def on_before_start(self, func: LIFESPAN_FUNC):
@@ -189,7 +173,7 @@ class LiteyukiBot:
 
     def on_before_shutdown(self, func: LIFESPAN_FUNC):
         """
-        注册停止前的函数
+        注册停止前的函数，为子进程停止时调用
         Args:
             func:
 
@@ -211,7 +195,7 @@ class LiteyukiBot:
 
     def on_before_restart(self, func: LIFESPAN_FUNC):
         """
-        注册重启前的函数
+        注册重启前的函数，为子进程重启时调用
         Args:
             func:
 
@@ -253,4 +237,8 @@ def get_bot() -> Optional[LiteyukiBot]:
     Returns:
         LiteyukiBot: 当前的轻雪实例
     """
-    return _BOT_INSTANCE
+    if IS_MAIN_PROCESS:
+        return _BOT_INSTANCE
+    else:
+        # 从多进程上下文中获取
+        pass

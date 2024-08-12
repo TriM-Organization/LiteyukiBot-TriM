@@ -1,12 +1,12 @@
+import inspect
 import os
 import pickle
 import sqlite3
 from types import NoneType
 from typing import Any, Callable
-from packaging.version import parse
-import inspect
-import nonebot
-import pydantic
+
+from nonebot import logger
+from nonebot.compat import PYDANTIC_V2
 from pydantic import BaseModel
 
 
@@ -15,16 +15,18 @@ class LiteModel(BaseModel):
     id: int = None
 
     def dump(self, *args, **kwargs):
-        if parse(pydantic.__version__) < parse("2.0.0"):
-            return self.dict(*args, **kwargs)
-        else:
+        if PYDANTIC_V2:
             return self.model_dump(*args, **kwargs)
+        else:
+            return self.dict(*args, **kwargs)
 
 
 class Database:
     def __init__(self, db_name: str):
 
-        if os.path.dirname(db_name) != "" and not os.path.exists(os.path.dirname(db_name)):
+        if os.path.dirname(db_name) != "" and not os.path.exists(
+            os.path.dirname(db_name)
+        ):
             os.makedirs(os.path.dirname(db_name))
 
         self.db_name = db_name
@@ -32,8 +34,34 @@ class Database:
         self.cursor = self.conn.cursor()
 
         self._on_save_callbacks = []
+        self._is_locked = False
 
-    def where_one(self, model: LiteModel, condition: str = "", *args: Any, default: Any = None) -> LiteModel | Any | None:
+    def lock(self):
+        self.cursor.execute("BEGIN TRANSACTION")
+        self._is_locked = True
+
+    def lock_query(self, query: str, *args):
+        """锁定查询"""
+        self.cursor.execute(query, args).fetchall()
+
+    def lock_model(self, model: LiteModel) -> LiteModel | Any | None:
+        """锁定行
+        Args:
+            model: 数据模型实例
+
+
+        Returns:
+
+        """
+        pass
+
+    def unlock(self):
+        self.cursor.execute("COMMIT")
+        self._is_locked = False
+
+    def where_one(
+        self, model: LiteModel, condition: str = "", *args: Any, default: Any = None
+    ) -> LiteModel | Any | None:
         """查询第一个
         Args:
             model: 数据模型实例
@@ -47,7 +75,9 @@ class Database:
         all_results = self.where_all(model, condition, *args)
         return all_results[0] if all_results else default
 
-    def where_all(self, model: LiteModel, condition: str = "", *args: Any, default: Any = None) -> list[LiteModel | Any] | None:
+    def where_all(
+        self, model: LiteModel, condition: str = "", *args: Any, default: Any = None
+    ) -> list[LiteModel | Any] | None:
         """查询所有
         Args:
             model: 数据模型实例
@@ -60,7 +90,9 @@ class Database:
         """
         table_name = model.TABLE_NAME
         model_type = type(model)
-        nonebot.logger.debug(f"Selecting {model.TABLE_NAME} WHERE {condition.replace('?', '%s') % args}")
+        logger.debug(
+            f"数据库 Selecting {model.TABLE_NAME} WHERE {condition.replace('?', '%s') % args}"
+        )
         if not table_name:
             raise ValueError(f"数据模型{model_type.__name__}未提供表名")
 
@@ -71,14 +103,19 @@ class Database:
         # else:
         #     results = self.cursor.execute(f"SELECT * FROM {table_name} {condition}", args).fetchall()
         if condition:
-            results = self.cursor.execute(f"SELECT * FROM {table_name} WHERE {condition}", args).fetchall()
+            results = self.cursor.execute(
+                f"SELECT * FROM {table_name} WHERE {condition}", args
+            ).fetchall()
         else:
             results = self.cursor.execute(f"SELECT * FROM {table_name}").fetchall()
         fields = [description[0] for description in self.cursor.description]
         if not results:
             return default
         else:
-            return [model_type(**self._load(dict(zip(fields, result)))) for result in results]
+            return [
+                model_type(**self._load(dict(zip(fields, result))))
+                for result in results
+            ]
 
     def save(self, *args: LiteModel):
         """增/改操作
@@ -86,13 +123,20 @@ class Database:
             *args:
         Returns:
         """
-        table_list = [item[0] for item in self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()]
+        table_list = [
+            item[0]
+            for item in self.cursor.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            ).fetchall()
+        ]
         for model in args:
-            nonebot.logger.debug(f"Upserting {model}")
+            logger.debug(f"数据库 Upserting {model}")
             if not model.TABLE_NAME:
                 raise ValueError(f"数据模型 {model.__class__.__name__} 未提供表名")
             elif model.TABLE_NAME not in table_list:
-                raise ValueError(f"数据模型 {model.__class__.__name__} 表 {model.TABLE_NAME} 不存在，请先迁移")
+                raise ValueError(
+                    f"数据模型 {model.__class__.__name__} 表 {model.TABLE_NAME} 不存在，请先迁移"
+                )
             else:
                 self._save(model.dump(by_alias=True))
 
@@ -107,11 +151,15 @@ class Database:
             new_obj = {}
             for field, value in obj.items():
                 if isinstance(value, self.ITERABLE_TYPE):
-                    new_obj[self._get_stored_field_prefix(value) + field] = self._save(value)  # self._save(value)  # -> bytes
+                    new_obj[self._get_stored_field_prefix(value) + field] = self._save(
+                        value
+                    )  # self._save(value)  # -> bytes
                 elif isinstance(value, self.BASIC_TYPE):
                     new_obj[field] = value
                 else:
-                    raise ValueError(f"数据模型{table_name}包含不支持的数据类型，字段：{field} 值：{value} 值类型：{type(value)}")
+                    raise ValueError(
+                        f"数据模型{table_name}包含不支持的数据类型，字段：{field} 值：{value} 值类型：{type(value)}"
+                    )
             if table_name:
                 fields, values = [], []
                 for n_field, n_value in new_obj.items():
@@ -123,14 +171,23 @@ class Database:
                 values = list(values)
                 if row_id is not None:
                     # 如果 _id 不为空，将 'id' 插入到字段列表的开始
-                    fields.insert(0, 'id')
+                    fields.insert(0, "id")
                     # 将 _id 插入到值列表的开始
                     values.insert(0, row_id)
-                fields = ', '.join([f'"{field}"' for field in fields])
-                placeholders = ', '.join('?' for _ in values)
-                self.cursor.execute(f"INSERT OR REPLACE INTO {table_name}({fields}) VALUES ({placeholders})", tuple(values))
-                self.conn.commit()
-                foreign_id = self.cursor.execute("SELECT last_insert_rowid()").fetchone()[0]
+                fields = ", ".join([f'"{field}"' for field in fields])
+                placeholders = ", ".join("?" for _ in values)
+                self.cursor.execute(
+                    f"INSERT OR REPLACE INTO {table_name}({fields}) VALUES ({placeholders})",
+                    tuple(values),
+                )
+                # self.conn.commit()
+                if self._is_locked:
+                    pass
+                else:
+                    self.conn.commit()
+                foreign_id = self.cursor.execute(
+                    "SELECT last_insert_rowid()"
+                ).fetchone()[0]
                 return f"{self.FOREIGN_KEY_PREFIX}{foreign_id}@{table_name}"  # -> FOREIGN_KEY_123456@{table_name} id@{table_name}
             else:
                 return pickle.dumps(new_obj)  # -> bytes
@@ -143,10 +200,14 @@ class Database:
                 elif isinstance(item, self.BASIC_TYPE):
                     new_obj.append(item)
                 else:
-                    raise ValueError(f"数据模型包含不支持的数据类型，值：{item} 值类型：{type(item)}")
+                    raise ValueError(
+                        f"数据模型包含不支持的数据类型，值：{item} 值类型：{type(item)}"
+                    )
             return pickle.dumps(obj_type(new_obj))  # -> bytes
         else:
-            raise ValueError(f"数据模型包含不支持的数据类型，值：{obj} 值类型：{type(obj)}")
+            raise ValueError(
+                f"数据模型包含不支持的数据类型，值：{obj} 值类型：{type(obj)}"
+            )
 
     def _load(self, obj: Any) -> Any:
 
@@ -160,14 +221,18 @@ class Database:
 
                 if field.startswith(self.BYTES_PREFIX):
                     if isinstance(value, bytes):
-                        new_obj[field.replace(self.BYTES_PREFIX, "")] = self._load(pickle.loads(value))
+                        new_obj[field.replace(self.BYTES_PREFIX, "")] = self._load(
+                            pickle.loads(value)
+                        )
                     else:  # 从value字段可能为None，fix at 2024/6/13
                         pass
                         # 暂时不作处理，后面再修
 
                 elif field.startswith(self.FOREIGN_KEY_PREFIX):
 
-                    new_obj[field.replace(self.FOREIGN_KEY_PREFIX, "")] = self._load(self._get_foreign_data(value))
+                    new_obj[field.replace(self.FOREIGN_KEY_PREFIX, "")] = self._load(
+                        self._get_foreign_data(value)
+                    )
 
                 else:
                     new_obj[field] = value
@@ -193,7 +258,9 @@ class Database:
         else:
             return obj
 
-    def delete(self, model: LiteModel, condition: str, *args: Any, allow_empty: bool = False):
+    def delete(
+        self, model: LiteModel, condition: str, *args: Any, allow_empty: bool = False
+    ):
         """
         删除满足条件的数据
         Args:
@@ -206,7 +273,7 @@ class Database:
 
         """
         table_name = model.TABLE_NAME
-        nonebot.logger.debug(f"Deleting {model} WHERE {condition} {args}")
+        logger.debug(f"数据库 Deleting {model} WHERE {condition} {args}")
         if not table_name:
             raise ValueError(f"数据模型{model.__class__.__name__}未提供表名")
         if model.id is not None:
@@ -214,10 +281,12 @@ class Database:
         if not condition and not allow_empty:
             raise ValueError("删除操作必须提供条件")
         self.cursor.execute(f"DELETE FROM {table_name} WHERE {condition}", args)
-        self.conn.commit()
+        if self._is_locked:
+            pass
+        else:
+            self.conn.commit()
 
     def auto_migrate(self, *args: LiteModel):
-
         """
         自动迁移模型
         Args:
@@ -239,21 +308,35 @@ class Database:
             new_structure = {}
             for n_field, n_value in model.dump(by_alias=True).items():
                 if n_field not in ["TABLE_NAME", "id"]:
-                    new_structure[self._get_stored_field_prefix(n_value) + n_field] = self._get_stored_type(n_value)
+                    new_structure[self._get_stored_field_prefix(n_value) + n_field] = (
+                        self._get_stored_type(n_value)
+                    )
 
             # 原有的字段列表
-            existing_structure = dict([(column[1], column[2]) for column in self.cursor.execute(f'PRAGMA table_info({model.TABLE_NAME})').fetchall()])
+            existing_structure = dict(
+                [
+                    (column[1], column[2])
+                    for column in self.cursor.execute(
+                        f"PRAGMA table_info({model.TABLE_NAME})"
+                    ).fetchall()
+                ]
+            )
             # 检测缺失字段，由于SQLite是动态类型，所以不需要检测类型
             for n_field, n_type in new_structure.items():
-                if n_field not in existing_structure.keys() and n_field.lower() not in ["id", "table_name"]:
-                    default_value = self.DEFAULT_MAPPING.get(n_type, 'NULL')
+                if n_field not in existing_structure.keys() and n_field.lower() not in [
+                    "id",
+                    "table_name",
+                ]:
+                    default_value = self.DEFAULT_MAPPING.get(n_type, "NULL")
                     self.cursor.execute(
                         f"ALTER TABLE '{model.TABLE_NAME}' ADD COLUMN {n_field} {n_type} DEFAULT {self.DEFAULT_MAPPING.get(n_type, default_value)}"
                     )
 
             # 检测多余字段进行删除
             for e_field in existing_structure.keys():
-                if e_field not in new_structure.keys() and e_field.lower() not in ['id']:
+                if e_field not in new_structure.keys() and e_field.lower() not in [
+                    "id"
+                ]:
                     self.cursor.execute(
                         f'ALTER TABLE "{model.TABLE_NAME}" DROP COLUMN "{e_field}"'
                     )
@@ -270,7 +353,11 @@ class Database:
             Sqlite3存储字段
         """
 
-        if isinstance(value, LiteModel) or isinstance(value, dict) and "TABLE_NAME" in value:
+        if (
+            isinstance(value, LiteModel)
+            or isinstance(value, dict)
+            and "TABLE_NAME" in value
+        ):
             return self.FOREIGN_KEY_PREFIX
         elif type(value) in self.ITERABLE_TYPE:
             return self.BYTES_PREFIX
@@ -302,8 +389,15 @@ class Database:
         foreign_value = foreign_value.replace(self.FOREIGN_KEY_PREFIX, "")
         table_name = foreign_value.split("@")[-1]
         foreign_id = foreign_value.split("@")[0]
-        fields = [description[1] for description in self.cursor.execute(f"PRAGMA table_info({table_name})").fetchall()]
-        result = self.cursor.execute(f"SELECT * FROM {table_name} WHERE id = ?", (foreign_id,)).fetchone()
+        fields = [
+            description[1]
+            for description in self.cursor.execute(
+                f"PRAGMA table_info({table_name})"
+            ).fetchall()
+        ]
+        result = self.cursor.execute(
+            f"SELECT * FROM {table_name} WHERE id = ?", (foreign_id,)
+        ).fetchone()
         return dict(zip(fields, result))
 
     def on_save(self, func: Callable[[LiteModel | Any], None]):
@@ -333,29 +427,28 @@ class Database:
         return wrapper
 
     TYPE_MAPPING = {
-            int      : "INTEGER",
-            float    : "REAL",
-            str      : "TEXT",
-            bool     : "INTEGER",
-            bytes    : "BLOB",
-            NoneType : "NULL",
-            # dict     : "TEXT",
-            # list     : "TEXT",
-            # tuple    : "TEXT",
-            # set      : "TEXT",
-
-            dict     : "BLOB",  # LITEYUKIDICT{key_name}
-            list     : "BLOB",  # LITEYUKILIST{key_name}
-            tuple    : "BLOB",  # LITEYUKITUPLE{key_name}
-            set      : "BLOB",  # LITEYUKISET{key_name}
-            LiteModel: "TEXT"  # FOREIGN_KEY_{table_name}
+        int: "INTEGER",
+        float: "REAL",
+        str: "TEXT",
+        bool: "INTEGER",
+        bytes: "BLOB",
+        NoneType: "NULL",
+        # dict     : "TEXT",
+        # list     : "TEXT",
+        # tuple    : "TEXT",
+        # set      : "TEXT",
+        dict: "BLOB",  # LITEYUKIDICT{key_name}
+        list: "BLOB",  # LITEYUKILIST{key_name}
+        tuple: "BLOB",  # LITEYUKITUPLE{key_name}
+        set: "BLOB",  # LITEYUKISET{key_name}
+        LiteModel: "TEXT",  # FOREIGN_KEY_{table_name}
     }
     DEFAULT_MAPPING = {
-            "TEXT"   : "''",
-            "INTEGER": 0,
-            "REAL"   : 0.0,
-            "BLOB"   : None,
-            "NULL"   : None
+        "TEXT": "''",
+        "INTEGER": 0,
+        "REAL": 0.0,
+        "BLOB": None,
+        "NULL": None,
     }
 
     # 基础类型
@@ -384,21 +477,130 @@ class Database:
 
 def check_sqlite_keyword(name):
     sqlite_keywords = [
-            "ABORT", "ACTION", "ADD", "AFTER", "ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC",
-            "ATTACH", "AUTOINCREMENT", "BEFORE", "BEGIN", "BETWEEN", "BY", "CASCADE", "CASE",
-            "CAST", "CHECK", "COLLATE", "COLUMN", "COMMIT", "CONFLICT", "CONSTRAINT", "CREATE",
-            "CROSS", "CURRENT_DATE", "CURRENT_TIME", "CURRENT_TIMESTAMP", "DATABASE", "DEFAULT",
-            "DEFERRABLE", "DEFERRED", "DELETE", "DESC", "DETACH", "DISTINCT", "DROP", "EACH",
-            "ELSE", "END", "ESCAPE", "EXCEPT", "EXCLUSIVE", "EXISTS", "EXPLAIN", "FAIL", "FOR",
-            "FOREIGN", "FROM", "FULL", "GLOB", "GROUP", "HAVING", "IF", "IGNORE", "IMMEDIATE",
-            "IN", "INDEX", "INDEXED", "INITIALLY", "INNER", "INSERT", "INSTEAD", "INTERSECT",
-            "INTO", "IS", "ISNULL", "JOIN", "KEY", "LEFT", "LIKE", "LIMIT", "MATCH", "NATURAL",
-            "NO", "NOT", "NOTNULL", "NULL", "OF", "OFFSET", "ON", "OR", "ORDER", "OUTER", "PLAN",
-            "PRAGMA", "PRIMARY", "QUERY", "RAISE", "RECURSIVE", "REFERENCES", "REGEXP", "REINDEX",
-            "RELEASE", "RENAME", "REPLACE", "RESTRICT", "RIGHT", "ROLLBACK", "ROW", "SAVEPOINT",
-            "SELECT", "SET", "TABLE", "TEMP", "TEMPORARY", "THEN", "TO", "TRANSACTION", "TRIGGER",
-            "UNION", "UNIQUE", "UPDATE", "USING", "VACUUM", "VALUES", "VIEW", "VIRTUAL", "WHEN",
-            "WHERE", "WITH", "WITHOUT"
+        "ABORT",
+        "ACTION",
+        "ADD",
+        "AFTER",
+        "ALL",
+        "ALTER",
+        "ANALYZE",
+        "AND",
+        "AS",
+        "ASC",
+        "ATTACH",
+        "AUTOINCREMENT",
+        "BEFORE",
+        "BEGIN",
+        "BETWEEN",
+        "BY",
+        "CASCADE",
+        "CASE",
+        "CAST",
+        "CHECK",
+        "COLLATE",
+        "COLUMN",
+        "COMMIT",
+        "CONFLICT",
+        "CONSTRAINT",
+        "CREATE",
+        "CROSS",
+        "CURRENT_DATE",
+        "CURRENT_TIME",
+        "CURRENT_TIMESTAMP",
+        "DATABASE",
+        "DEFAULT",
+        "DEFERRABLE",
+        "DEFERRED",
+        "DELETE",
+        "DESC",
+        "DETACH",
+        "DISTINCT",
+        "DROP",
+        "EACH",
+        "ELSE",
+        "END",
+        "ESCAPE",
+        "EXCEPT",
+        "EXCLUSIVE",
+        "EXISTS",
+        "EXPLAIN",
+        "FAIL",
+        "FOR",
+        "FOREIGN",
+        "FROM",
+        "FULL",
+        "GLOB",
+        "GROUP",
+        "HAVING",
+        "IF",
+        "IGNORE",
+        "IMMEDIATE",
+        "IN",
+        "INDEX",
+        "INDEXED",
+        "INITIALLY",
+        "INNER",
+        "INSERT",
+        "INSTEAD",
+        "INTERSECT",
+        "INTO",
+        "IS",
+        "ISNULL",
+        "JOIN",
+        "KEY",
+        "LEFT",
+        "LIKE",
+        "LIMIT",
+        "MATCH",
+        "NATURAL",
+        "NO",
+        "NOT",
+        "NOTNULL",
+        "NULL",
+        "OF",
+        "OFFSET",
+        "ON",
+        "OR",
+        "ORDER",
+        "OUTER",
+        "PLAN",
+        "PRAGMA",
+        "PRIMARY",
+        "QUERY",
+        "RAISE",
+        "RECURSIVE",
+        "REFERENCES",
+        "REGEXP",
+        "REINDEX",
+        "RELEASE",
+        "RENAME",
+        "REPLACE",
+        "RESTRICT",
+        "RIGHT",
+        "ROLLBACK",
+        "ROW",
+        "SAVEPOINT",
+        "SELECT",
+        "SET",
+        "TABLE",
+        "TEMP",
+        "TEMPORARY",
+        "THEN",
+        "TO",
+        "TRANSACTION",
+        "TRIGGER",
+        "UNION",
+        "UNIQUE",
+        "UPDATE",
+        "USING",
+        "VACUUM",
+        "VALUES",
+        "VIEW",
+        "VIRTUAL",
+        "WHEN",
+        "WHERE",
+        "WITH",
+        "WITHOUT",
     ]
     return True
     # if name.upper() in sqlite_keywords:

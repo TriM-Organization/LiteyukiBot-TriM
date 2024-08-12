@@ -4,30 +4,27 @@ from typing import Any, AnyStr
 
 import nonebot
 import pip
-from nonebot import Bot, get_driver, require
-from nonebot.adapters import satori
+from nonebot import Bot, get_driver, require  # type: ignore
+from nonebot.adapters import onebot, satori
 from nonebot.adapters.onebot.v11 import Message, escape, unescape
 from nonebot.exception import MockApiException
 from nonebot.internal.matcher import Matcher
 from nonebot.permission import SUPERUSER
 
+from src.utils import event as event_utils, satori_utils
 from src.utils.base.config import get_config, load_from_yaml
 from src.utils.base.data_manager import StoredConfig, TempConfig, common_db
 from src.utils.base.language import get_user_lang
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage as md, broadcast_to_superusers
 
-# from src.liteyuki.core import Reloader
-from src.utils import event as event_utils, satori_utils
-from liteyuki.core import ProcessingManager
 from .api import update_liteyuki
-from liteyuki.bot import get_bot
+from ..utils.base import reload
 from ..utils.base.ly_function import get_function
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_alconna import (
-    UniMessage,
     on_alconna,
     Alconna,
     Args,
@@ -111,16 +108,15 @@ async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
             "reload_session_id": (
                 (event.group_id if event.message_type == "group" else event.user_id)
                 if not isinstance(event, satori.event.Event)
-                else event.channel.id
+                else event.chan_active.id
             ),
             "delta_time": 0,
         }
     )
 
     common_db.save(temp_data)
-    # Reloader.reload(0)
-    bot = get_bot()
-    bot.restart()
+
+    reload()
 
 
 @on_alconna(
@@ -380,19 +376,17 @@ async def test_for_md_image(bot: T_Bot, api: str, data: dict):
 
 @driver.on_startup
 async def on_startup():
-    # temp_data = common_db.where_one(TempConfig(), default=TempConfig())
-    # # 储存重启信息
-    # if temp_data.data.get("reload", False):
-    #     delta_time = time.time() - temp_data.data.get("reload_time", 0)
-    #     temp_data.data["delta_time"] = delta_time
-    #     common_db.save(temp_data)  # 更新数据
+    temp_data = common_db.where_one(TempConfig(), default=TempConfig())
+    # 储存重启信息
+    if temp_data.data.get("reload", False):
+        delta_time = time.time() - temp_data.data.get("reload_time", 0)
+        temp_data.data["delta_time"] = delta_time
+        common_db.save(temp_data)  # 更新数据
     """
-    该部分迁移至轻雪生命周期
+    该部分将迁移至轻雪生命周期
     Returns:
 
     """
-
-    pass
 
 
 @driver.on_shutdown
@@ -415,10 +409,22 @@ async def _(bot: T_Bot):
         reload_session_id = temp_data.data.get("reload_session_id", 0)
         delta_time = temp_data.data.get("delta_time", 0)
         common_db.save(temp_data)  # 更新数据
+
+        return_msg = "轻雪核心 重载耗时 {:.2f} 秒\n灵温 预计体感重载耗时 {:.2f} 秒\n*此数据仅作参考，具体计时请以实际为准".format(
+            delta_time, time.time() - temp_data.data.get("reload_time", 0)
+        )
+
         if isinstance(bot, satori.Bot):
             await bot.send_message(
                 channel_id=reload_session_id,
-                message="轻雪核心 重载耗时 {:.2f} 秒\n*此数据仅作参考，具体计时请以实际为准\n灵温 预计体感重载耗时 {:.2f} 秒".format(delta_time,time.time() - temp_data.data.get("reload_time", 0)),
+                message=return_msg,
+            )
+        elif isinstance(bot, onebot.v11.Bot):
+            await bot.send_msg(
+                message_type=reload_session_type,
+                user_id=reload_session_id,
+                group_id=reload_session_id,
+                message=return_msg,
             )
         else:
             await bot.call_api(
@@ -426,7 +432,7 @@ async def _(bot: T_Bot):
                 message_type=reload_session_type,
                 user_id=reload_session_id,
                 group_id=reload_session_id,
-                message="轻雪核心 重载耗时 {:.2f} 秒\n*此数据仅作参考，具体计时请以实际为准\n灵温 预计体感重载耗时 {:.2f} 秒".format(delta_time,time.time() - temp_data.data.get("reload_time", 0)),
+                message=return_msg,
             )
 
 
@@ -439,7 +445,8 @@ async def every_day_update():
         if result:
             await broadcast_to_superusers(f"灵温已更新：```\n{logs}\n```")
             nonebot.logger.info(f"灵温已更新：{logs}")
-            ProcessingManager.restart(3)
+            # ProcessingManager.restart(3)
+            reload()
         else:
             nonebot.logger.info(logs)
 
