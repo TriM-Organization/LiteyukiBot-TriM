@@ -78,6 +78,8 @@ from nonebot_plugin_alconna import (
 from nonebot_plugin_apscheduler import scheduler
 
 
+from ..liteyuki_status.status import random_yanlun_text
+
 (config_dir := Path(__file__).parent / "config").mkdir(exist_ok=True)
 (database_dir := Path(__file__).parent / "db").mkdir(exist_ok=True)
 temporary_dir = Path(__file__).parent / "temp"
@@ -1032,7 +1034,8 @@ async def _(
                 )
                 for fn, res in all_files.items()
             ]
-        ),
+        )
+        + "\n\n### 言·论 \n\n **{}**".format(random_yanlun_text()),
         bot,
         event=event,
     )

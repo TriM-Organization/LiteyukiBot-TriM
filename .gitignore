@@ -19,9 +19,10 @@ config.example.yml
 compile.bat
 src/resources/templates/latest-debug.html
 
-src/plugins/trimo_plugin_msctconverter/config
-src/plugins/trimo_plugin_msctconverter/temp
-src/plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
+src/nonebot_plugins/trimo_plugin_msctconverter/config
+src/nonebot_plugins/trimo_plugin_msctconverter/temp
+src/nonebot_plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
+src/nonebot_plugins/dislink_plugin_ccnd
 
 # vuepress
 .github

@@ -78,7 +78,7 @@ async def every_day_update():
 
 
 def update_yanlun():
-    global yanlun_texts
+    global yanlun_texts, yanlun_seqs
 
     solar_datetime = zhDateTime.DateTime.now()
     lunar_datetime = solar_datetime.to_lunar()
@@ -109,14 +109,26 @@ def update_yanlun():
             nonebot.logger.warning(f"读取言·论信息发生 未知 错误：\n{E}")
             yanlun_texts = ["灵光焕发 深艺献心"]
 
+    yanlun_seqs = yanlun_texts.copy()
+    random.shuffle(yanlun_seqs)
+
     return len(yanlun_texts)
 
 
+yanlun_seqs = []
 update_yanlun()
 
 
+def random_yanlun_text() -> str:
+    global yanlun_texts, yanlun_seqs
+    if not yanlun_seqs:
+        yanlun_seqs = yanlun_texts.copy()
+        random.shuffle(yanlun_seqs)
+    return yanlun_seqs.pop()
+
+
 def random_yanlun() -> tuple:
-    seq = random.choice(yanlun_texts).replace("    ", "\t").split("\t——", 1)
+    seq = random_yanlun_text().replace("    ", "\t").split("\t——", 1)
     return seq[0], "" if len(seq) == 1 else seq[1]
 
 
@@ -213,6 +225,9 @@ async def _(
                 )
             )
             yanlun_texts = ["灵光焕发 深艺献心"]
+
+        yanlun_seqs = yanlun_texts.copy()
+        random.shuffle(yanlun_seqs)
     if result.options["count"].value:
         authors = [
             (
@@ -269,7 +284,7 @@ async def _(
         (
             await yanlun.finish(
                 UniMessage.text(
-                    "\n".join([random.choice(yanlun_texts) for i in range(iill)])
+                    "\n".join([random_yanlun_text() for i in range(iill)])
                     if iill <= 100
                     else ulang.get("yanlun.length.toolong")
                 )
