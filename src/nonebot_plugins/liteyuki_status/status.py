@@ -66,7 +66,7 @@ yanlun = on_alconna(
 
 
 yanlun_path = (
-    "https://gitee.com/TriM-Organization/LinglunStudio/raw/master/resources/myWords.txt"
+    "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
 )
 
 
