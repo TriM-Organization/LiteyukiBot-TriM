@@ -3,6 +3,7 @@
 .vscode/
 .pycharm/
 .cache/
+venv/
 node_modules/
 /data/
 db/
