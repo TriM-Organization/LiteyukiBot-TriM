@@ -80,22 +80,25 @@ async def update_yanlun():
 
     global yanlun_texts, yanlun_seqs
 
+    nonebot.logger.info("正在获取言·论信息")
     try:
         async with aiohttp.ClientSession() as client:
             resp = await client.get(yanlun_path)
-        yanlun_texts = (await resp.text()).strip("\n").split("\n")
-    except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as E:
-        nonebot.logger.warning(f"读取言·论信息发生 客户端或通道 错误：\n{E}")
+            yanlun_texts = (await resp.text()).strip("\n").split("\n")
+    except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as err:
+        nonebot.logger.warning("读取言·论信息发生 客户端或通道 错误：\n{}".format(err))
         yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
     # noinspection PyBroadException
-    except BaseException as E:
-        nonebot.logger.warning(f"读取言·论信息发生 未知 错误：\n{E}")
+    except BaseException as err:
+        nonebot.logger.warning("读取言·论信息发生 未知 错误：\n{}".format(err))
         yanlun_texts = ["灵光焕发 深艺献心"]
 
     yanlun_seqs = yanlun_texts.copy()
     random.shuffle(yanlun_seqs)
 
-    return len(yanlun_texts)
+    nonebot.logger.success("成功取得 言·论 {} 条".format(res := len(yanlun_texts)))
+
+    return res
 
 
 @nonebot.get_driver().on_startup
@@ -121,9 +124,7 @@ async def _():
             "Happy Birthday, ElapsingDreams~!",
         ]
     else:
-
-        nonebot.logger.info("正在获取言·论信息")
-        nonebot.logger.success("成功取得 言·论 {} 条".format(await update_yanlun()))
+        await update_yanlun()
 
 
 def random_yanlun_text() -> str:
