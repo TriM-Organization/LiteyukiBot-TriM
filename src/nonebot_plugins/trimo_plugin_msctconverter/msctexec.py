@@ -622,13 +622,6 @@ async def _(
             at_sender=True,
         )
 
-    if (usr_id not in filesaves.keys()) and (
-        superuser_permission and not len(filesaves)
-    ):
-        await linglun_convert.finish(
-            UniMessage.text("服务器内未存入你的任何文件，请先使用上传midi文件吧")
-        )
-
     _args: dict = {
         "file": "all",
         "enable-mismatch-error": False,
@@ -667,6 +660,18 @@ async def _(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
     nonebot.logger.info(_args)
+
+    if ((not superuser_permission) and (usr_id not in filesaves.keys())) or (
+        superuser_permission
+        and (
+            (not len(filesaves))
+            or (_args["file"].lower() == "all" and usr_id not in filesaves.keys())
+        )
+    ):
+        await linglun_convert.finish(
+            UniMessage.text("服务器内未存入你的任何文件，请先上传midi文件吧")
+        )
+        return
 
     # usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
@@ -1025,12 +1030,12 @@ async def _(
     if isinstance(event, GroupMessageEvent) or isinstance(
         event, GroupUploadNoticeEvent
     ):
-        res_id = await bot.call_api(
+        await bot.call_api(
             "upload_group_file", group_id=event.group_id, name=fn, file=fp
         )
-        await linglun_convert.send(
-            UniMessage.text("文件已上传群文件，请在群文件查看。")
-        )
+        # await linglun_convert.send(
+        #     UniMessage.text("文件已上传群文件，请在群文件查看。")
+        # )
         # await linglun_convert.send(UniMessage.file(res_id,path=fp,name=fn))
     else:
         await bot.call_api(

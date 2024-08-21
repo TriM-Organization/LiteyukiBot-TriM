@@ -128,13 +128,6 @@ async def _(
             at_sender=True,
         )
 
-    if (usr_id not in filesaves.keys()) and (
-        superuser_permission and not len(filesaves)
-    ):
-        await mspv_sync.finish(
-            UniMessage.text("服务器内未存入你的任何文件，请先使用上传midi文件吧")
-        )
-
     _args: dict = {
         "file-name": "all",
         "output-file": False,
@@ -161,6 +154,17 @@ async def _(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
     nonebot.logger.info(_args)
+
+    if ((not superuser_permission) and (usr_id not in filesaves.keys())) or (
+        superuser_permission
+        and (
+            (not len(filesaves))
+            or (_args["file-name"].lower() == "all" and usr_id not in filesaves.keys())
+        )
+    ):
+        await mspv_sync.finish(
+            UniMessage.text("服务器内未存入你的任何文件，请先上传midi文件吧")
+        )
 
     if _args["mode"] not in [0, 1, 2, 3, 4]:
         await mspv_sync.finish(
@@ -425,9 +429,9 @@ async def _(
                 await bot.call_api(
                     "upload_group_file", group_id=event.group_id, name=fn, file=fp
                 )
-                await mspv_sync.send(
-                    UniMessage.text("文件已上传群文件，请在群文件查看。")
-                )
+                # await mspv_sync.send(
+                #     UniMessage.text("文件已上传群文件，请在群文件查看。")
+                # )
             else:
                 await bot.call_api(
                     "upload_private_file", user_id=event.user_id, name=fn, file=fp
