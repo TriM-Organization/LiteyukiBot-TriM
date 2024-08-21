@@ -1,9 +1,12 @@
 import zhDateTime
+from typing import Optional
 
-
-def utime_hanzify(
-    zhd: zhDateTime.zhDateTime = zhDateTime.DateTime.now().to_lunar(),
+def hanzi_timeid(
+    zhd: Optional[zhDateTime.zhDateTime] = None,
 ) -> str:
+    if not zhd:
+        zhd = zhDateTime.DateTime.now().to_lunar()
+    
     return "{地支时}{刻}{分}{秒}".format(
         地支时=zhDateTime.DÌZHĪ[zhd.shichen]
         + (

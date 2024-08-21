@@ -1,6 +1,7 @@
-import zhDateTime
-import requests
 import random
+
+import aiohttp
+import zhDateTime
 
 from src.utils import event as event_utils
 from src.utils.base.language import get_user_lang, get_default_lang_code, Language
@@ -65,9 +66,7 @@ yanlun = on_alconna(
 )
 
 
-yanlun_path = (
-    "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
-)
+yanlun_path = "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
 
 
 # 每天4点更新
@@ -77,7 +76,31 @@ async def every_day_update():
     nonebot.logger.success(ulang.get("yanlun.refresh.success", COUNT=update_yanlun()))
 
 
-def update_yanlun():
+async def update_yanlun():
+
+    global yanlun_texts, yanlun_seqs
+
+    try:
+        async with aiohttp.ClientSession() as client:
+            resp = await client.get(yanlun_path)
+        yanlun_texts = (await resp.text()).strip("\n").split("\n")
+    except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as E:
+        nonebot.logger.warning(f"读取言·论信息发生 客户端或通道 错误：\n{E}")
+        yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
+    # noinspection PyBroadException
+    except BaseException as E:
+        nonebot.logger.warning(f"读取言·论信息发生 未知 错误：\n{E}")
+        yanlun_texts = ["灵光焕发 深艺献心"]
+
+    yanlun_seqs = yanlun_texts.copy()
+    random.shuffle(yanlun_seqs)
+
+    return len(yanlun_texts)
+
+
+@nonebot.get_driver().on_startup
+async def _():
+
     global yanlun_texts, yanlun_seqs
 
     solar_datetime = zhDateTime.DateTime.now()
@@ -86,37 +109,21 @@ def update_yanlun():
     lunar_date = (lunar_datetime.lunar_month, lunar_datetime.lunar_day)
 
     if solar_date == (4, 3):
-        yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
+        yanlun_seqs = yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
     elif solar_date == (8, 6):
-        yanlun_texts = ["诸葛亮与八卦阵 生日快乐~！", "Happy Birthday, bgArray~!"]
+        yanlun_seqs = yanlun_texts = [
+            "诸葛亮与八卦阵 生日快乐~！",
+            "Happy Birthday, bgArray~!",
+        ]
     elif solar_date == (8, 16):
-        yanlun_texts = ["鱼旧梦 生日快乐~！", "Happy Birthday, ElapsingDreams~!"]
-
+        yanlun_seqs = yanlun_texts = [
+            "鱼旧梦 生日快乐~！",
+            "Happy Birthday, ElapsingDreams~!",
+        ]
     else:
-        try:
-            yanlun_texts = (
-                requests.get(
-                    yanlun_path,
-                )
-                .text.strip("\n")
-                .split("\n")
-            )
-        except (ConnectionError, requests.HTTPError, requests.RequestException) as E:
-            nonebot.logger.warning(f"读取言·论信息发生 互联网连接 错误：\n{E}")
-            yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
-        # noinspection PyBroadException
-        except BaseException as E:
-            nonebot.logger.warning(f"读取言·论信息发生 未知 错误：\n{E}")
-            yanlun_texts = ["灵光焕发 深艺献心"]
 
-    yanlun_seqs = yanlun_texts.copy()
-    random.shuffle(yanlun_seqs)
-
-    return len(yanlun_texts)
-
-
-yanlun_seqs = []
-update_yanlun()
+        nonebot.logger.info("正在获取言·论信息")
+        nonebot.logger.success("成功取得 言·论 {} 条".format(await update_yanlun()))
 
 
 def random_yanlun_text() -> str:
@@ -188,46 +195,7 @@ async def _(
     # print(result.options)
     ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
     if result.options["refresh"].value:
-        global yanlun_texts
-        try:
-            yanlun_texts = (
-                requests.get(
-                    yanlun_path,
-                )
-                .text.strip("\n")
-                .split("\n")
-            )
-            await yanlun.send(
-                UniMessage.text(
-                    ulang.get("yanlun.refresh.success", COUNT=len(yanlun_texts))
-                )
-            )
-        except (ConnectionError, requests.HTTPError, requests.RequestException) as E:
-            await yanlun.send(
-                UniMessage.text(
-                    ulang.get(
-                        "yanlun.refresh.failed",
-                        ERR=ulang.get("yanlun.errtype.net"),
-                        ERRCODE=f"\n{E}",
-                    )
-                )
-            )
-            yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
-        # noinspection PyBroadException
-        except BaseException as E:
-            await yanlun.send(
-                UniMessage.text(
-                    ulang.get(
-                        "yanlun.refresh.failed",
-                        ERR=ulang.get("yanlun.errtype.unknown"),
-                        ERRCODE=f"\n{E}",
-                    )
-                )
-            )
-            yanlun_texts = ["灵光焕发 深艺献心"]
-
-        yanlun_seqs = yanlun_texts.copy()
-        random.shuffle(yanlun_seqs)
+        await update_yanlun()
     if result.options["count"].value:
         authors = [
             (

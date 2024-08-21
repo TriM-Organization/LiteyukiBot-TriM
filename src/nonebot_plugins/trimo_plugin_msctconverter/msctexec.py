@@ -1,19 +1,18 @@
 import os
 import sys
-import time
 import json
 import random
-
-# import uuid
 import shutil
+
+import asyncio
 
 from io import StringIO
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, Union
 
 # from nonebot import require
 
-import requests
+import aiohttp
 import zhDateTime
 import Musicreater
 
@@ -39,8 +38,8 @@ import nonebot.adapters
 import nonebot.drivers
 import nonebot.rule
 
-from nonebot.params import CommandArg
-from nonebot.permission import SUPERUSER
+# from nonebot.params import CommandArg
+from nonebot.permission import SUPERUSER, SuperUser
 from nonebot.adapters.onebot.v11.event import (
     GroupUploadNoticeEvent,
     GroupMessageEvent,
@@ -56,7 +55,7 @@ from src.utils.base.language import get_user_lang
 from src.utils.message.message import MarkdownMessage
 
 from .execute_auto_translator import auto_translate  # type: ignore
-from .utils import utime_hanzify
+from .utils import hanzi_timeid
 
 nonebot.require("nonebot_plugin_alconna")
 nonebot.require("nonebot_plugin_apscheduler")
@@ -182,6 +181,26 @@ def query_convert_points(
     return store, people_convert_point[usr_id][item]["point"]
 
 
+def get_stored_path(
+    user_id: str, item: Union[Path, os.PathLike], superuser: bool = False
+) -> Path:
+
+    if not isinstance(item, Path):
+        item_ = Path(item).name
+    else:
+        item_ = item.name
+
+    result_dest = database_dir / user_id / item_
+
+    if not result_dest.exists() and superuser:
+        for usr_id_ in filesaves.keys():
+            if (result_dest_ := database_dir / usr_id_ / item_).exists():
+                result_dest = result_dest_
+                break
+
+    return result_dest
+
+
 # 每天4点更新
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
@@ -195,7 +214,7 @@ async def every_day_update():
 async def _():
     nonebot.logger.info("正在删除临时文件目录")
     while temporary_dir.exists():
-        time.sleep(1)
+        await asyncio.sleep(1)
         try:
             shutil.rmtree(temporary_dir)
         except Exception as E:
@@ -331,12 +350,12 @@ async def _(
 
         os.makedirs(savepath, exist_ok=True)
 
-        (savepath / file_infomation["name"]).open("wb").write(
-            requests.get(
-                file_infomation["url"],
-                verify=False,
-            ).content
-        )
+        async with aiohttp.ClientSession() as client:
+            resp = await client.get(file_infomation["url"], verify_ssl=False)
+            (savepath / file_infomation["name"]).open("wb").write(
+                await resp.content.read()
+            )
+
         now = zhDateTime.DateTime.now()
         try:
             filesaves[usr_id][file_infomation["name"]] = {
@@ -586,9 +605,13 @@ async def _(
 
     nonebot.logger.info(result.options)
 
-    usr_id = str(event.user_id)
+    usr_id = event.get_user_id()
 
-    if (qres := query_convert_points(usr_id, "music"))[0] is False:
+    superuser_permission = await SUPERUSER(bot, event)
+
+    if ((qres := query_convert_points(usr_id, "music"))[0] is False) and (
+        not superuser_permission
+    ):
         await linglun_convert.finish(
             UniMessage.text(
                 "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
@@ -599,7 +622,9 @@ async def _(
             at_sender=True,
         )
 
-    if usr_id not in filesaves.keys():
+    if (usr_id not in filesaves.keys()) and (
+        superuser_permission and not len(filesaves)
+    ):
         await linglun_convert.finish(
             UniMessage.text("服务器内未存入你的任何文件，请先使用上传midi文件吧")
         )
@@ -643,7 +668,7 @@ async def _(
     # )
     nonebot.logger.info(_args)
 
-    usr_data_path = database_dir / usr_id
+    # usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
 
     if (_ppnt := _args["pitched-note-table"].lower()) in [
@@ -660,7 +685,11 @@ async def _(
                 else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
             )
         )
-    elif (_ppnt := (usr_data_path / _args["pitched-note-table"])).exists():
+    elif (
+        _ppnt := get_stored_path(
+            usr_id, _args["pitched-note-table"], superuser_permission
+        )
+    ).exists():
         pitched_notechart = Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE.copy()
         pitched_notechart.update(json.load(_ppnt.open("r")))
     else:
@@ -683,7 +712,11 @@ async def _(
                 else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
             )
         )
-    elif (_ppnt := (usr_data_path / _args["percussion-note-table"])).exists():
+    elif (
+        _ppnt := get_stored_path(
+            usr_id, _args["percussion-note-table"], superuser_permission
+        )
+    ).exists():
         percussion_notechart = Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE.copy()
         percussion_notechart.update(json.load(_ppnt.open("r")))
     else:
@@ -762,7 +795,14 @@ async def _(
             if file_to_convert.endswith(".mid") or file_to_convert.endswith(".midi"):
                 nonebot.logger.info("载入转换文件：{}".format(file_to_convert))
 
-                all_files[file_to_convert] = {}
+                to_convert_path = get_stored_path(
+                    usr_id, file_to_convert, superuser_permission
+                )
+
+                if to_convert_path.is_file():
+                    all_files[to_convert_path.name] = {}
+                else:
+                    continue
 
                 if isinstance(
                     msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
@@ -779,9 +819,7 @@ async def _(
                     )
                     and (
                         msct_obj[0].music_name
-                        == os.path.splitext(
-                            os.path.basename(usr_data_path / file_to_convert)
-                        )[0].replace(" ", "_")
+                        == os.path.splitext(to_convert_path.name)[0].replace(" ", "_")
                     )
                 ):
                     nonebot.logger.info("载入已有缓存。")
@@ -792,7 +830,7 @@ async def _(
                 else:
                     if go_chk_point():
                         msct_obj = Musicreater.MidiConvert.from_midi_file(
-                            midi_file_path=usr_data_path / file_to_convert,
+                            midi_file_path=str(to_convert_path),
                             mismatch_error_ignorance=not _args["enable-mismatch-error"],
                             play_speed=_args["play-speed"],
                             default_tempo=_args["default-tempo"],
@@ -821,10 +859,10 @@ async def _(
                     else:
                         buffer.write(
                             "点数不足或出现错误：{}".format(
-                                _args,
+                                to_convert_path.name,
                             )
                         )
-                        break
+                        continue
 
                 # people_convert_point[usr_id] += 0.5
 
@@ -956,15 +994,15 @@ async def _(
                 "无可供转换的文件",
             )
             await linglun_convert.finish(
-                UniMessage("不是哥们，二氧化碳咱这转不成面包，那是中科院的事。")
+                UniMessage(
+                    "不是哥/姐/Any们，二氧化碳咱这转不成面包，那是中科院的事。\n*所指向之文件皆不存在"
+                )
             )
 
     except Exception as e:
         nonebot.logger.error("转换存在错误：{}".format(e))
         buffer.write(
-            "[ERROR] {}\n".format(e).replace(
-                "C:\\Users\\Administrator\\Desktop\\RyBot\\", "[]"
-            )
+            "[ERROR] {}\n".format(e).replace(str(Path(__file__).parent.resolve()), "[]")
         )
 
     sys.stdout = sys.__stdout__
@@ -975,11 +1013,7 @@ async def _(
         fp := str(
             (
                 temporary_dir
-                / (
-                    fn := "msctr[{}]-{}.zip".format(
-                        utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
-                    )
-                )
+                / (fn := "msctr[{}]-{}.zip".format(hanzi_timeid(), usr_id))
             ).resolve()
         ),
     )

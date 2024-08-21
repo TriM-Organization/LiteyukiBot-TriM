@@ -5,20 +5,19 @@ import shutil
 import random
 
 from io import StringIO
-
-# from pathlib import Path
+from pathlib import Path
 
 # import nonebot.rule
 
 import nonebot
 import soundfile
-import zhDateTime
 import Musicreater
 import Musicreater.plugin
 import nonebot.adapters.onebot.v11.exception
 
 from .MusicPreview.main import PreviewMusic
 
+from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11.event import (
     GroupMessageEvent,
     PrivateMessageEvent,
@@ -48,11 +47,11 @@ from .msctexec import (
     query_convert_points,
     filesaves,
     configdict,
-    database_dir,
     temporary_dir,
     file_to_delete,
+    get_stored_path,
 )
-from .utils import utime_hanzify
+from .utils import hanzi_timeid
 
 mspv_sync = on_alconna(
     Alconna(
@@ -109,13 +108,16 @@ async def _(
     event: GroupMessageEvent | PrivateMessageEvent,
     bot: T_Bot,
 ):
-    # print("E:\\Work2024\\test-midi\\" + name.result)
 
     nonebot.logger.info(result.options)
 
-    usr_id = str(event.user_id)
+    usr_id = event.get_user_id()
 
-    if (qres := query_convert_points(usr_id, "music"))[0] is False:
+    superuser_permission = await SUPERUSER(bot, event)
+
+    if ((qres := query_convert_points(usr_id, "music"))[0] is False) and (
+        not superuser_permission
+    ):
         await mspv_sync.finish(
             UniMessage.text(
                 "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
@@ -126,7 +128,9 @@ async def _(
             at_sender=True,
         )
 
-    if usr_id not in filesaves.keys():
+    if (usr_id not in filesaves.keys()) and (
+        superuser_permission and not len(filesaves)
+    ):
         await mspv_sync.finish(
             UniMessage.text("服务器内未存入你的任何文件，请先使用上传midi文件吧")
         )
@@ -173,7 +177,7 @@ async def _(
             )
         )
 
-    usr_data_path = database_dir / usr_id
+    # usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
 
     if (_ppnt := _args["pitched-note-table"].lower()) in [
@@ -190,7 +194,11 @@ async def _(
                 else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
             )
         )
-    elif (_ppnt := (usr_data_path / _args["pitched-note-table"])).exists():
+    elif (
+        _ppnt := get_stored_path(
+            usr_id, _args["pitched-note-table"], superuser_permission
+        )
+    ).exists():
         pitched_notechart = Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE.copy()
         pitched_notechart.update(json.load(_ppnt.open("r")))
     else:
@@ -213,7 +221,11 @@ async def _(
                 else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
             )
         )
-    elif (_ppnt := (usr_data_path / _args["percussion-note-table"])).exists():
+    elif (
+        _ppnt := get_stored_path(
+            usr_id, _args["percussion-note-table"], superuser_permission
+        )
+    ).exists():
         percussion_notechart = Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE.copy()
         percussion_notechart.update(json.load(_ppnt.open("r")))
     else:
@@ -274,6 +286,14 @@ async def _(
                 # print("1")
                 # await mspv_sync.finish("处理中")
 
+                to_convert_path = get_stored_path(
+                    usr_id, file_to_convert, superuser_permission
+                )
+                if to_convert_path.is_file():
+                    all_files.append(to_convert_path.name)
+                else:
+                    continue
+
                 if isinstance(
                     msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
                 ) and (
@@ -291,9 +311,7 @@ async def _(
                     )
                     and (
                         msct_obj[0].music_name
-                        == os.path.splitext(
-                            os.path.basename(usr_data_path / file_to_convert)
-                        )[0].replace(" ", "_")
+                        == os.path.splitext(to_convert_path.name)[0].replace(" ", "_")
                     )
                 ):
                     nonebot.logger.info("载入已有缓存。")
@@ -302,7 +320,7 @@ async def _(
 
                     if go_chk_point():
                         msct_obj = Musicreater.MidiConvert.from_midi_file(
-                            midi_file_path=usr_data_path / file_to_convert,
+                            midi_file_path=str(to_convert_path),
                             mismatch_error_ignorance=not _args["enable-mismatch-error"],
                             play_speed=_args["play-speed"],
                             default_tempo=_args["default-tempo"],
@@ -329,12 +347,10 @@ async def _(
                     else:
                         buffer.write(
                             "点数不足或出现错误：\n{}".format(
-                                _args,
+                                to_convert_path.name,
                             )
                         )
-                        break
-
-                all_files.append(file_to_convert)
+                        continue
 
                 music_temp = PreviewMusic(
                     msct_obj,
@@ -379,15 +395,15 @@ async def _(
                 "无可供转换的文件",
             )
             await mspv_sync.finish(
-                UniMessage("我服了老弟，这机器人也不能给路易十六理发啊。")
+                UniMessage(
+                    "我服了老弟，这机器人也不能给路易十六理发啊。\n*所指向之文件皆不存在"
+                )
             )
 
     except Exception as e:
         nonebot.logger.error("合成存在错误：{}".format(e))
         buffer.write(
-            "[ERROR] {}\n".format(e).replace(
-                "C:\\Users\\Administrator\\Desktop\\RyBot\\", "[]"
-            )
+            "[ERROR] {}\n".format(e).replace(str(Path(__file__).parent.resolve()), "[]")
         )
 
     sys.stdout = sys.__stdout__
@@ -398,11 +414,7 @@ async def _(
             usr_temp_path,
             fp := str(
                 temporary_dir
-                / (
-                    fn := "mprwav[{}]{}.zip".format(
-                        utime_hanzify(zhDateTime.DateTime.now().to_lunar()), usr_id
-                    )
-                )
+                / (fn := "mprwav[{}]{}.zip".format(hanzi_timeid(), usr_id))
             ),
         )
 
