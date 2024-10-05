@@ -100,7 +100,8 @@ function createBarChart(title, percent, name) {
     diskDiv.setAttribute("class", "disk-info");
     diskDiv.style.marginBottom = "20px";
     diskDiv.innerHTML = `
-        <div class="disk-title">${title}</div>
+        <div class="disk-name">${name}</div>
+        <div class="disk-details">${title}</div>
         <div class="disk-usage" style="width: ${percent}%"></div>
     `;
     updateDiskNameWidth(diskDiv);

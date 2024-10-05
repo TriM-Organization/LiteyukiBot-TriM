@@ -9,6 +9,7 @@ import asyncio
 from io import StringIO
 from pathlib import Path
 from typing import Annotated, Any, Union
+from builtins import ellipsis
 
 # from nonebot import require
 
@@ -653,13 +654,15 @@ async def _(
                 if arg in result.options[arg].args.keys()
                 else result.options[arg].args
             )
-            if (_vlu := result.options[arg].value) is None
+            if ((_vlu := result.options[arg].value) is None or isinstance(_vlu, ellipsis) )
             else _vlu
         )
     # await musicreater_convert.finish(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
     nonebot.logger.info(_args)
+
+    
 
     if ((not superuser_permission) and (usr_id not in filesaves.keys())) or (
         superuser_permission
