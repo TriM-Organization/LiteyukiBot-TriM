@@ -230,7 +230,7 @@ async def get_hardware_data() -> dict:
     cpu_brand_raw = cpuinfo.get_cpu_info().get("brand_raw", "未知处理器")
     if "amd" in cpu_brand_raw.lower():
         brand = "AMD"
-    elif "intel" in cpu_brand_raw:
+    elif "intel" in cpu_brand_raw.lower():
         brand = "英特尔"
     elif "apple" in cpu_brand_raw.lower():
         brand = "苹果"
