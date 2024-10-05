@@ -9,7 +9,7 @@ import asyncio
 from io import StringIO
 from pathlib import Path
 from typing import Annotated, Any, Union
-from builtins import ellipsis
+from types import EllipsisType
 
 # from nonebot import require
 
@@ -54,6 +54,7 @@ from src.utils.base.language import get_user_lang
 
 # from src.utils.base.config import get_config
 from src.utils.message.message import MarkdownMessage
+from src.utils.message.html_tool import md_to_pic
 
 from .execute_auto_translator import auto_translate  # type: ignore
 from .utils import hanzi_timeid
@@ -654,7 +655,7 @@ async def _(
                 if arg in result.options[arg].args.keys()
                 else result.options[arg].args
             )
-            if ((_vlu := result.options[arg].value) is None or isinstance(_vlu, ellipsis) )
+            if ((_vlu := result.options[arg].value) is None or isinstance(_vlu, EllipsisType) )
             else _vlu
         )
     # await musicreater_convert.finish(
@@ -1045,18 +1046,16 @@ async def _(
             "upload_private_file", user_id=event.user_id, name=fn, file=fp
         )
 
-    await MarkdownMessage.send_md(
+    img_bytes = await md_to_pic(
         "##{}\n\n```\n{}\n```".format(
             MarkdownMessage.escape("日志信息："),
             buffer.getvalue().replace("\\", "/"),
         ),
-        bot,
-        event=event,
     )
-
+    await UniMessage.send(UniMessage.image(raw=img_bytes))
+    
     # nonebot.logger.info(buffer.getvalue())
-
-    await MarkdownMessage.send_md(
+    img_bytes = await md_to_pic(
         "## 转换结果\n\n"
         + ("\n\n\n").join(
             [
@@ -1078,9 +1077,8 @@ async def _(
             ]
         )
         + "\n\n### 言·论 \n\n **{}**".format(random_yanlun_text()),
-        bot,
-        event=event,
     )
+    await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     global file_to_delete
     file_to_delete.append(fp)

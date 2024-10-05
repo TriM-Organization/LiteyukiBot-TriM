@@ -41,6 +41,7 @@ from nonebot_plugin_alconna import (
 
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage
+from src.utils.message.html_tool import md_to_pic
 
 from .msctexec import (
     # people_convert_point,
@@ -442,14 +443,13 @@ async def _(
         global file_to_delete
         file_to_delete.append(fp)
 
-    await MarkdownMessage.send_md(
+    img_bytes = await md_to_pic(
         "##{}\n\n```\n{}\n```".format(
             MarkdownMessage.escape("日志信息："),
             buffer.getvalue().replace("\\", "/"),
         ),
-        bot,
-        event=event,
     )
+    await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     # nonebot.logger.info(buffer.getvalue())
 

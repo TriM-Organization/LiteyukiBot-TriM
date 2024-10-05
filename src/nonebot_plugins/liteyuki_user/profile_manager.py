@@ -13,6 +13,7 @@ from src.utils.base.language import (
 )
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage as md
+from src.utils.message.html_tool import md_to_pic
 
 # from src.utils.message.html_tool import md_to_pic
 from .const import representative_timezones_list
@@ -20,7 +21,7 @@ from src.utils import event as event_utils
 
 
 require("nonebot_plugin_alconna")
-from nonebot_plugin_alconna import Alconna, Args, Arparma, Subcommand, on_alconna
+from nonebot_plugin_alconna import Alconna, Args, Arparma, Subcommand, on_alconna, UniMessage
 
 
 profile_alc = on_alconna(
@@ -87,7 +88,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot):
             # 未输入值，尝试呼出菜单
             menu = get_profile_menu(result.args["key"], ulang)
             if menu:
-                await md.send_md(menu, bot, event=event)
+                img_bytes = await md_to_pic(menu)
+                await profile_alc.finish(UniMessage.image(raw=img_bytes))
             else:
                 await profile_alc.finish(
                     ulang.get(
@@ -129,8 +131,9 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot):
                 f"\n> {ulang.get(f'user.profile.{key}.desc')}"
                 f"\n> {btn_set}  \n\n***\n"
             )
-        await md.send_md(reply, bot, event=event)
 
+        img_bytes = await md_to_pic(reply)
+        await profile_alc.finish(UniMessage.image(raw=img_bytes))
 
 def get_profile_menu(key: str, ulang: Language) -> Optional[str]:
     """获取属性的markdown菜单
@@ -182,3 +185,5 @@ def set_profile(key: str, value: str, user_id: str) -> bool:
             return True
     elif key == "nickname":
         return True
+
+    return False
