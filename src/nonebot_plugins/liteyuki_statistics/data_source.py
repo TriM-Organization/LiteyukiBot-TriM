@@ -61,6 +61,8 @@ async def get_stat_msg_image(
         condition_args.append(user_id)
 
     msg_rows = msg_db.where_all(MessageEventModel(), condition, *condition_args)
+    if not msg_rows:
+        msg_rows = []
     timestamps = []
     msg_count = []
     msg_rows.sort(key=lambda x: x.time)
@@ -157,8 +159,8 @@ async def get_stat_rank_image(
     templates = {
         "data": {
             "name": ulang.get("stat.rank")
-            + f"    类别：{rank_type}"
-            + f"    制约：{limit}",
+            + f"    Type {rank_type}"
+            + f"    Limit {limit}",
             "ranking": ranking,
         }
     }

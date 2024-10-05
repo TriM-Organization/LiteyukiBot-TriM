@@ -8,15 +8,10 @@ from src.utils.base.data_manager import InstalledPlugin, plugin_db
 from src.utils.base.resource import load_resources
 from src.utils.message.tools import check_for_package
 
-from liteyuki import get_bot, chan
-
-from nonebot_plugin_apscheduler import scheduler
-
 load_resources()
 init_log()
 
 driver = get_driver()
-liteyuki_bot = get_bot()
 
 
 @driver.on_startup
@@ -32,7 +27,7 @@ async def load_plugins():
             for installed_plugin in installed_plugins:
                 if not check_for_package(installed_plugin.module_name):
                     nonebot.logger.error(
-                        f"插件 {installed_plugin.module_name} 在加载列表中但未安装。请使用超管账户对机器人发送 `npm fixup` 以重新安装。"
+                        f"插件 {installed_plugin.module_name} 仍在加载列表中但未安装。"
                     )
                 else:
                     nonebot.load_plugin(installed_plugin.module_name)

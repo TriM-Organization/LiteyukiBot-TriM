@@ -13,7 +13,7 @@
 [![][Python3.10+]][python-link]
 [![][Usage]][usage-link]
 
-- 基于[Nonebot2](https://github.com/nonebot/nonebot2)，有良好的生态支持
+- 原生支持与任意 `Python`Bot 框架互联，有良好的生态支持
 - 开箱即用，无需复杂配置
 - 集成包管理器，支持一键安装插件
 - 支持 OneBot 标准通信但不限于此
@@ -27,10 +27,7 @@
 
 ### 感谢
 
-- 感谢[NoneBot2](https://nonebot.dev)提供的框架支持
-- 感谢[nonebot-plugin-htmlrender](https://github.com/kexue-z/nonebot-plugin-htmlrender)提供的渲染功能
-- 讨厌上述项目提供的**基于 Chromium 浏览器**的 HTML 渲染功能，就功能本身而言很好，但我讨厌一声不响在我电脑里装浏览器这个行为，虽然这并不妨碍我感谢之 ——金羿
-- 感谢[nonebot-plugin-alconna](https://github.com/ArcletProject/nonebot-plugin-alconna)提供的命令解析功能
+- 感谢所有贡献者们
 - 十分感谢[神羽 SnowyKami](https://github.com/snowykami)提供的技术指导和服务器资源
 - 特别感谢[云裳工作室](https://doc.ysmcc.cn/doc/1/)提供的服务器挂载
 - 由衷感谢我在学习生活中遇到的所有朋友们，你们身为我生命中的一处景色，不断地推进我此生的进程。

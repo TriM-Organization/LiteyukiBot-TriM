@@ -10,14 +10,12 @@ Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved
 """
 import os
 import traceback
+from importlib import import_module
 from pathlib import Path
 from typing import Optional
 
-from nonebot import logger
-
-from liteyuki.plugin.model import Plugin, PluginMetadata
-from importlib import import_module
-
+from liteyuki.log import logger
+from liteyuki.plugin.model import Plugin, PluginMetadata, PluginType
 from liteyuki.utils import path_to_module_name
 
 _plugins: dict[str, Plugin] = {}
@@ -25,6 +23,7 @@ _plugins: dict[str, Plugin] = {}
 __all__ = [
     "load_plugin",
     "load_plugins",
+    "_plugins",
 ]
 
 
@@ -35,45 +34,92 @@ def load_plugin(module_path: str | Path) -> Optional[Plugin]:
         module_path: 插件名称 `path.to.your.plugin`
         或插件路径 `pathlib.Path(path/to/your/plugin)`
     """
-    module_path = path_to_module_name(Path(module_path)) if isinstance(module_path, Path) else module_path
+    module_path = (
+        path_to_module_name(Path(module_path))
+        if isinstance(module_path, Path)
+        else module_path
+    )
     try:
         module = import_module(module_path)
         _plugins[module.__name__] = Plugin(
             name=module.__name__,
             module=module,
             module_name=module_path,
-            metadata=module.__dict__.get("__plugin_metadata__", None)
         )
+        if module.__dict__.get("__plugin_metadata__", None):
+            metadata: "PluginMetadata" = module.__dict__["__plugin_metadata__"]
+            display_name = module.__name__.split(".")[-1]
+        elif module.__dict__.get("__liteyuki_plugin_meta__", None):
+            metadata: "PluginMetadata" = module.__dict__["__liteyuki_plugin_meta__"]
+            display_name = format_display_name(
+                f"{metadata.name}({module.__name__.split('.')[-1]})", metadata.type
+            )
+        elif module.__dict__.get("__plugin_meta__", None):
+            metadata: "PluginMetadata" = module.__dict__["__plugin_meta__"]
+            display_name = format_display_name(
+                f"{metadata.name}({module.__name__.split('.')[-1]})", metadata.type
+            )
+        else:
+
+            logger.opt(colors=True).warning(
+                f'轻雪插件 "{module.__name__}" 的元信息未指定，将采用空的元信息'
+            )
+
+            metadata = PluginMetadata(
+                name=module.__name__,
+            )
+            display_name = module.__name__.split(".")[-1]
+
+        _plugins[module.__name__].metadata = metadata
+
         logger.opt(colors=True).success(
-            f'成功加载 轻雪插件 "<y>{module.__name__.split(".")[-1]}</y>"'
+            f'成功加载轻雪插件 "{display_name}"'
         )
         return _plugins[module.__name__]
 
     except Exception as e:
         logger.opt(colors=True).success(
-            f'未能加载 轻雪插件 "<r>{module_path}</r>"'
+            f'无法加载轻雪插件 "<r>{module_path}</r>"'
         )
         traceback.print_exc()
         return None
 
 
-def load_plugins(*plugin_dir: str) -> set[Plugin]:
+def load_plugins(*plugin_dir: str, ignore_warning: bool = True) -> set[Plugin]:
     """导入文件夹下多个插件
 
     参数:
         plugin_dir: 文件夹路径
+        ignore_warning: 是否忽略警告，通常是目录不存在或目录为空
     """
     plugins = set()
     for dir_path in plugin_dir:
         # 遍历每一个文件夹下的py文件和包含__init__.py的文件夹，不递归
+        if not os.path.exists(dir_path):
+            if not ignore_warning:
+                logger.warning(f"插件目录 '{dir_path}' 不存在")
+            continue
+
+        if not os.listdir(dir_path):
+            if not ignore_warning:
+                logger.warning(f"插件目录 '{dir_path}' 为空")
+            continue
+
+        if not os.path.isdir(dir_path):
+            if not ignore_warning:
+                logger.warning(f"本应是插件目录的路径 '{dir_path}' 并非如此")
+            continue
+
         for f in os.listdir(dir_path):
             path = Path(os.path.join(dir_path, f))
 
             module_name = None
-            if os.path.isfile(path) and f.endswith('.py') and f != '__init__.py':
+            if os.path.isfile(path) and f.endswith(".py") and f != "__init__.py":
                 module_name = f"{path_to_module_name(Path(dir_path))}.{f[:-3]}"
 
-            elif os.path.isdir(path) and os.path.exists(os.path.join(path, '__init__.py')):
+            elif os.path.isdir(path) and os.path.exists(
+                os.path.join(path, "__init__.py")
+            ):
                 module_name = path_to_module_name(path)
 
             if module_name:
@@ -81,3 +127,27 @@ def load_plugins(*plugin_dir: str) -> set[Plugin]:
                 if _plugins.get(module_name):
                     plugins.add(_plugins[module_name])
     return plugins
+
+
+def format_display_name(display_name: str, plugin_type: PluginType) -> str:
+    """
+    设置插件名称颜色，根据不同类型插件设置颜色
+    Args:
+        display_name: 插件名称
+        plugin_type: 插件类型
+
+    Returns:
+        str: 设置后的插件名称 <y>name</y>
+    """
+    color = "y"
+    match plugin_type:
+        case PluginType.APPLICATION:
+            color = "m"
+        case PluginType.TEST:
+            color = "g"
+        case PluginType.MODULE:
+            color = "e"
+        case PluginType.SERVICE:
+            color = "c"
+
+    return f"<{color}>{display_name} [{plugin_type.name}]</{color}>"

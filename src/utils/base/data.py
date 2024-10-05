@@ -30,7 +30,7 @@ class Database:
             os.makedirs(os.path.dirname(db_name))
 
         self.db_name = db_name
-        self.conn = sqlite3.connect(db_name)
+        self.conn = sqlite3.connect(db_name, check_same_thread=False)
         self.cursor = self.conn.cursor()
 
         self._on_save_callbacks = []
@@ -94,7 +94,7 @@ class Database:
             f"数据库 Selecting {model.TABLE_NAME} WHERE {condition.replace('?', '%s') % args}"
         )
         if not table_name:
-            raise ValueError(f"数据模型{model_type.__name__}未提供表名")
+            raise ValueError(f"数据模型 {model_type.__name__} 未提供表名")
 
         # condition = f"WHERE {condition}"
         # print(f"SELECT * FROM {table_name} {condition}", args)
@@ -118,7 +118,7 @@ class Database:
             ]
 
     def save(self, *args: LiteModel):
-        """增/改操作
+        self.returns_ = """增/改操作
         Args:
             *args:
         Returns:
@@ -126,7 +126,7 @@ class Database:
         table_list = [
             item[0]
             for item in self.cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
+                "SELECT name FROM sqlite_master WHERE type ='table'"
             ).fetchall()
         ]
         for model in args:
@@ -158,7 +158,7 @@ class Database:
                     new_obj[field] = value
                 else:
                     raise ValueError(
-                        f"数据模型{table_name}包含不支持的数据类型，字段：{field} 值：{value} 值类型：{type(value)}"
+                        f"数据模型 {table_name} 包含不支持的数据类型，字段：{field} 值：{value} 值类型：{type(value)}"
                     )
             if table_name:
                 fields, values = [], []
@@ -273,9 +273,9 @@ class Database:
 
         """
         table_name = model.TABLE_NAME
-        logger.debug(f"数据库 Deleting {model} WHERE {condition} {args}")
+        logger.debug(f"Deleting {model} WHERE {condition} {args}")
         if not table_name:
-            raise ValueError(f"数据模型{model.__class__.__name__}未提供表名")
+            raise ValueError(f"数据模型 {model.__class__.__name__} 未提供表名")
         if model.id is not None:
             condition = f"id = {model.id}"
         if not condition and not allow_empty:
@@ -297,7 +297,7 @@ class Database:
         """
         for model in args:
             if not model.TABLE_NAME:
-                raise ValueError(f"数据模型{type(model).__name__}未提供表名")
+                raise ValueError(f"数据模型 {type(model).__name__} 未提供表名")
 
             # 若无则创建表
             self.cursor.execute(

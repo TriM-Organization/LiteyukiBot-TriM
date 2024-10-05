@@ -1,32 +1,19 @@
 import base64
 import io
+from typing import Any
 from urllib.parse import quote
 
 import aiofiles
-from PIL import Image
 import aiohttp
 import nonebot
-from nonebot import require
-from nonebot.adapters import satori
+from PIL import Image
 from nonebot.adapters.onebot import v11
-from typing import Any, Type
 
-from nonebot.internal.adapter import MessageSegment
-from nonebot.internal.adapter.message import TM
-
+from .html_tool import md_to_pic
 from .. import load_from_yaml
 from ..base.ly_typing import T_Bot, T_Message, T_MessageEvent
 
-require("nonebot_plugin_htmlrender")
-from nonebot_plugin_htmlrender import md_to_pic
-
 config = load_from_yaml("config.yml")
-
-can_send_markdown = {}  # 用于存储机器人是否支持发送markdown消息，id->bool
-
-
-class TencentBannedMarkdownError(BaseException):
-    pass
 
 
 async def broadcast_to_superusers(message: str | T_Message, markdown: bool = False):
@@ -49,9 +36,6 @@ class MarkdownMessage:
         *,
         message_type: str = None,
         session_id: str | int = None,
-        event: T_MessageEvent = None,
-        retry_as_image: bool = True,
-        **kwargs,
     ) -> dict[str, Any] | None:
         """
         发送Markdown消息，支持自动转为图片发送
@@ -60,86 +44,20 @@ class MarkdownMessage:
             bot:
             message_type:
             session_id:
-            event:
-            retry_as_image: 发送失败后是否尝试以图片形式发送，否则失败返回None
-            **kwargs:
-
         Returns:
 
         """
-        formatted_md = v11.unescape(markdown).replace("\n", r"\n").replace('"', r"\\\"")
-        if event is not None and message_type is None:
-            if isinstance(event, satori.event.Event):
-                message_type = "private" if event.guild is None else "group"
-                group_id = event.guild.id if event.guild is not None else None
-            else:
-                assert event is not None
-                message_type = event.message_type
-                group_id = event.group_id if message_type == "group" else None
-            user_id = (
-                event.user.id
-                if isinstance(event, satori.event.Event)
-                else event.user_id
-            )
-            session_id = user_id if message_type == "private" else group_id
-
-        # try:
-        #     raise TencentBannedMarkdownError("Tencent banned markdown")
-        #     forward_id = await bot.call_api(
-        #         "send_private_forward_msg",
-        #         messages=[
-        #             {
-        #                 "type": "node",
-        #                 "data": {
-        #                     "content": [
-        #                         {
-        #                             "data": {
-        #                                 "content": "{\"content\":\"%s\"}" % formatted_md,
-        #                             },
-        #                             "type": "markdown"
-        #                         }
-        #                     ],
-        #                     "name": "[]",
-        #                     "uin": bot.self_id
-        #                 }
-        #             }
-        #         ],
-        #         user_id=bot.self_id
-
-        #     )
-        #     data = await bot.send_msg(
-        #         user_id=session_id,
-        #         group_id=session_id,
-        #         message_type=message_type,
-        #         message=[
-        #             {
-        #                 "type": "longmsg",
-        #                 "data": {
-        #                     "id": forward_id
-        #                 }
-        #             },
-        #         ],
-        #         **kwargs
-        #     )
-        # except BaseException as e:
-
-        nonebot.logger.error(f"因未能发送Markdown消息，已转为图片发送。")
-        # 发送失败，渲染为图片发送
-        # if not retry_as_image:
-        #     return None
-
-        # plain_markdown = markdown.replace("[🔗", "[")
-        md_image_bytes = await md_to_pic(md=markdown, width=540, device_scale_factor=4)
-        if isinstance(bot, satori.Bot):
-            msg_seg = satori.MessageSegment.image(raw=md_image_bytes, mime="image/png")
-            data = await bot.send(event=event, message=msg_seg)
-        else:
-            data = await bot.send_msg(
-                message_type=message_type,
-                group_id=session_id,
-                user_id=session_id,
-                message=v11.MessageSegment.image(md_image_bytes),
-            )
+        plain_markdown = markdown.replace("[🔗", "[")
+        md_image_bytes = await md_to_pic(
+            md=plain_markdown, width=540, device_scale_factor=4
+        )
+        print(md_image_bytes)
+        data = await bot.send_msg(
+            message_type=message_type,
+            group_id=session_id,
+            user_id=session_id,
+            message=v11.MessageSegment.image(md_image_bytes),
+        )
         return data
 
     @staticmethod
@@ -157,38 +75,25 @@ class MarkdownMessage:
         Args:
             image: 图片字节流或图片本地路径，链接请使用Markdown.image_async方法获取后通过send_md发送
             bot: bot instance
-            message_type: message type
+            message_type: message message_type
             session_id: session id
             event: event
             kwargs: other arguments
         Returns:
             dict: response data
-
         """
         if isinstance(image, str):
             async with aiofiles.open(image, "rb") as f:
                 image = await f.read()
         method = 2
-        # 1.轻雪图床方案
-        # if method == 1:
-        #     image_url = await liteyuki_api.upload_image(image)
-        #     image_size = Image.open(io.BytesIO(image)).size
-        #     image_md = Markdown.image(image_url, image_size)
-        #     data = await Markdown.send_md(image_md, bot, message_type=message_type, session_id=session_id, event=event,
-        #                                   retry_as_image=False,
-        #                                   **kwargs)
-
-        # Lagrange.OneBot方案
         if method == 2:
             base64_string = base64.b64encode(image).decode("utf-8")
             data = await bot.call_api("upload_image", file=f"base64://{base64_string}")
             await MarkdownMessage.send_md(
                 MarkdownMessage.image(data, Image.open(io.BytesIO(image)).size),
                 bot,
-                event=event,
                 message_type=message_type,
                 session_id=session_id,
-                **kwargs,
             )
 
         # 其他实现端方案
@@ -204,12 +109,7 @@ class MarkdownMessage:
             image_size = Image.open(io.BytesIO(image)).size
             image_md = MarkdownMessage.image(image_url, image_size)
             return await MarkdownMessage.send_md(
-                image_md,
-                bot,
-                message_type=message_type,
-                session_id=session_id,
-                event=event,
-                **kwargs,
+                image_md, bot, message_type=message_type, session_id=session_id
             )
 
         if data is None:
@@ -293,7 +193,7 @@ class MarkdownMessage:
                     image = Image.open(io.BytesIO(await resp.read()))
                     return MarkdownMessage.image(url, image.size)
         except Exception as e:
-            nonebot.logger.error(f"get image error: {e}")
+            nonebot.logger.error(f"获取图片错误：{e}")
             return "[Image Error]"
 
     @staticmethod

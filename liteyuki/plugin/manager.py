@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2020-2024 LiteyukiStudio. All rights reserved
-
-版权所有 © 2020-2024 神羽SnowyKami & 金羿Eilles with LiteyukiStudio & TriM Org.
-保留所有权利 
+Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved 
 
 @Time    : 2024/7/23 下午11:59
 @Author  : snowykami

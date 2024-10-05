@@ -3,7 +3,9 @@ import os
 import shutil
 import zipfile
 from typing import Any
+from pathlib import Path
 
+# import aiofiles
 import nonebot
 import yaml
 
@@ -12,8 +14,8 @@ from .language import Language, get_default_lang_code
 from .ly_function import loaded_functions
 
 _loaded_resource_packs: list["ResourceMetadata"] = []  # 按照加载顺序排序
-temp_resource_root = "data/liteyuki/resources"
-temp_extract_root = "data/liteyuki/temp"
+temp_resource_root = Path("data/liteyuki/resources")
+temp_extract_root = Path("data/liteyuki/temp")
 lang = Language(get_default_lang_code())
 
 
@@ -50,60 +52,139 @@ def load_resource_from_dir(path: str):
     for root, dirs, files in os.walk(path):
         for file in files:
             relative_path = os.path.relpath(os.path.join(root, file), path)
-            copy_file(os.path.join(root, file), os.path.join(temp_resource_root, relative_path))
+            copy_file(
+                os.path.join(root, file),
+                os.path.join(temp_resource_root, relative_path),
+            )
     metadata["path"] = path
     metadata["folder"] = os.path.basename(path)
 
     if os.path.exists(os.path.join(path, "lang")):
         # 加载语言
         from src.utils.base.language import load_from_dir
+
         load_from_dir(os.path.join(path, "lang"))
 
     if os.path.exists(os.path.join(path, "functions")):
         # 加载功能
         from src.utils.base.ly_function import load_from_dir
+
         load_from_dir(os.path.join(path, "functions"))
 
     if os.path.exists(os.path.join(path, "word_bank")):
         # 加载词库
         from src.utils.base.word_bank import load_from_dir
+
         load_from_dir(os.path.join(path, "word_bank"))
 
     _loaded_resource_packs.insert(0, ResourceMetadata(**metadata))
 
 
-def get_path(path: str, abs_path: bool = True, default: Any = None, debug: bool = False) -> str | Any:
+def get_path(
+    path: os.PathLike[str,] | Path | str,
+    abs_path: bool = True,
+    default: Any = None,
+    debug: bool = False,
+) -> str | Any:
     """
-    获取资源包中的文件
+    获取资源包中的路径，且该路径必须存在
     Args:
-        debug: 启用调试，每次都会先重载资源
+        path: 相对路径
         abs_path: 是否返回绝对路径
-        default: 默认
-        path: 文件相对路径
-    Returns: 文件绝对路径
+        default: 默认解，当该路径不存在时使用
+        debug: 启用调试，每次都会先重载资源
+    Returns: 所需求之路径
     """
     if debug:
-        nonebot.logger.debug("Enable resource debug, Reloading resources")
+        nonebot.logger.debug("由于已启用资源路径调试，正在重载资源")
         load_resources()
-    resource_relative_path = os.path.join(temp_resource_root, path)
-    if os.path.exists(resource_relative_path):
-        return os.path.abspath(resource_relative_path) if abs_path else resource_relative_path
+    resource_relative_path = temp_resource_root / path
+    if resource_relative_path.exists():
+        return str(
+            resource_relative_path.resolve() if abs_path else resource_relative_path
+        )
     else:
         return default
 
 
-def get_files(path: str, abs_path: bool = False) -> list[str]:
+def get_resource_path(
+    path: os.PathLike[str,] | Path | str,
+    abs_path: bool = True,
+    only_exist: bool = False,
+    default: Any = None,
+    debug: bool = False,
+) -> Path:
     """
-    获取资源包中一个文件夹的所有文件
+    获取资源包中的路径
     Args:
-        abs_path:
-        path: 文件夹相对路径
-    Returns: 文件绝对路径
+        path: 相对路径
+        abs_path: 是否返回绝对路径
+        only_exist: 检查该路径是否存在
+        default: [当 `only_exist` 为 **真** 时启用]默认解，当该路径不存在时使用
+        debug: 启用调试，每次都会先重载资源
+    Returns: 所需求之路径
     """
-    resource_relative_path = os.path.join(temp_resource_root, path)
-    if os.path.exists(resource_relative_path):
-        return [os.path.abspath(os.path.join(resource_relative_path, file)) if abs_path else os.path.join(resource_relative_path, file) for file in
-                os.listdir(resource_relative_path)]
+    if debug:
+        nonebot.logger.debug("由于已启用资源路径调试，正在重载资源")
+        load_resources()
+    resource_relative_path = (
+        (temp_resource_root / path).resolve()
+        if abs_path
+        else (temp_resource_root / path)
+    )
+    if only_exist:
+        if resource_relative_path.exists():
+            return resource_relative_path
+        else:
+            return default
+    else:
+        return resource_relative_path
+
+
+def get_files(
+    path: os.PathLike[str,] | Path | str, abs_path: bool = False
+) -> list[str]:
+    """
+    获取资源包中一个目录的所有内容
+    Args:
+        path: 该目录的相对路径
+        abs_path: 是否返回绝对路径
+    Returns: 目录内容路径所构成之列表
+    """
+    resource_relative_path = temp_resource_root / path
+    if resource_relative_path.exists():
+        return [
+            (
+                str((resource_relative_path / file_).resolve())
+                if abs_path
+                else str((resource_relative_path / file_))
+            )
+            for file_ in os.listdir(resource_relative_path)
+        ]
+    else:
+        return []
+
+
+def get_resource_files(
+    path: os.PathLike[str,] | Path | str, abs_path: bool = False
+) -> list[Path]:
+    """
+    获取资源包中一个目录的所有内容
+    Args:
+        path: 该目录的相对路径
+        abs_path: 是否返回绝对路径
+    Returns: 目录内容路径所构成之列表
+    """
+    resource_relative_path = temp_resource_root / path
+    if resource_relative_path.exists():
+        return [
+            (
+                (resource_relative_path / file_).resolve()
+                if abs_path
+                else (resource_relative_path / file_)
+            )
+            for file_ in os.listdir(resource_relative_path)
+        ]
     else:
         return []
 
@@ -150,7 +231,9 @@ def load_resources():
     if not os.path.exists("resources/index.json"):
         json.dump([], open("resources/index.json", "w", encoding="utf-8"))
 
-    resource_index: list[str] = json.load(open("resources/index.json", "r", encoding="utf-8"))
+    resource_index: list[str] = json.load(
+        open("resources/index.json", "r", encoding="utf-8")
+    )
     resource_index.reverse()  # 优先级高的后加载，但是排在前面
     for resource in resource_index:
         load_resource_from_dir(os.path.join("resources", resource))
@@ -174,7 +257,9 @@ def check_exist(name: str) -> bool:
     Returns: 是否存在
     """
     path = os.path.join("resources", name)
-    return os.path.exists(os.path.join(path, "metadata.yml")) or (os.path.isfile(path) and name.endswith(".zip"))
+    return os.path.exists(os.path.join(path, "metadata.yml")) or (
+        os.path.isfile(path) and name.endswith(".zip")
+    )
 
 
 def add_resource_pack(name: str) -> bool:
@@ -185,17 +270,19 @@ def add_resource_pack(name: str) -> bool:
     Returns:
     """
     if check_exist(name):
-        old_index: list[str] = json.load(open("resources/index.json", "r", encoding="utf-8"))
+        old_index: list[str] = json.load(
+            open("resources/index.json", "r", encoding="utf-8")
+        )
         if name not in old_index:
             old_index.append(name)
             json.dump(old_index, open("resources/index.json", "w", encoding="utf-8"))
             load_resource_from_dir(os.path.join("resources", name))
             return True
         else:
-            nonebot.logger.warning(lang.get("liteyuki.resource_loaded", name=name))
+            nonebot.logger.warning("资源包 {} 已存在，无需添加".format(name))
             return False
     else:
-        nonebot.logger.warning(lang.get("liteyuki.resource_not_exist", name=name))
+        nonebot.logger.warning("资源包 {} 不存在，无法添加".format(name))
         return False
 
 
@@ -207,16 +294,18 @@ def remove_resource_pack(name: str) -> bool:
     Returns:
     """
     if check_exist(name):
-        old_index: list[str] = json.load(open("resources/index.json", "r", encoding="utf-8"))
+        old_index: list[str] = json.load(
+            open("resources/index.json", "r", encoding="utf-8")
+        )
         if name in old_index:
             old_index.remove(name)
             json.dump(old_index, open("resources/index.json", "w", encoding="utf-8"))
             return True
         else:
-            nonebot.logger.warning(lang.get("liteyuki.resource_not_loaded", name=name))
+            nonebot.logger.warning("资源包 {} 不存在，无需移除".format(name))
             return False
     else:
-        nonebot.logger.warning(lang.get("liteyuki.resource_not_exist", name=name))
+        nonebot.logger.warning("资源包 {} 不存在，无法移除".format(name))
         return False
 
 
@@ -229,7 +318,9 @@ def change_priority(name: str, delta: int) -> bool:
     Returns:
     """
     # 正数表示前移，负数表示后移
-    old_resource_list: list[str] = json.load(open("resources/index.json", "r", encoding="utf-8"))
+    old_resource_list: list[str] = json.load(
+        open("resources/index.json", "r", encoding="utf-8")
+    )
     new_resource_list = old_resource_list.copy()
     if name in old_resource_list:
         index = old_resource_list.index(name)
@@ -237,13 +328,15 @@ def change_priority(name: str, delta: int) -> bool:
             new_index = index + delta
             new_resource_list.remove(name)
             new_resource_list.insert(new_index, name)
-            json.dump(new_resource_list, open("resources/index.json", "w", encoding="utf-8"))
+            json.dump(
+                new_resource_list, open("resources/index.json", "w", encoding="utf-8")
+            )
             return True
         else:
-            nonebot.logger.warning("Priority change failed, out of range")
+            nonebot.logger.warning("无法更改优先级为 {} ，优先级超出范围".format(delta))
             return False
     else:
-        nonebot.logger.debug("Priority change failed, resource not loaded")
+        nonebot.logger.debug("资源包 {} 未加载，无法更改优先级".format(name))
         return False
 
 

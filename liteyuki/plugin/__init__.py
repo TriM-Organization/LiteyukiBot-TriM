@@ -1,11 +1,12 @@
-from liteyuki.plugin.model import Plugin, PluginMetadata
+from liteyuki.plugin.model import Plugin, PluginMetadata, PluginType
 from liteyuki.plugin.load import load_plugin, load_plugins, _plugins
 
 __all__ = [
-        "PluginMetadata",
-        "Plugin",
-        "load_plugin",
-        "load_plugins",
+    "PluginMetadata",
+    "Plugin",
+    "PluginType",
+    "load_plugin",
+    "load_plugins",
 ]
 
 

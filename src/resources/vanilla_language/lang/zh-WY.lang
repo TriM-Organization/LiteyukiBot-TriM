@@ -1,10 +1,10 @@
 language.name=文言
 
-log.debug=试言
-log.info=讯文
-log.warning=警示
-log.error=查误
-log.success=名成
+log.debug=试
+log.info=讯
+log.warning=警
+log.error=误
+log.success=成
 
 liteyuki.restart=复启
 liteyuki.restart_now=即复启

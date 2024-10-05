@@ -2,9 +2,8 @@ import os
 
 from pydantic import Field
 
-from .data import Database, LiteModel, Database
+from .data import Database, LiteModel
 
-print("导入数据库模块")
 DATA_PATH = "data/liteyuki"
 user_db: Database = Database(os.path.join(DATA_PATH, "users.ldb"))
 group_db: Database = Database(os.path.join(DATA_PATH, "groups.ldb"))
@@ -64,7 +63,7 @@ def auto_migrate():
     user_db.auto_migrate(User())
     group_db.auto_migrate(Group())
     plugin_db.auto_migrate(InstalledPlugin(), GlobalPlugin())
-    common_db.auto_migrate(GlobalPlugin(), StoredConfig(), TempConfig())
+    common_db.auto_migrate(GlobalPlugin(), TempConfig())
 
 
 auto_migrate()

@@ -5,14 +5,23 @@ from nonebot import require
 
 from src.utils.base.data import LiteModel, Database
 from src.utils.base.data_manager import User, user_db, group_db
-from src.utils.base.language import Language, change_user_lang, get_all_lang, get_user_lang
+from src.utils.base.language import (
+    Language,
+    change_user_lang,
+    get_all_lang,
+    get_user_lang,
+)
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage as md
+
+# from src.utils.message.html_tool import md_to_pic
 from .const import representative_timezones_list
 from src.utils import event as event_utils
 
+
 require("nonebot_plugin_alconna")
 from nonebot_plugin_alconna import Alconna, Args, Arparma, Subcommand, on_alconna
+
 
 profile_alc = on_alconna(
     Alconna(
@@ -28,7 +37,7 @@ profile_alc = on_alconna(
             alias=["g", "查询"],
         ),
     ),
-    aliases={"用户信息"}
+    aliases={"用户信息"},
 )
 
 
@@ -42,13 +51,21 @@ class Profile(LiteModel):
 
 @profile_alc.handle()
 async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot):
-    user: User = user_db.where_one(User(), "user_id = ?", event_utils.get_user_id(event),
-                                   default=User(user_id=str(event_utils.get_user_id(event))))
+    user: User = user_db.where_one(
+        User(),
+        "user_id = ?",
+        event_utils.get_user_id(event),
+        default=User(user_id=str(event_utils.get_user_id(event))),
+    )
     ulang = get_user_lang(str(event_utils.get_user_id(event)))
     if result.subcommands.get("set"):
         if result.subcommands["set"].args.get("value"):
             # 对合法性进行校验后设置
-            r = set_profile(result.args["key"], result.args["value"], str(event_utils.get_user_id(event)))
+            r = set_profile(
+                result.args["key"],
+                result.args["value"],
+                str(event_utils.get_user_id(event)),
+            )
             if r:
                 user.profile[result.args["key"]] = result.args["value"]
                 user_db.save(user)  # 数据库保存
@@ -56,18 +73,28 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot):
                     ulang.get(
                         "user.profile.set_success",
                         ATTR=ulang.get(f"user.profile.{result.args['key']}"),
-                        VALUE=result.args["value"]
+                        VALUE=result.args["value"],
                     )
                 )
             else:
-                await profile_alc.finish(ulang.get("user.profile.set_failed", ATTR=ulang.get(f"user.profile.{result.args['key']}")))
+                await profile_alc.finish(
+                    ulang.get(
+                        "user.profile.set_failed",
+                        ATTR=ulang.get(f"user.profile.{result.args['key']}"),
+                    )
+                )
         else:
             # 未输入值，尝试呼出菜单
             menu = get_profile_menu(result.args["key"], ulang)
             if menu:
                 await md.send_md(menu, bot, event=event)
             else:
-                await profile_alc.finish(ulang.get("user.profile.input_value", ATTR=ulang.get(f"user.profile.{result.args['key']}")))
+                await profile_alc.finish(
+                    ulang.get(
+                        "user.profile.input_value",
+                        ATTR=ulang.get(f"user.profile.{result.args['key']}"),
+                    )
+                )
 
         user.profile[result.args["key"]] = result.args["value"]
 
@@ -92,11 +119,16 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot):
                 continue
             val = profile.dict()[key]
             key_text = ulang.get(f"user.profile.{key}")
-            btn_set = md.btn_cmd(ulang.get("user.profile.edit"), f"profile set {key}",
-                                 enter=True if key in enter_attr else False)
-            reply += (f"\n**{key_text}**    **{val}**\n"
-                      f"\n> {ulang.get(f'user.profile.{key}.desc')}"
-                      f"\n> {btn_set}  \n\n***\n")
+            btn_set = md.btn_cmd(
+                ulang.get("user.profile.edit"),
+                f"profile set {key}",
+                enter=True if key in enter_attr else False,
+            )
+            reply += (
+                f"\n**{key_text}**    **{val}**\n"
+                f"\n> {ulang.get(f'user.profile.{key}.desc')}"
+                f"\n> {btn_set}  \n\n***\n"
+            )
         await md.send_md(reply, bot, event=event)
 
 
@@ -119,7 +151,9 @@ def get_profile_menu(key: str, ulang: Language) -> Optional[str]:
     reply = f"**{setting_name} {ulang.get('user.profile.settings')}**\n***\n"
     if key == "lang":
         for lang_code, lang_name in get_all_lang().items():
-            btn_set_lang = md.btn_cmd(f"{lang_name}({lang_code})", f"profile set {key} {lang_code}")
+            btn_set_lang = md.btn_cmd(
+                f"{lang_name}({lang_code})", f"profile set {key} {lang_code}"
+            )
             reply += f"\n{btn_set_lang}\n***\n"
     elif key == "timezone":
         for tz in representative_timezones_list:

@@ -14,17 +14,21 @@ from nonebot.permission import SUPERUSER
 from nonebot.plugin import Plugin, PluginMetadata
 from nonebot.utils import run_sync
 
+
 from src.utils.base.data_manager import InstalledPlugin
 from src.utils.base.language import get_user_lang
 from src.utils.base.ly_typing import T_Bot
-from src.utils.message.message import MarkdownMessage as md
-from src.utils.message.markdown import MarkdownComponent as mdc, compile_md, escape_md
 from src.utils.base.permission import GROUP_ADMIN, GROUP_OWNER
 from src.utils.message.tools import clamp
+from src.utils.message.message import MarkdownMessage as md
+from src.utils.message.markdown import MarkdownComponent as mdc, compile_md, escape_md
+from src.utils.message.html_tool import md_to_pic
 from .common import *
+
 
 require("nonebot_plugin_alconna")
 from nonebot_plugin_alconna import (
+    UniMessage,
     on_alconna,
     Alconna,
     Args,
@@ -147,7 +151,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 session_id = event.group_id
                 new_event = event
             else:
-                raise FinishedException(ulang.get("Permission Denied"))
+                raise FinishedException(ulang.get("liteyuki.permission_denied"))
 
         session_enable = get_plugin_session_enable(
             new_event, plugin_name
@@ -292,7 +296,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 reply += f"\n{ulang.get('npm.too_many_results', HIDE_NUM=len(rs) - max_show)}"
         else:
             reply = ulang.get("npm.search_no_result")
-        await md.send_md(reply, bot, event=event)
+        img_bytes = await md_to_pic(reply)
+        await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     elif sc.get("install") and perm_s:
         plugin_name: str = result.subcommands["install"].args.get("plugin_name")
@@ -320,7 +325,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                     info = md.escape(
                         ulang.get("npm.install_success", NAME=store_plugin.name)
                     )  # markdown转义
-                    await md.send_md(f"{info}\n\n" f"```\n{log}\n```", bot, event=event)
+                    await npm.send(f"{info}\n\n" + f"\n{log}\n")
                 else:
                     await npm.finish(
                         ulang.get(
@@ -331,12 +336,12 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 info = ulang.get(
                     "npm.load_failed", NAME=plugin_name, HOMEPAGE=homepage_btn
                 ).replace("_", r"\\_")
-                await md.send_md(f"{info}\n\n" f"```\n{log}\n```\n", bot, event=event)
+                await npm.finish(f"{info}\n\n" f"```\n{log}\n```\n")
         else:
             info = ulang.get(
                 "npm.install_failed", NAME=plugin_name, HOMEPAGE=homepage_btn
             ).replace("_", r"\\_")
-            await md.send_md(f"{info}\n\n" f"```\n{log}\n```", bot, event=event)
+            await npm.send(f"{info}\n\n" f"```\n{log}\n```")
 
     elif sc.get("uninstall") and perm_s:
         plugin_name: str = result.subcommands["uninstall"].args.get("plugin_name")  # type: ignore
@@ -464,7 +469,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
             else ulang.get("npm.next_page")
         )
         reply += f"\n{btn_prev}  {page}/{total}  {btn_next}"
-        await md.send_md(reply, bot, event=event)
+        img_bytes = await md_to_pic(reply)
+        await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     else:
         if await SUPERUSER(bot, event):
@@ -517,7 +523,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 f"\n\n>page为页数，num为每页显示数量"
                 f"\n\n>*{md.escape('npm list [page] [num]')}*"
             )
-            await md.send_md(reply, bot, event=event)
+            img_bytes = await md_to_pic(reply)
+            await UniMessage.send(UniMessage.image(raw=img_bytes))
         else:
 
             btn_list = md.btn_cmd(
@@ -539,7 +546,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 f"\n\n>page为页数，num为每页显示数量"
                 f"\n\n>*{md.escape('npm list [page] [num]')}*"
             )
-            await md.send_md(reply, bot, event=event)
+            img_bytes = await md_to_pic(reply)
+            await UniMessage.send(UniMessage.image(raw=img_bytes))
 
 
 @on_alconna(
@@ -554,7 +562,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
         Subcommand(
             disable,
             Args["group_id", str, None],
-            alias=["d", "停用", "禁用"],
+            alias=["d", "停用"],
         ),
     ),
     permission=SUPERUSER | GROUP_OWNER | GROUP_ADMIN,
@@ -679,7 +687,7 @@ async def _(result: Arparma, matcher: Matcher, event: T_MessageEvent, bot: T_Bot
                     else mdc.paragraph(ulang.get("npm.homepage"))
                 ),
             ]
-            await md.send_md(compile_md(reply), bot, event=event)
+            await matcher.finish(compile_md(reply))
         else:
             await matcher.finish(ulang.get("npm.plugin_not_found", NAME=plugin_name))
     else:

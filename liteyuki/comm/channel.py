@@ -1,219 +1,305 @@
 # -*- coding: utf-8 -*-
 """
-Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved 
-
-@Time    : 2024/7/26 下午11:21
-@Author  : snowykami
-@Email   : snowykami@outlook.com
-@File    : channel.py
-@Software: PyCharm
-
 本模块定义了一个通用的通道类，用于进程间通信
 """
-import functools
-import multiprocessing
-import threading
+import asyncio
 from multiprocessing import Pipe
-from typing import Any, Optional, Callable, Awaitable, List, TypeAlias
-from uuid import uuid4
+from typing import Any, Callable, Coroutine, Generic, Optional, TypeAlias, TypeVar, get_args
 
-from liteyuki.utils import is_coroutine_callable, run_coroutine
+from liteyuki.log import logger
+from liteyuki.utils import IS_MAIN_PROCESS, is_coroutine_callable
 
-SYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[Any], Any]
-ASYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[Any], Awaitable[Any]]
-ON_RECEIVE_FUNC: TypeAlias = SYNC_ON_RECEIVE_FUNC | ASYNC_ON_RECEIVE_FUNC
+T = TypeVar("T")
 
-SYNC_FILTER_FUNC: TypeAlias = Callable[[Any], bool]
-ASYNC_FILTER_FUNC: TypeAlias = Callable[[Any], Awaitable[bool]]
-FILTER_FUNC: TypeAlias = SYNC_FILTER_FUNC | ASYNC_FILTER_FUNC
+SYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[T], Any]    # 同步接收函数
+ASYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[T], Coroutine[Any, Any, Any]]  # 异步接收函数
+ON_RECEIVE_FUNC: TypeAlias = SYNC_ON_RECEIVE_FUNC | ASYNC_ON_RECEIVE_FUNC   # 接收函数
 
-IS_MAIN_PROCESS = multiprocessing.current_process().name == "MainProcess"
+SYNC_FILTER_FUNC: TypeAlias = Callable[[T], bool]   # 同步过滤函数
+ASYNC_FILTER_FUNC: TypeAlias = Callable[[T], Coroutine[Any, Any, bool]] # 异步过滤函数
+FILTER_FUNC: TypeAlias = SYNC_FILTER_FUNC | ASYNC_FILTER_FUNC   # 过滤函数
 
+_func_id: int = 0
 _channel: dict[str, "Channel"] = {}
-_callback_funcs: dict[str, ON_RECEIVE_FUNC] = {}
+_callback_funcs: dict[int, ON_RECEIVE_FUNC] = {}
 
 
-class Channel:
+class Channel(Generic[T]):
     """
-    通道类，用于进程间通信，进程内不可用，仅限主进程和子进程之间通信
+    通道类，可以在进程间和进程内通信，双向但同时只能有一个发送者和一个接收者
     有两种接收工作方式，但是只能选择一种，主动接收和被动接收，主动接收使用 `receive` 方法，被动接收使用 `on_receive` 装饰器
     """
 
-    def __init__(self, _id: str):
-        self.main_send_conn, self.sub_receive_conn = Pipe()
-        self.sub_send_conn, self.main_receive_conn = Pipe()
-        self._closed = False
-        self._on_main_receive_funcs: list[str] = []
-        self._on_sub_receive_funcs: list[str] = []
-        self.name: str = _id
+    def __init__(self, name: str, type_check: Optional[bool] = None):
+        """
+        初始化通道
+        Args:
+            name: 通道ID
+            type_check: 是否开启类型检查, 若为空，则传入泛型默认开启，否则默认关闭
+        """
 
-        self.is_main_receive_loop_running = False
-        self.is_sub_receive_loop_running = False
+        self.conn_send, self.conn_recv = Pipe()
+        self._conn_send_inner, self._conn_recv_inner = Pipe()   # 内部通道，用于子进程通信
+        self._closed = False
+        self._on_main_receive_func_ids: list[int] = []
+        self._on_sub_receive_func_ids: list[int] = []
+        self.name: str = name
+
+        self.is_receive_loop_running = False
+
+        if type_check is None:
+            # 若传入泛型则默认开启类型检查
+            type_check = self._get_generic_type() is not None
+
+        elif type_check:
+            if self._get_generic_type() is None:
+                raise TypeError("Type hint 是强制类型检查之所必须")
+        self.type_check = type_check
+        if name in _channel:
+            raise ValueError(f"Channel {name} 已存在")
+
+        if IS_MAIN_PROCESS:
+            if name in _channel:
+                raise ValueError(f"Channel {name} 已存在")
+            _channel[name] = self
+            logger.debug(f"Channel {name} 已在主进程中初始化")
+        else:
+            logger.debug(f"Channel {name} 已初始化于子进程中，之后应于主进程中手动设置为妙")
+
+    def _get_generic_type(self) -> Optional[type]:
+        """
+        获取通道传递泛型类型
+        Returns:
+            Optional[type]: 泛型类型
+        """
+        if hasattr(self, '__orig_class__'):
+            return get_args(self.__orig_class__)[0]
+        return None
+
+    def _validate_structure(self, data: Any, structure: type) -> bool:
+        """
+        验证数据结构
+        Args:
+            data: 数据
+            structure: 结构
+        Returns:
+            bool: 是否通过验证
+        """
+        if isinstance(structure, type):
+            return isinstance(data, structure)
+        elif isinstance(structure, tuple):
+            if not isinstance(data, tuple) or len(data) != len(structure):
+                return False
+            return all(self._validate_structure(d, s) for d, s in zip(data, structure))
+        elif isinstance(structure, list):
+            if not isinstance(data, list):
+                return False
+            return all(self._validate_structure(d, structure[0]) for d in data)
+        elif isinstance(structure, dict):
+            if not isinstance(data, dict):
+                return False
+            return all(k in data and self._validate_structure(data[k], structure[k]) for k in structure)
+        return False
 
     def __str__(self):
         return f"Channel({self.name})"
 
-    def send(self, data: Any):
+    def send(self, data: T):
         """
-        发送数据
+        发送数据，发送函数为同步函数，没有异步的必要
         Args:
-            data: 数据
+            data (T): 数据
         """
-        if self._closed:
-            raise RuntimeError("无法发送至已关闭的通道中")
-        if IS_MAIN_PROCESS:
-            print("主进程发送数据：", data)
-            self.main_send_conn.send(data)
-        else:
-            print("子进程发送数据：", data)
-            self.sub_send_conn.send(data)
+        if self.type_check:
+            _type = self._get_generic_type()
+            if _type is not None and not self._validate_structure(data, _type):
+                raise TypeError(f"该数据必须为 {_type} 实例，而非 {type(data)}")
 
-    def receive(self) -> Any:
+        if self._closed:
+            raise RuntimeError("数据无法向已关闭的 Channel 中发送")
+        self.conn_send.send(data)
+
+    def receive(self) -> T:
         """
-        接收数据
-        Args:
+        同步接收数据，会阻塞线程
+        Returns:
+            T: 数据
         """
         if self._closed:
-            raise RuntimeError("无法从已关闭的通道中接收")
+            raise RuntimeError("无法在已关闭的 Channel 中接取数据")
 
         while True:
-            # 判断receiver是否为None或者receiver是否等于接收者，是则接收数据，否则不动数据
-            if IS_MAIN_PROCESS:
-                data = self.main_receive_conn.recv()
-                print("主进程接收数据：", data)
-            else:
-                data = self.sub_receive_conn.recv()
-                print("子进程接收数据：", data)
-
+            data = self.conn_recv.recv()
             return data
 
-    def close(self):
+    async def async_receive(self) -> T:
         """
-        关闭通道
+        异步接收数据，会挂起等待
+        Returns:
+            T: 数据
         """
-        self._closed = True
-        self.sub_receive_conn.close()
-        self.main_send_conn.close()
-        self.sub_send_conn.close()
-        self.main_receive_conn.close()
+        loop = asyncio.get_running_loop()
+        data = await loop.run_in_executor(None, self.receive)
+        return data
 
-    def on_receive(self, filter_func: Optional[FILTER_FUNC] = None) -> Callable[[ON_RECEIVE_FUNC], ON_RECEIVE_FUNC]:
+    def on_receive(self, filter_func: Optional[FILTER_FUNC] = None) -> Callable[[Callable[[T], Any]], Callable[[T], Any]]:
         """
         接收数据并执行函数
         Args:
-            filter_func: 过滤函数，为None则不过滤
+            filter_func ([`Optional`](https%3A//docs.python.org/3/library/typing.html#typing.Optional)[[`FILTER_FUNC`](#var-FILTER_FUNC)], optional): 过滤函数. Defaults to None.
         Returns:
-            装饰器，装饰一个函数在接收到数据后执行
+            Callable[[Callable[[T], Any]], Callable[[T], Any]]: 装饰器
         """
-        if (not self.is_sub_receive_loop_running) and not IS_MAIN_PROCESS:
-            threading.Thread(target=self._start_sub_receive_loop).start()
+        if not IS_MAIN_PROCESS:
+            raise RuntimeError("on_receive 仅可用于主进程内")
 
-        if (not self.is_main_receive_loop_running) and IS_MAIN_PROCESS:
-            threading.Thread(target=self._start_main_receive_loop).start()
+        def decorator(func: Callable[[T], Any]) -> Callable[[T], Any]:
+            global _func_id
 
-        def decorator(func: ON_RECEIVE_FUNC) -> ON_RECEIVE_FUNC:
-            async def wrapper(data: Any) -> Any:
+            async def wrapper(data: T) -> Any:
                 if filter_func is not None:
                     if is_coroutine_callable(filter_func):
-                        if not await filter_func(data):
+                        if not (await filter_func(data)):  # type: ignore
                             return
                     else:
                         if not filter_func(data):
                             return
-                return await func(data)
 
-            function_id = str(uuid4())
-            _callback_funcs[function_id] = wrapper
+                if is_coroutine_callable(func):
+                    return await func(data)
+                else:
+                    return func(data)
+
+            _callback_funcs[_func_id] = wrapper
             if IS_MAIN_PROCESS:
-                self._on_main_receive_funcs.append(function_id)
+                self._on_main_receive_func_ids.append(_func_id)
             else:
-                self._on_sub_receive_funcs.append(function_id)
+                self._on_sub_receive_func_ids.append(_func_id)
+            _func_id += 1
             return func
 
         return decorator
 
-    def _run_on_main_receive_funcs(self, data: Any):
+    async def _run_on_receive_funcs(self, data: Any):
         """
         运行接收函数
         Args:
             data: 数据
         """
-        for func_id in self._on_main_receive_funcs:
-            func = _callback_funcs[func_id]
-            run_coroutine(func(data))
-
-    def _run_on_sub_receive_funcs(self, data: Any):
-        """
-        运行接收函数
-        Args:
-            data: 数据
-        """
-        for func_id in self._on_sub_receive_funcs:
-            func = _callback_funcs[func_id]
-            run_coroutine(func(data))
-
-    def _start_main_receive_loop(self):
-        """
-        开始接收数据
-        """
-        self.is_main_receive_loop_running = True
-        while not self._closed:
-            data = self.main_receive_conn.recv()
-            self._run_on_main_receive_funcs(data)
-
-    def _start_sub_receive_loop(self):
-        """
-        开始接收数据
-        """
-        self.is_sub_receive_loop_running = True
-        while not self._closed:
-            data = self.sub_receive_conn.recv()
-            self._run_on_sub_receive_funcs(data)
-
-    def __iter__(self):
-        return self
-
-    def __next__(self) -> Any:
-        return self.receive()
+        if IS_MAIN_PROCESS:
+            [asyncio.create_task(_callback_funcs[func_id](data)) for func_id in self._on_main_receive_func_ids]
+        else:
+            [asyncio.create_task(_callback_funcs[func_id](data)) for func_id in self._on_sub_receive_func_ids]
 
 
-"""默认通道实例，可直接从模块导入使用"""
-chan = Channel("default")
+"""子进程可用的主动和被动通道"""
+active_channel: Channel = Channel(name="active_channel")    # 主动通道
+passive_channel: Channel = Channel(name="passive_channel")  # 被动通道
+publish_channel: Channel[tuple[str, dict[str, Any]]] = Channel(name="publish_channel")  # 发布通道
+"""通道传递通道，主进程创建单例，子进程初始化时实例化"""
+channel_deliver_active_channel: Channel[Channel[Any]]   # 主动通道传递通道
+channel_deliver_passive_channel: Channel[tuple[str, dict[str, Any]]]    # 被动通道传递通道
+
+if IS_MAIN_PROCESS:
+    channel_deliver_active_channel = Channel(name="channel_deliver_active_channel") # 主动通道传递通道
+    channel_deliver_passive_channel = Channel(name="channel_deliver_passive_channel")   # 被动通道传递通道
 
 
-def set_channel(name: str, channel: Channel):
+    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "set_channel")
+    def on_set_channel(data: tuple[str, dict[str, Any]]):
+        name, channel = data[1]["name"], data[1]["channel_"]
+        set_channel(name, channel)
+
+
+    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "get_channel")
+    def on_get_channel(data: tuple[str, dict[str, Any]]):
+        name, recv_chan = data[1]["name"], data[1]["recv_chan"]
+        recv_chan.send(get_channel(name))
+
+
+    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "get_channels")
+    def on_get_channels(data: tuple[str, dict[str, Any]]):
+        recv_chan = data[1]["recv_chan"]
+        recv_chan.send(get_channels())
+
+
+def set_channel(name: str, channel: "Channel"):
     """
     设置通道实例
     Args:
-        name: 通道名称
-        channel: 通道实例
+        name ([`str`](https%3A//docs.python.org/3/library/stdtypes.html#str)): 通道名称
+        channel ([`Channel`](#class-channel-generic-t)): 通道实例
     """
-    _channel[name] = channel
+    if not isinstance(channel, Channel):
+        raise TypeError(f"channel_ 必须为 Channel 实例，而非 {type(channel)}")
+
+    if IS_MAIN_PROCESS:
+        if name in _channel:
+            raise ValueError(f"Channel {name} 已存在")
+        _channel[name] = channel
+    else:
+        # 请求主进程设置通道
+        channel_deliver_passive_channel.send(
+            (
+                    "set_channel", {
+                            "name"    : name,
+                            "channel_": channel,
+                    }
+            )
+        )
 
 
-def set_channels(channels: dict[str, Channel]):
+def set_channels(channels: dict[str, "Channel"]):
     """
     设置通道实例
     Args:
-        channels: 通道名称
+        channels ([`dict`](https%3A//docs.python.org/3/library/stdtypes.html#dict)[[`str`](https%3A//docs.python.org/3/library/stdtypes.html#str), [`Channel`](#class-channel-generic-t)]): 通道实例
     """
     for name, channel in channels.items():
-        _channel[name] = channel
+        set_channel(name, channel)
 
 
-def get_channel(name: str) -> Optional[Channel]:
+def get_channel(name: str) -> "Channel":
     """
     获取通道实例
     Args:
-        name: 通道名称
+        name ([`str`](https%3A//docs.python.org/3/library/stdtypes.html#str)): 通道名称
     Returns:
+        [`Channel`](#class-channel-generic-t): 通道实例
     """
-    return _channel.get(name, None)
+    if IS_MAIN_PROCESS:
+        return _channel[name]
+
+    else:
+        recv_chan = Channel[Channel[Any]]("recv_chan")
+        channel_deliver_passive_channel.send(
+            (
+                    "get_channel",
+                    {
+                            "name"     : name,
+                            "recv_chan": recv_chan
+                    }
+            )
+        )
+        return recv_chan.receive()
 
 
-def get_channels() -> dict[str, Channel]:
+def get_channels() -> dict[str, "Channel"]:
     """
-    获取通道实例
+    获取通道实例们
     Returns:
+        [`dict`](https%3A//docs.python.org/3/library/stdtypes.html#dict)[[`str`](https%3A//docs.python.org/3/library/stdtypes.html#str), [`Channel`](#class-channel-generic-t)]: 通道实例
     """
-    return _channel
+    if IS_MAIN_PROCESS:
+        return _channel
+    else:
+        recv_chan = Channel[dict[str, Channel[Any]]]("recv_chan")
+        channel_deliver_passive_channel.send(
+            (
+                    "get_channels",
+                    {
+                            "recv_chan": recv_chan
+                    }
+            )
+        )
+        return recv_chan.receive()

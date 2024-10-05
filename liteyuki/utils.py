@@ -4,10 +4,14 @@
 """
 import asyncio
 import inspect
+import multiprocessing
+import threading
 from pathlib import Path
 from typing import Any, Callable, Coroutine
 
 from liteyuki.log import logger
+
+IS_MAIN_PROCESS = multiprocessing.current_process().name == "MainProcess"
 
 
 def is_coroutine_callable(call: Callable[..., Any]) -> bool:
@@ -39,7 +43,7 @@ def run_coroutine(*coro: Coroutine):
     # 检测是否有现有的事件循环
 
     try:
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         if loop.is_running():
             # 如果事件循环正在运行，创建任务
             for c in coro:
@@ -59,6 +63,18 @@ def run_coroutine(*coro: Coroutine):
         logger.error(f"协程异常：{e}")
 
 
+def run_coroutine_in_thread(*coro: Coroutine):
+    """
+    在新线程中运行协程
+    Args:
+        coro:
+
+    Returns:
+
+    """
+    threading.Thread(target=run_coroutine, args=coro, daemon=True).start()
+
+
 def path_to_module_name(path: Path) -> str:
     """
     转换路径为模块名
@@ -72,3 +88,19 @@ def path_to_module_name(path: Path) -> str:
         return ".".join(rel_path.parts[:-1])
     else:
         return ".".join(rel_path.parts[:-1] + (rel_path.stem,))
+
+
+def async_wrapper(func: Callable[..., Any]) -> Callable[..., Coroutine]:
+    """
+    异步包装器
+    Args:
+        func: Sync Callable
+    Returns:
+        Coroutine: Asynchronous Callable
+    """
+
+    async def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    wrapper.__signature__ = inspect.signature(func)
+    return wrapper

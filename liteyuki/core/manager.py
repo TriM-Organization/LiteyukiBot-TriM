@@ -9,92 +9,175 @@ Copyright (C) 2020-2024 LiteyukiStudio. All Rights Reserved
 @Software: PyCharm
 """
 import asyncio
+import multiprocessing
 import threading
 from multiprocessing import Process
-from typing import TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING, TypeAlias
 
-from liteyuki.comm import Channel, get_channel, set_channels
 from liteyuki.log import logger
+from liteyuki.utils import IS_MAIN_PROCESS
 
 if TYPE_CHECKING:
-    from liteyuki.bot import LiteyukiBot
+    from liteyuki.bot.lifespan import Lifespan
+    from liteyuki.comm.storage import KeyValueStore
 
+from liteyuki.comm import Channel
+
+if IS_MAIN_PROCESS:
+    from liteyuki.comm.channel import get_channel, publish_channel, get_channels
+    from liteyuki.comm.storage import shared_memory
+    from liteyuki.comm.channel import (
+        channel_deliver_active_channel,
+        channel_deliver_passive_channel,
+    )
+else:
+    from liteyuki.comm import channel
+    from liteyuki.comm import storage
+
+TARGET_FUNC: TypeAlias = Callable[..., Any]
 TIMEOUT = 10
 
 __all__ = ["ProcessManager"]
+multiprocessing.set_start_method("spawn", force=True)
+
+
+class ChannelDeliver:
+    def __init__(
+        self,
+        active: Channel[Any],
+        passive: Channel[Any],
+        channel_deliver_active: Channel[Channel[Any]],
+        channel_deliver_passive: Channel[tuple[str, dict]],
+        publish: Channel[tuple[str, Any]],
+    ):
+        self.active = active
+        self.passive = passive
+        self.channel_deliver_active = channel_deliver_active
+        self.channel_deliver_passive = channel_deliver_passive
+        self.publish = publish
+
+
+# 函数处理一些跨进程通道的
+def _delivery_channel_wrapper(
+    func: TARGET_FUNC, cd: ChannelDeliver, sm: "KeyValueStore", *args, **kwargs
+):
+    """
+    子进程入口函数
+    处理一些操作
+    """
+    # 给子进程设置通道
+    if IS_MAIN_PROCESS:
+        raise RuntimeError("函数仅可在子进程中被调用")
+
+    channel.active_channel = cd.active  # 子进程主动通道
+    channel.passive_channel = cd.passive  # 子进程被动通道
+    channel.channel_deliver_active_channel = (
+        cd.channel_deliver_active
+    )  # 子进程通道传递主动通道
+    channel.channel_deliver_passive_channel = (
+        cd.channel_deliver_passive
+    )  # 子进程通道传递被动通道
+    channel.publish_channel = cd.publish  # 子进程发布通道
+
+    # 给子进程创建共享内存实例
+
+    storage.shared_memory = sm
+
+    func(*args, **kwargs)
 
 
 class ProcessManager:
     """
-    在主进程中被调用
+    进程管理器
     """
 
-    def __init__(self, bot: "LiteyukiBot"):
-        self.bot = bot
-        self.targets: dict[str, tuple[callable, tuple, dict]] = {}
+    def __init__(self, lifespan: "Lifespan"):
+        self.lifespan = lifespan
+        self.targets: dict[str, tuple[Callable, tuple, dict]] = {}
         self.processes: dict[str, Process] = {}
 
-        set_channels(
-            {
-                "nonebot-active": Channel(_id="nonebot-active"),
-                "melobot-active": Channel(_id="melobot-active"),
-                "nonebot-passive": Channel(_id="nonebot-passive"),
-                "melobot-passive": Channel(_id="melobot-passive"),
-            }
-        )
-
-    def start(self, name: str, delay: int = 0):
+    def _run_process(self, name: str):
         """
-        开启后自动监控进程，并添加到进程字典中
+        开启后自动监控进程，并添加到进程字典中，会阻塞，请创建task
         Args:
             name:
-            delay:
-
         Returns:
-
         """
         if name not in self.targets:
-            raise KeyError(f"未有 Process {name} 之存在")
+            raise KeyError(f"Process {name} 未寻得")
 
-        def _start():
-            should_exit = False
-            while not should_exit:
-                chan_active = get_channel(f"{name}-active")
-                chan_passive = get_channel(f"{name}-passive")
-                process = Process(
-                    target=self.targets[name][0],
-                    args=(chan_active, chan_passive, *self.targets[name][1]),
-                    kwargs=self.targets[name][2],
-                )
-                self.processes[name] = process
-                process.start()
-                while not should_exit:
-                    # 0退出 1重启
-                    data = chan_active.receive()
-                    if data == 1:
-                        logger.info(f"重启 {name} 进程")
-                        asyncio.run(self.bot.lifespan.before_shutdown())
-                        asyncio.run(self.bot.lifespan.before_restart())
-                        self.terminate(name)
-                        break
+        chan_active = get_channel(f"{name}-active")
 
-                    elif data == 0:
-                        logger.info(f"关停 {name} 进程")
-                        asyncio.run(self.bot.lifespan.before_shutdown())
-                        should_exit = True
-                        self.terminate(name)
-                    else:
-                        logger.warning("数据未知，省略：{}".format(data))
+        def _start_process():
+            process = Process(
+                target=self.targets[name][0],
+                args=self.targets[name][1],
+                kwargs=self.targets[name][2],
+                daemon=True,
+            )
+            self.processes[name] = process
+            process.start()
 
-        if delay:
-            threading.Timer(delay, _start).start()
-        else:
-            threading.Thread(target=_start).start()
+        # 启动进程并监听信号
+        _start_process()
+        while True:
+            data = chan_active.receive()
+            if data == 0:
+                # 停止
+                logger.info(f"正在关停 Process {name}")
+                self.terminate(name)
+                break
+            elif data == 1:
+                # 重启
+                logger.info(f"正在重启 Process {name}")
+                self.terminate(name)
+                _start_process()
+                continue
+            else:
+                logger.warning("接收到未知信号数据 {} ，已忽略".format(data))
 
-    def add_target(self, name: str, target, *args, **kwargs):
-        self.targets[name] = (target, args, kwargs)
+    def start_all(self):
+        """
+        对外启动方法，启动所有进程，创建asyncio task
+        """
+        # [asyncio.create_task(self._run_process(name)) for name in self.targets]
 
-    def join(self):
+        for name in self.targets:
+            logger.debug(f"正在启动 Process {name}")
+            threading.Thread(
+                target=self._run_process, args=(name,), daemon=True
+            ).start()
+
+    def add_target(self, name: str, target: TARGET_FUNC, args: tuple = (), kwargs=None):
+        """
+        添加进程
+        Args:
+            name: 进程名，用于获取和唯一标识
+            target: 进程函数
+            args: 进程函数参数
+            kwargs: 进程函数关键字参数，通常会默认传入chan_active和chan_passive
+        """
+        if kwargs is None:
+            kwargs = {}
+        chan_active: Channel = Channel(name=f"{name}-active")
+        chan_passive: Channel = Channel(name=f"{name}-passive")
+
+        channel_deliver = ChannelDeliver(
+            active=chan_active,
+            passive=chan_passive,
+            channel_deliver_active=channel_deliver_active_channel,
+            channel_deliver_passive=channel_deliver_passive_channel,
+            publish=publish_channel,
+        )
+
+        self.targets[name] = (
+            _delivery_channel_wrapper,
+            (target, channel_deliver, shared_memory, *args),
+            kwargs,
+        )
+        # 主进程通道
+
+    def join_all(self):
         for name, process in self.targets:
             process.join()
 
@@ -107,14 +190,29 @@ class ProcessManager:
         Returns:
 
         """
-        if name not in self.targets:
-            raise logger.warning(f"未有 Process {name} 之存在")
+        if name not in self.processes:
+            logger.warning(f"Process {name} 未寻得")
+            return
         process = self.processes[name]
         process.terminate()
         process.join(TIMEOUT)
         if process.is_alive():
             process.kill()
+        logger.success(f"Process {name} 已迫令终止")
 
     def terminate_all(self):
         for name in self.targets:
             self.terminate(name)
+
+    def is_process_alive(self, name: str) -> bool:
+        """
+        检查进程是否存活
+        Args:
+            name:
+
+        Returns:
+
+        """
+        if name not in self.targets:
+            logger.warning(f"Process {name} 未寻得")
+        return self.processes[name].is_alive()

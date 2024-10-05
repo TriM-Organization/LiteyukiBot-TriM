@@ -14,6 +14,9 @@ __pycache__/
 *.pyd
 *.pyw
 /plugins/
+
+#config
+/config/
 _config.yml
 config.yml
 config.example.yml
@@ -29,11 +32,11 @@ src/nonebot_plugins/dislink_plugin_ccnd
 .github
 # pyproject.toml
 
-test.py
-line_count.py
+# mypy
 mypy.ini
 
 # nuitka
+compile.bat
 main.build/
 main.dist/
 main.exe
@@ -46,3 +49,23 @@ prompt.txt
 # js
 **/echarts.js
 .env
+
+# pdm
+.pdm-python
+.pdm-build
+dist
+
+doc
+
+mkdoc2.py
+result.json
+
+# litedoc
+docs/zh/dev/api
+docs/en/dev/api
+mkdoc.bat
+
+# vitepress
+docs/.vitepress/dist/
+docs/.vitepress/cache
+docs/.vitepress/.temp

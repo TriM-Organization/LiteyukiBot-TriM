@@ -7,7 +7,8 @@ from cpuinfo import cpuinfo
 from nonebot import require
 from nonebot.adapters import satori
 
-from src.utils import __NAME__, __VERSION__
+from src.utils import __NAME__
+from liteyuki import __version__
 from src.utils.base.config import get_config
 from src.utils.base.data_manager import TempConfig, common_db
 from src.utils.base.language import Language
@@ -227,11 +228,19 @@ async def get_hardware_data() -> dict:
             pass
     swap = psutil.swap_memory()
     cpu_brand_raw = cpuinfo.get_cpu_info().get("brand_raw", "未知处理器")
-    if "AMD" in cpu_brand_raw:
+    if "amd" in cpu_brand_raw.lower():
         brand = "AMD"
-    elif "Intel" in cpu_brand_raw:
+    elif "intel" in cpu_brand_raw:
         brand = "英特尔"
-    elif "Nvidia" in cpu_brand_raw:
+    elif "apple" in cpu_brand_raw.lower():
+        brand = "苹果"
+    elif "qualcomm" in cpu_brand_raw.lower():
+        brand = "高通"
+    elif "mediatek" in cpu_brand_raw.lower():
+        brand = "联发科"
+    elif "samsung" in cpu_brand_raw.lower():
+        brand = "三星"
+    elif "nvidia" in cpu_brand_raw.lower():
         brand = "英伟达"
     else:
         brand = "未知处理器"
@@ -262,7 +271,9 @@ async def get_hardware_data() -> dict:
     for disk in psutil.disk_partitions(all=True):
         try:
             disk_usage = psutil.disk_usage(disk.mountpoint)
-            if disk_usage.total == 0:
+            if disk_usage.total == 0 or disk.mountpoint.startswith(
+                ("/var", "/boot", "/run", "/proc", "/sys", "/dev", "/tmp", "/snap")
+            ):
                 continue  # 虚拟磁盘
             result["disk"].append(
                 {
@@ -283,7 +294,7 @@ async def get_liteyuki_data() -> dict:
     temp_data: TempConfig = common_db.where_one(TempConfig(), default=TempConfig())
     result = {
         "name": list(get_config("nickname", [__NAME__]))[0],
-        "version": f"{__VERSION__}{'-' + commit_hash[:7] if (commit_hash and len(commit_hash) > 8) else ''}",
+        "version": f"{__version__}{'-' + commit_hash[:7] if (commit_hash and len(commit_hash) > 8) else ''}",
         "plugins": len(nonebot.get_loaded_plugins()),
         "resources": len(get_loaded_resource_packs()),
         "nonebot": f"{nonebot.__version__}",

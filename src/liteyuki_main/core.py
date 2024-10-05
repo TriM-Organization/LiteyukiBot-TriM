@@ -1,44 +1,43 @@
-import base64
 import time
-from typing import Any, AnyStr
+from typing import AnyStr
+
+import time
+from typing import AnyStr
 
 import nonebot
 import pip
-from nonebot import Bot, get_driver, require  # type: ignore
+from nonebot import get_driver, require
 from nonebot.adapters import onebot, satori
-from nonebot.adapters.onebot.v11 import Message, escape, unescape
-from nonebot.exception import MockApiException
+from nonebot.adapters.onebot.v11 import Message, unescape
 from nonebot.internal.matcher import Matcher
 from nonebot.permission import SUPERUSER
 
+# from src.liteyuki.core import Reloader
 from src.utils import event as event_utils, satori_utils
-from src.utils.base.config import get_config, load_from_yaml
-from src.utils.base.data_manager import StoredConfig, TempConfig, common_db
+from src.utils.base.config import get_config
+from src.utils.base.data_manager import TempConfig, common_db
 from src.utils.base.language import get_user_lang
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.message import MarkdownMessage as md, broadcast_to_superusers
-
-from .api import update_liteyuki
-from ..utils.base import reload
-from ..utils.base.ly_function import get_function
+from .api import update_liteyuki  # type: ignore
+from ..utils.base import reload  # type: ignore
+from ..utils.base.ly_function import get_function  # type: ignore
+from ..utils.message.html_tool import md_to_pic
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_alconna import (
+    UniMessage,
     on_alconna,
     Alconna,
     Args,
-    Subcommand,
     Arparma,
     MultiVar,
 )
 from nonebot_plugin_apscheduler import scheduler
 
-driver = get_driver()
 
-markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).config.get(
-    "markdown_image", False
-)
+driver = get_driver()
 
 
 @on_alconna(
@@ -50,8 +49,8 @@ markdown_image = common_db.where_one(StoredConfig(), default=StoredConfig()).con
 ).handle()
 # Satori OK
 async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
-    if result.main_args.get("text"):
-        await matcher.finish(Message(unescape(result.main_args.get("text"))))  # type: ignore
+    if text := result.main_args.get("text"):
+        await matcher.finish(Message(unescape(text)))
     else:
         await matcher.finish(f"君安！灵温向你问好~\n此机 {bot.self_id}")
 
@@ -72,7 +71,7 @@ async def _(bot: T_Bot, matcher: Matcher, result: Arparma):
     aliases={"更新灵温"}, command=Alconna("update-ryoun"), permission=SUPERUSER
 ).handle()
 # Satori OK
-async def _(bot: T_Bot, event: T_MessageEvent):
+async def _(bot: T_Bot, event: T_MessageEvent, matcher: Matcher):
     # 使用git pull更新
 
     ulang = get_user_lang(
@@ -84,7 +83,9 @@ async def _(bot: T_Bot, event: T_MessageEvent):
     btn_restart = md.btn_cmd(ulang.get("liteyuki.restart_now"), "reload-liteyuki")
     pip.main(["install", "-r", "requirements.txt"])
     reply += f"{ulang.get('liteyuki.update_restart', RESTART=btn_restart)}"
-    await md.send_md(reply, bot, event=event, at_sender=False)
+    # await md.send_md(reply, bot)
+    img_bytes = await md_to_pic(reply)
+    await UniMessage.send(UniMessage.image(raw=img_bytes))
 
 
 @on_alconna(
@@ -115,107 +116,8 @@ async def _(matcher: Matcher, bot: T_Bot, event: T_MessageEvent):
     )
 
     common_db.save(temp_data)
-
     reload()
 
-
-@on_alconna(
-    aliases={"配置"},
-    command=Alconna(
-        "config",
-        Subcommand(
-            "set",
-            Args["key", str]["value", Any],
-            alias=["设置"],
-        ),
-        Subcommand("get", Args["key", str, None], alias=["查询", "获取"]),
-        Subcommand("remove", Args["key", str], alias=["删除"]),
-    ),
-    permission=SUPERUSER,
-).handle()
-# Satori OK
-async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, matcher: Matcher):
-    ulang = get_user_lang(str(event_utils.get_user_id(event)))
-    stored_config: StoredConfig = common_db.where_one(
-        StoredConfig(), default=StoredConfig()
-    )
-    if result.subcommands.get("set"):
-        key, value = result.subcommands.get("set").args.get(
-            "key"
-        ), result.subcommands.get("set").args.get("value")
-        try:
-            value = eval(value)
-        except:
-            pass
-        stored_config.config[key] = value
-        common_db.save(stored_config)
-        await matcher.finish(
-            f"{ulang.get('liteyuki.config_set_success', KEY=key, VAL=value)}"
-        )
-    elif result.subcommands.get("get"):
-        key = result.subcommands.get("get").args.get("key")
-        file_config = load_from_yaml("config.yml")
-        reply = f"{ulang.get('liteyuki.current_config')}"
-        if key:
-            reply += f"```dotenv\n{key}={file_config.get(key, stored_config.config.get(key))}\n```"
-        else:
-            reply = f"{ulang.get('liteyuki.current_config')}"
-            reply += f"\n{ulang.get('liteyuki.static_config')}\n```dotenv"
-            for k, v in file_config.items():
-                reply += f"\n{k}={v}"
-            reply += "\n```"
-            if len(stored_config.config) > 0:
-                reply += f"\n{ulang.get('liteyuki.stored_config')}\n```dotenv"
-                for k, v in stored_config.config.items():
-                    reply += f"\n{k}={v} {type(v)}"
-                reply += "\n```"
-        await md.send_md(reply, bot, event=event)
-    elif result.subcommands.get("remove"):
-        key = result.subcommands.get("remove").args.get("key")
-        if key in stored_config.config:
-            stored_config.config.pop(key)
-            common_db.save(stored_config)
-            await matcher.finish(
-                f"{ulang.get('liteyuki.config_remove_success', KEY=key)}"
-            )
-        else:
-            await matcher.finish(f"{ulang.get('liteyuki.invalid_command', TEXT=key)}")
-
-
-@on_alconna(
-    aliases={"切换图片模式"}, command=Alconna("switch-image-mode"), permission=SUPERUSER
-).handle()
-# Satori OK
-async def _(event: T_MessageEvent, matcher: Matcher):
-    global markdown_image
-    # 切换图片模式，False以图片形式发送，True以markdown形式发送
-    ulang = get_user_lang(str(event_utils.get_user_id(event)))
-    stored_config: StoredConfig = common_db.where_one(
-        StoredConfig(), default=StoredConfig()
-    )
-    stored_config.config["markdown_image"] = not stored_config.config.get(
-        "markdown_image", False
-    )
-    markdown_image = stored_config.config["markdown_image"]
-    common_db.save(stored_config)
-    await matcher.finish(
-        ulang.get(
-            "liteyuki.image_mode_on"
-            if stored_config.config["markdown_image"]
-            else "liteyuki.image_mode_off"
-        )
-    )
-
-
-# @on_alconna(
-#     command=Alconna(
-#         "liteyuki-docs",
-#     ),
-#     aliases={"轻雪文档"},
-# ).handle()
-# # Satori OK
-# async def _(matcher: Matcher):
-#     await matcher.finish("https://bot.liteyuki.icu/usage")
 
 
 @on_alconna(
@@ -318,62 +220,6 @@ async def _(result: Arparma, bot: T_Bot, event: T_MessageEvent, matcher: Matcher
     await matcher.finish(f"API: {api_name}\n\nArgs: \n{args_show}\n\nResult: {result}")
 
 
-# system hook
-@Bot.on_calling_api  # 图片模式检测
-async def test_for_md_image(bot: T_Bot, api: str, data: dict):
-    # 截获大图发送，转换为markdown发送
-    if (
-        api in ["send_msg", "send_private_msg", "send_group_msg"]
-        and markdown_image
-        and data.get("user_id") != bot.self_id
-    ):
-        if (
-            api == "send_msg"
-            and data.get("message_type") == "private"
-            or api == "send_private_msg"
-        ):
-            session_type = "private"
-            session_id = data.get("user_id")
-        elif (
-            api == "send_msg"
-            and data.get("message_type") == "group"
-            or api == "send_group_msg"
-        ):
-            session_type = "group"
-            session_id = data.get("group_id")
-        else:
-            return
-        if (
-            len(data.get("message", [])) == 1
-            and data["message"][0].get("type") == "image"
-        ):
-            file: str = data["message"][0].data.get("file")
-            # file:// http:// base64://
-            if file.startswith("http"):
-                result = await md.send_md(
-                    await md.image_async(file),
-                    bot,
-                    message_type=session_type,
-                    session_id=session_id,
-                )
-            elif file.startswith("file"):
-                file = file.replace("file://", "")
-                result = await md.send_image(
-                    open(file, "rb").read(),
-                    bot,
-                    message_type=session_type,
-                    session_id=session_id,
-                )
-            elif file.startswith("base64"):
-                file_bytes = base64.b64decode(file.replace("base64://", ""))
-                result = await md.send_image(
-                    file_bytes, bot, message_type=session_type, session_id=session_id
-                )
-            else:
-                return
-            raise MockApiException(result=result)
-
-
 @driver.on_startup
 async def on_startup():
     temp_data = common_db.where_one(TempConfig(), default=TempConfig())
@@ -426,6 +272,14 @@ async def _(bot: T_Bot):
                 group_id=reload_session_id,
                 message=return_msg,
             )
+        elif isinstance(bot, onebot.v12.Bot):
+            await bot.send_msg(
+                message_type=reload_session_type,
+                user_id=reload_session_id,
+                group_id=reload_session_id,
+                message=return_msg,
+                detail_type="group",
+            )
         else:
             await bot.call_api(
                 "send_msg",
@@ -445,7 +299,6 @@ async def every_day_update():
         if result:
             await broadcast_to_superusers(f"灵温已更新：```\n{logs}\n```")
             nonebot.logger.info(f"灵温已更新：{logs}")
-            # ProcessingManager.restart(3)
             reload()
         else:
             nonebot.logger.info(logs)
