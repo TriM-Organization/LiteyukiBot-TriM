@@ -189,7 +189,7 @@ def query_convert_points(
         return False, people_convert_point[usr_id][item]
 
 
-something_to_delete: dict[
+something_temporary: dict[
     str,
     dict[
         Literal["stuff", "time"],
@@ -199,21 +199,80 @@ something_to_delete: dict[
 
 
 def add_file_to_delete(file_: Path | os.PathLike[str] | str, wait_p30s: int = 0) -> str:
-    global something_to_delete
-    something_to_delete[rr := str(file_)] = {"stuff": file_, "time": wait_p30s}
+    """
+    增加一个地址，过会儿删除这个地址指向的文件
+
+    参数：
+    file_: Path | os.PathLike[str] | str
+        文件路径
+    wait_p30s: int
+        等待时间，单位为 30 秒内（不大于 30 秒），默认为 `0`
+        
+    返回：
+    str
+        文件路径的字符串
+    """
+    global something_temporary
+    something_temporary[rr := str(file_)] = {"stuff": file_, "time": wait_p30s}
     return rr
 
 
-def add_memory_to_delete(
+def add_memory_to_temporary(
     index: str, memory_: Any, description: str = "一个内存", wait_p30s: int = 0
 ) -> None:
-    global something_to_delete
-    something_to_delete[index] = {"stuff": (memory_, description), "time": wait_p30s}
+    """
+    向临时内存存储中填入内存信息
+    
+    参数：
+    index: str
+        索引
+    memory_: Any
+        内存
+    description: str
+        内存描述
+    wait_p30s: int
+        等待时间，单位为 30 秒内（不大于 30 秒），默认为 `0`
+    """
+    global something_temporary
+    something_temporary[index] = {"stuff": (memory_, description), "time": wait_p30s}
 
+def read_memory_from_temporary(index: str) -> Any:
+    """
+    从临时内存存储中读取内容
+    
+    参数：
+    index: str
+        索引
+    
+    返回：
+    Any
+        内容，当无此内容时返回 `None`
+    """
+    global something_temporary
+    memory_cmp = something_temporary.get(index, {"stuff": None})["stuff"]
+    if isinstance(memory_cmp, tuple):
+        return memory_cmp[0]
+    else:
+        return memory_cmp
 
 def get_stored_path(
     user_id: str, item: Union[Path, os.PathLike[str], str], superuser: bool = False
 ) -> Path:
+    """
+    获取用户文件存储路径
+    
+    参数：
+    user_id: str
+        用户id
+    item: Union[Path, os.PathLike[str], str]
+        文件名（对于用户目录的相对路径）
+    superuser: bool
+        是否为超级用户，默认为 `False` 若为 `True` 则在用户文件中寻找
+    
+    返回：
+    Path
+        文件路径
+    """
 
     if not isinstance(item, Path):
         item_ = Path(item).name
@@ -260,8 +319,8 @@ async def _():
     nonebot.logger.info(
         "-删除临时内容-",
     )
-    global something_to_delete
-    for index_, stuff_component in something_to_delete.items():
+    global something_temporary
+    for index_, stuff_component in something_temporary.items():
         if stuff_component["time"] <= 0:  # type: ignore
             if isinstance(stuff_component["stuff"], (str, Path, os.PathLike)):
                 try:
@@ -279,7 +338,7 @@ async def _():
                         nonebot.logger.warning(
                             "路径不存在或未知类型：{}".format(stuff_component["stuff"])
                         )
-                    del something_to_delete[index_]
+                    del something_temporary[index_]
                 except:
                     nonebot.logger.warning(
                         "跳过删除：{}".format(stuff_component["stuff"])
@@ -289,12 +348,13 @@ async def _():
                     nonebot.logger.info(
                         "清理内存：{}".format(stuff_component["stuff"][-1])  # type: ignore
                     )
-                    del something_to_delete[index_]
+                    del something_temporary[index_]
                 except:
                     nonebot.logger.warning(
                         "无法删除：{}".format(stuff_component["stuff"][-1])  # type: ignore
                     )
-        something_to_delete[index]["time"] -= 1  # type: ignore
+        else:
+            something_temporary[index_]["time"] -= 1  # type: ignore
     global filesaves
     qqidlist = list(filesaves.keys()).copy()
     save_file = False
@@ -340,10 +400,10 @@ async def _():
             filesaves.pop(qqid)
             save_file = True
     if save_file:
-        nonebot.logger.success("-已删除过期文件-")
+        nonebot.logger.success("-已删除过期内容-")
         save_filesaves()
     else:
-        nonebot.logger.success("-无过期文件需要删除-")
+        nonebot.logger.success("-无过期内容需要删除-")
 
 
 # @nonebot.rule.Rule
@@ -867,19 +927,15 @@ async def _(
                         not _args["enable-mismatch-error"],
                         _args["play-speed"],
                         _args["default-tempo"],
-                        pitched_notechart,
-                        percussion_notechart,
+                        str(pitched_notechart),
+                        str(percussion_notechart),
                         volume_curve,
                     ).__hash__()
                 )
 
-                if identify_cmp in something_to_delete.keys():
+                if identify_cmp in something_temporary.keys():
                     nonebot.logger.info("载入已有缓存。")
-                    msct_obj: Musicreater.MidiConvert = something_to_delete[
-                        identify_cmp
-                    ][
-                        "stuff"
-                    ]  # type: ignore
+                    msct_obj: Musicreater.MidiConvert = read_memory_from_temporary(identify_cmp)
                     msct_obj.redefine_execute_format(_args["old-execute-format"])
                     msct_obj.set_min_volume(_args["minimal-volume"])
                     # msct_obj.set_deviation()
@@ -896,7 +952,7 @@ async def _(
                             min_volume=_args["minimal-volume"],
                             vol_processing_func=volume_curve,
                         )
-                        add_memory_to_delete(
+                        add_memory_to_temporary(
                             identify_cmp,
                             msct_obj,
                             "音乐转换类{}".format(msct_obj.music_name),

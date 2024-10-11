@@ -44,13 +44,14 @@ from src.utils.message.message import MarkdownMessage
 from src.utils.message.html_tool import md_to_pic
 
 from .msctexec import (
-    something_to_delete,
+    something_temporary,
     query_convert_points,
     filesaves,
     configdict,
     temporary_dir,
     add_file_to_delete,
-    add_memory_to_delete,
+    add_memory_to_temporary,
+    read_memory_from_temporary,
     get_stored_path,
 )
 from .utils import hanzi_timeid
@@ -304,19 +305,17 @@ async def _(
                         not _args["enable-mismatch-error"],
                         _args["play-speed"],
                         _args["default-tempo"],
-                        pitched_notechart,
-                        percussion_notechart,
+                        str(pitched_notechart),
+                        str(percussion_notechart),
                         volume_curve,
                     ).__hash__()
                 )
 
-                if identify_cmp in something_to_delete.keys():
+                if identify_cmp in something_temporary.keys():
                     nonebot.logger.info("载入已有缓存。")
-                    msct_obj: Musicreater.MidiConvert = something_to_delete[
+                    msct_obj: Musicreater.MidiConvert = read_memory_from_temporary(
                         identify_cmp
-                    ][
-                        "stuff"
-                    ]  # type: ignore
+                    )
                 else:
 
                     if go_chk_point():
@@ -329,7 +328,7 @@ async def _(
                             percussion_note_table=percussion_notechart,
                             vol_processing_func=volume_curve,
                         )
-                        add_memory_to_delete(
+                        add_memory_to_temporary(
                             identify_cmp,
                             msct_obj,
                             "音乐转换类{}".format(msct_obj.music_name),
