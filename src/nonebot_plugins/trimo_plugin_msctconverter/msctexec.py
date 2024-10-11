@@ -8,7 +8,7 @@ import asyncio
 
 from io import StringIO
 from pathlib import Path
-from typing import Annotated, Any, Union
+from typing import Annotated, Any, Union, Literal
 from types import EllipsisType
 
 # from nonebot import require
@@ -55,6 +55,7 @@ from src.utils.base.language import get_user_lang
 # from src.utils.base.config import get_config
 from src.utils.message.message import MarkdownMessage
 from src.utils.message.html_tool import md_to_pic
+from src.utils.message.tools import random_hex_string
 
 from .execute_auto_translator import auto_translate  # type: ignore
 from .utils import hanzi_timeid
@@ -152,39 +153,66 @@ save_filesaves()
 
 enable_auto_exe_translate = {}
 
-people_convert_point: dict[str, dict[str, dict[str, float | Any]]] = {}
+people_convert_point: dict[str, dict[str, float]] = {}
 
 
 def query_convert_points(
-    usr_id: str, item: str, decline: float = 0, store: Any = None
-) -> tuple[Any, float]:
+    usr_id: str, item: str, decline: float = 0
+) -> tuple[bool, float]:
+    """
+    查询用户是否拥有足够的点数，若拥有则消耗，若不足则返回False
+
+    参数：
+    usr_id: str
+        用户id
+    item: str
+        要消耗的点数类型
+    decline: float
+        消耗点数数量
+    store: Any
+        要储存的数据
+
+    返回：
+    tuple[bool, float]
+        是否足够和剩余点数
+    """
     global people_convert_point
-    if usr_id in people_convert_point:
-        if item in people_convert_point[usr_id]:
-            if store:
-                people_convert_point[usr_id][item][item] = store
-            if people_convert_point[usr_id][item]["point"] >= decline:
-                people_convert_point[usr_id][item]["point"] -= decline
-                return (
-                    people_convert_point[usr_id][item].get(item, None),
-                    people_convert_point[usr_id][item]["point"],
-                )
-            else:
-                return False, people_convert_point[usr_id][item]["point"]
-        else:
-            people_convert_point[usr_id][item] = {
-                "point": configdict["maxPersonConvert"][item] - decline,
-                item: store,
-            }
-            return store, people_convert_point[usr_id][item]["point"]
-    people_convert_point[usr_id] = {
-        item: {"point": configdict["maxPersonConvert"][item] - decline, item: store}
-    }
-    return store, people_convert_point[usr_id][item]["point"]
+    if usr_id not in people_convert_point:
+        people_convert_point[usr_id] = {item: configdict["maxPersonConvert"][item]}
+    if item not in people_convert_point[usr_id]:
+        people_convert_point[usr_id][item] = configdict["maxPersonConvert"][item]
+
+    if people_convert_point[usr_id][item] >= decline:
+        people_convert_point[usr_id][item] -= decline
+        return True, people_convert_point[usr_id][item]
+    else:
+        return False, people_convert_point[usr_id][item]
+
+
+something_to_delete: dict[
+    str,
+    dict[
+        Literal["stuff", "time"],
+        Union[Path | os.PathLike[str] | str, tuple[Any, str]] | int,
+    ],
+] = {}
+
+
+def add_file_to_delete(file_: Path | os.PathLike[str] | str, wait_p30s: int = 0) -> str:
+    global something_to_delete
+    something_to_delete[rr := str(file_)] = {"stuff": file_, "time": wait_p30s}
+    return rr
+
+
+def add_memory_to_delete(
+    index: str, memory_: Any, description: str = "一个内存", wait_p30s: int = 0
+) -> None:
+    global something_to_delete
+    something_to_delete[index] = {"stuff": (memory_, description), "time": wait_p30s}
 
 
 def get_stored_path(
-    user_id: str, item: Union[Path, os.PathLike], superuser: bool = False
+    user_id: str, item: Union[Path, os.PathLike[str], str], superuser: bool = False
 ) -> Path:
 
     if not isinstance(item, Path):
@@ -227,23 +255,46 @@ async def _():
     nonebot.logger.success("删除临时文件目录完成")
 
 
-file_to_delete = []
-
-
 @scheduler.scheduled_job("interval", seconds=30)
 async def _():
     nonebot.logger.info(
-        "-删除文件检测-",
+        "-删除临时内容-",
     )
-    global file_to_delete
-    for path_d in file_to_delete.copy():
-        try:
-            if os.path.exists(path_d):
-                os.remove(path_d)
-            file_to_delete.remove(path_d)
-            nonebot.logger.success("删除临时文件：{}".format(path_d))
-        except:
-            nonebot.logger.warning("跳过临时文件删除：{}".format(path_d))
+    global something_to_delete
+    for index_, stuff_component in something_to_delete.items():
+        if stuff_component["time"] <= 0:  # type: ignore
+            if isinstance(stuff_component["stuff"], (str, Path, os.PathLike)):
+                try:
+                    if os.path.isfile(stuff_component["stuff"]):
+                        os.remove(stuff_component["stuff"])
+                        nonebot.logger.success(
+                            "删除文件：{}".format(stuff_component["stuff"])
+                        )
+                    elif os.path.isdir(stuff_component["stuff"]):
+                        shutil.rmtree(stuff_component["stuff"])
+                        nonebot.logger.success(
+                            "删除目录：{}".format(stuff_component["stuff"])
+                        )
+                    else:
+                        nonebot.logger.warning(
+                            "路径不存在或未知类型：{}".format(stuff_component["stuff"])
+                        )
+                    del something_to_delete[index_]
+                except:
+                    nonebot.logger.warning(
+                        "跳过删除：{}".format(stuff_component["stuff"])
+                    )
+            else:
+                try:
+                    nonebot.logger.info(
+                        "清理内存：{}".format(stuff_component["stuff"][-1])  # type: ignore
+                    )
+                    del something_to_delete[index_]
+                except:
+                    nonebot.logger.warning(
+                        "无法删除：{}".format(stuff_component["stuff"][-1])  # type: ignore
+                    )
+        something_to_delete[index]["time"] -= 1  # type: ignore
     global filesaves
     qqidlist = list(filesaves.keys()).copy()
     save_file = False
@@ -261,7 +312,6 @@ async def _():
                 except:
                     pass
 
-                query_convert_points(qqid, "music", 0, False)
                 filesaves[qqid]["totalSize"] -= filesaves[qqid][name]["size"]
                 nonebot.logger.info(
                     "\t删除{}".format(name),
@@ -655,15 +705,16 @@ async def _(
                 if arg in result.options[arg].args.keys()
                 else result.options[arg].args
             )
-            if ((_vlu := result.options[arg].value) is None or isinstance(_vlu, EllipsisType) )
+            if (
+                (_vlu := result.options[arg].value) is None
+                or isinstance(_vlu, EllipsisType)
+            )
             else _vlu
         )
     # await musicreater_convert.finish(
     #     UniMessage.text(json.dumps(_args, indent=4, sort_keys=True, ensure_ascii=False))
     # )
     nonebot.logger.info(_args)
-
-    
 
     if ((not superuser_permission) and (usr_id not in filesaves.keys())) or (
         superuser_permission
@@ -777,12 +828,9 @@ async def _(
             "music",
             random.random() % 0.5 + 0.3,
         )
-        if res is False:
+        if not res:
             buffer.write("中途退出，转换点不足：{}\n".format(pnt))
-            return False
-        else:
-            return True
-        # return res, pnt
+        return res
 
     await linglun_convert.send(UniMessage.text("转换开始……"))
 
@@ -813,26 +861,25 @@ async def _(
                 else:
                     continue
 
-                if isinstance(
-                    msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
-                ) and (
-                    isinstance(msct_obj[0], Musicreater.MidiConvert)
-                    and msct_obj[1]
-                    == (
+                identify_cmp = str(
+                    (
+                        os.path.splitext(to_convert_path.name)[0].replace(" ", "_"),
                         not _args["enable-mismatch-error"],
                         _args["play-speed"],
                         _args["default-tempo"],
                         pitched_notechart,
                         percussion_notechart,
                         volume_curve,
-                    )
-                    and (
-                        msct_obj[0].music_name
-                        == os.path.splitext(to_convert_path.name)[0].replace(" ", "_")
-                    )
-                ):
+                    ).__hash__()
+                )
+
+                if identify_cmp in something_to_delete.keys():
                     nonebot.logger.info("载入已有缓存。")
-                    msct_obj = msct_obj[0]
+                    msct_obj: Musicreater.MidiConvert = something_to_delete[
+                        identify_cmp
+                    ][
+                        "stuff"
+                    ]  # type: ignore
                     msct_obj.redefine_execute_format(_args["old-execute-format"])
                     msct_obj.set_min_volume(_args["minimal-volume"])
                     # msct_obj.set_deviation()
@@ -849,21 +896,11 @@ async def _(
                             min_volume=_args["minimal-volume"],
                             vol_processing_func=volume_curve,
                         )
-                        query_convert_points(
-                            usr_id,
-                            "music",
-                            0,
-                            (
-                                msct_obj,
-                                (
-                                    not _args["enable-mismatch-error"],
-                                    _args["play-speed"],
-                                    _args["default-tempo"],
-                                    pitched_notechart,
-                                    percussion_notechart,
-                                    volume_curve,
-                                ),
-                            ),
+                        add_memory_to_delete(
+                            identify_cmp,
+                            msct_obj,
+                            "音乐转换类{}".format(msct_obj.music_name),
+                            7,
                         )
                     else:
                         buffer.write(
@@ -1053,7 +1090,7 @@ async def _(
         ),
     )
     await UniMessage.send(UniMessage.image(raw=img_bytes))
-    
+
     # nonebot.logger.info(buffer.getvalue())
     img_bytes = await md_to_pic(
         "## 转换结果\n\n"
@@ -1080,14 +1117,16 @@ async def _(
     )
     await UniMessage.send(UniMessage.image(raw=img_bytes))
 
-    global file_to_delete
-    file_to_delete.append(fp)
-    # os.remove(fp)
+    add_file_to_delete(fp, 1)
 
     await linglun_convert.finish(
         UniMessage.text(
             "转换结束，当前剩余转换点数：⌊p⌋≈{:.2f}|{}".format(
-                query_convert_points(usr_id, "music", 0, None)[1],
+                query_convert_points(
+                    usr_id,
+                    "music",
+                    0,
+                )[1],
                 configdict["maxPersonConvert"]["music"],
             )
         ),
@@ -1164,7 +1203,11 @@ async def _(
             "重置转换状况并修改点数成功！当前{}的{}点数为：⌊p⌋≈{:.2f}|{}".format(
                 to_change,
                 v_item,
-                query_convert_points(to_change, v_item, -cd_value, None)[1],
+                query_convert_points(
+                    to_change,
+                    v_item,
+                    -cd_value,
+                )[1],
                 configdict["maxPersonConvert"][v_item],
             )
         ),

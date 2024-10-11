@@ -16,7 +16,7 @@ def clamp(value: float, min_value: float, max_value: float) -> float | int:
     return max(min(value, max_value), min_value)
 
 
-def convert_size(size: int, precision: int = 2, add_unit: bool = True, suffix: str = " XiB") -> str | float:
+def convert_size(size: int | float, precision: int = 2, add_unit: bool = True, suffix: str = " XiB") -> str | float:
     """把字节数转换为人类可读的字符串，计算正负
 
     Args:

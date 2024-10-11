@@ -44,12 +44,13 @@ from src.utils.message.message import MarkdownMessage
 from src.utils.message.html_tool import md_to_pic
 
 from .msctexec import (
-    # people_convert_point,
+    something_to_delete,
     query_convert_points,
     filesaves,
     configdict,
     temporary_dir,
-    file_to_delete,
+    add_file_to_delete,
+    add_memory_to_delete,
     get_stored_path,
 )
 from .utils import hanzi_timeid
@@ -269,11 +270,9 @@ async def _(
             "music",
             random.random() % 1.6 + 1.3,
         )
-        if res is False:
+        if not res:
             buffer.write("中途退出，转换点不足：{}\n".format(pnt))
-            return False
-        else:
-            return True
+        return res
 
     await mspv_sync.send(UniMessage.text("转换开始……"))
 
@@ -299,28 +298,25 @@ async def _(
                 else:
                     continue
 
-                if isinstance(
-                    msct_obj := query_convert_points(usr_id, "music", 0)[0], tuple
-                ) and (
-                    isinstance(msct_obj[0], Musicreater.MidiConvert)
-                    and (
-                        msct_obj[1]
-                        == (
-                            not _args["enable-mismatch-error"],
-                            _args["play-speed"],
-                            _args["default-tempo"],
-                            pitched_notechart,
-                            percussion_notechart,
-                            volume_curve,
-                        )
-                    )
-                    and (
-                        msct_obj[0].music_name
-                        == os.path.splitext(to_convert_path.name)[0].replace(" ", "_")
-                    )
-                ):
+                identify_cmp = str(
+                    (
+                        os.path.splitext(to_convert_path.name)[0].replace(" ", "_"),
+                        not _args["enable-mismatch-error"],
+                        _args["play-speed"],
+                        _args["default-tempo"],
+                        pitched_notechart,
+                        percussion_notechart,
+                        volume_curve,
+                    ).__hash__()
+                )
+
+                if identify_cmp in something_to_delete.keys():
                     nonebot.logger.info("载入已有缓存。")
-                    msct_obj = msct_obj[0]
+                    msct_obj: Musicreater.MidiConvert = something_to_delete[
+                        identify_cmp
+                    ][
+                        "stuff"
+                    ]  # type: ignore
                 else:
 
                     if go_chk_point():
@@ -333,21 +329,11 @@ async def _(
                             percussion_note_table=percussion_notechart,
                             vol_processing_func=volume_curve,
                         )
-                        query_convert_points(
-                            usr_id,
-                            "music",
-                            0,
-                            (
-                                msct_obj,
-                                (
-                                    not _args["enable-mismatch-error"],
-                                    _args["play-speed"],
-                                    _args["default-tempo"],
-                                    pitched_notechart,
-                                    percussion_notechart,
-                                    volume_curve,
-                                ),
-                            ),
+                        add_memory_to_delete(
+                            identify_cmp,
+                            msct_obj,
+                            "音乐转换类{}".format(msct_obj.music_name),
+                            7,
                         )
                     else:
                         buffer.write(
@@ -440,8 +426,7 @@ async def _(
         except nonebot.adapters.onebot.v11.exception.NetworkError as E:
             buffer.write("文件上传发生网络错误：\n{}".format(E))
 
-        global file_to_delete
-        file_to_delete.append(fp)
+        add_file_to_delete(fp, 1)
 
     img_bytes = await md_to_pic(
         "##{}\n\n```\n{}\n```".format(
@@ -459,7 +444,7 @@ async def _(
         UniMessage.text(
             "成功转换：{}\n当前剩余转换点数：⌊p⌋≈{:.2f}|{}".format(
                 "、".join(all_files),
-                query_convert_points(usr_id, "music", 0, None)[1],
+                query_convert_points(usr_id, "music", 0)[1],
                 configdict["maxPersonConvert"]["music"],
             )
         ),
