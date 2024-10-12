@@ -40,7 +40,7 @@ import nonebot.drivers
 import nonebot.rule
 
 # from nonebot.params import CommandArg
-from nonebot.permission import SUPERUSER, SuperUser
+from nonebot.permission import SUPERUSER
 from nonebot.adapters.onebot.v11.event import (
     GroupUploadNoticeEvent,
     GroupMessageEvent,

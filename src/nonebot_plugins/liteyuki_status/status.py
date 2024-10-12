@@ -73,7 +73,9 @@ yanlun_path = "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
     ulang = Language(get_default_lang_code(), "zh-WY")
-    nonebot.logger.success(ulang.get("yanlun.refresh.success", COUNT=update_yanlun()))
+    nonebot.logger.success(
+        ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
+    )
 
 
 async def update_yanlun():
@@ -196,7 +198,11 @@ async def _(
     # print(result.options)
     ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
     if result.options["refresh"].value:
-        await update_yanlun()
+        await yanlun.send(
+            UniMessage.text(
+                ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
+            )
+        )
     if result.options["count"].value:
         authors = [
             (
