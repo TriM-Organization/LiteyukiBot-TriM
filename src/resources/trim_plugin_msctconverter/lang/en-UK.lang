@@ -5,7 +5,6 @@ upexecute.disable=It is a disable of the "execute" command auto update
 
 writefile.no_text=No text provided to write, please give the text after the first line
 writefile.no_file=No file assigned to write, provide it with arg "-f|--file-name"
-writefile.
 writefile.file_not_exist=The file is not existed
 writefile.append_success=File which is called {NAME} have appended {COUNT} characters in the tail of the original text and now have got {SIZE} bytes in totally the full file.
 writefile.write_success={NAME}, {SIZE} bytes written
