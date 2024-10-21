@@ -292,16 +292,20 @@ async def _(
 
     if len(whole_texts) < 2:
         await write_2_file.finish(ulang.get("writefile.no_text"))
-    
-    cmd_arg = whole_texts[0].split(" ",2)
-    
-    file_2_write = (cmd_arg[1]+ ".txt") if len(cmd_arg) > 1 else "新建文本文档.txt"
 
-    file_path = get_stored_path(usr_id, file_2_write, superuser=False)
+    cmd_arg = whole_texts[0].split(" ", 2)
+
+    file_2_write = (cmd_arg[1] + ".txt") if len(cmd_arg) > 1 else "新建文本文档.txt"
+
+    (file_path := get_stored_path(usr_id, file_2_write, superuser=False)).parent.mkdir(
+        parents=True, exist_ok=True
+    )
 
     if "-a" in whole_texts[0]:
         if file_2_write in filesaves[usr_id].keys():
-            await write_file(file_path,content=whole_texts[1], mode="a", encoding="utf-8")
+            await write_file(
+                file_path, content=whole_texts[1], mode="a", encoding="utf-8"
+            )
             file_size = os.path.getsize(file_path)
             filesaves[usr_id]["totalSize"] += (
                 file_size - filesaves[usr_id][file_2_write]["size"]
@@ -318,7 +322,7 @@ async def _(
         else:
             await write_2_file.finish(ulang.get("writefile.file_not_exist"))
     else:
-        await write_file(file_path,content=whole_texts[1], mode="w", encoding="utf-8")
+        await write_file(file_path, content=whole_texts[1], mode="w", encoding="utf-8")
         now = zhDateTime.DateTime.now()
         file_size = os.path.getsize(file_path)
         try:
