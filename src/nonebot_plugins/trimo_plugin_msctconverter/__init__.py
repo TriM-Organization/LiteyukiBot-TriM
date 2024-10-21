@@ -2,6 +2,7 @@ from nonebot.plugin import PluginMetadata
 from liteyuki.plugin import PluginMetadata as LiteyukiPM, PluginType
 from .msctexec import *
 from .mspvexec import *
+from .command_structure import *
 
 __author__ = "金羿Eilles"
 __plugin_meta__ = PluginMetadata(
