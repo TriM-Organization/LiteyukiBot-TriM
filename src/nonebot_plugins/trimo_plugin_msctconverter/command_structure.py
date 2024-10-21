@@ -542,7 +542,8 @@ async def _(
                         forward_=axis_forward,
                         limit_=length_limit,
                         author=author_name,
-                        outfile=usr_temp_path / file_to_convert / ".bdx",
+                        outfile=os.path.splitext(usr_temp_path / file_to_convert)[0]
+                        + ".bdx",
                     )
                 )[0]:
                     all_files[file_to_convert]["bdx"] = {
