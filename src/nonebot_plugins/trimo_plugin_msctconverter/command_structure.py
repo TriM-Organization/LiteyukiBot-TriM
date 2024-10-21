@@ -421,8 +421,8 @@ async def _(
     ).lower()
 
     if len(dest_axis) == 2 and dest_axis[0] in (x, y, z) and dest_axis[1] in ("-", "+"):
-        dest_axis = dest_axis[0]
         axis_forward = True if dest_axis[1] == "+" else False
+        dest_axis = dest_axis[0]
     else:
         await cmd2struct.finish(
             UniMessage.text(
