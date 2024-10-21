@@ -322,7 +322,7 @@ async def _():
         "-删除临时内容-",
     )
     global something_temporary
-    for index_, stuff_component in something_temporary.items():
+    for index_, stuff_component in something_temporary.copy().items():
         if stuff_component["time"] <= 0:  # type: ignore
             if isinstance(stuff_component["stuff"], (str, Path, os.PathLike)):
                 try:

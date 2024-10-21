@@ -226,7 +226,7 @@ async def read_file_into_command_lines(
     cdt = False
     note = ""
     functionList = []
-    for lines in (await read_file(file_path=file_, mode="r")).split("\n\n"):  # type: ignore
+    for lines in (await read_file(file_path=file_, mode="r", encoding="utf-8")).split("\n\n"):  # type: ignore
         funcGroup = []
         for line in lines.split("\n"):
             if line.strip().startswith("#"):
