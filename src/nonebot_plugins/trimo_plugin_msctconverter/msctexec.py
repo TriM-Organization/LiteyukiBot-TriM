@@ -207,7 +207,7 @@ def add_file_to_delete(file_: Path | os.PathLike[str] | str, wait_p30s: int = 0)
         文件路径
     wait_p30s: int
         等待时间，单位为 30 秒内（不大于 30 秒），默认为 `0`
-        
+
     返回：
     str
         文件路径的字符串
@@ -222,7 +222,7 @@ def add_memory_to_temporary(
 ) -> None:
     """
     向临时内存存储中填入内存信息
-    
+
     参数：
     index: str
         索引
@@ -236,14 +236,15 @@ def add_memory_to_temporary(
     global something_temporary
     something_temporary[index] = {"stuff": (memory_, description), "time": wait_p30s}
 
+
 def read_memory_from_temporary(index: str) -> Any:
     """
     从临时内存存储中读取内容
-    
+
     参数：
     index: str
         索引
-    
+
     返回：
     Any
         内容，当无此内容时返回 `None`
@@ -255,12 +256,13 @@ def read_memory_from_temporary(index: str) -> Any:
     else:
         return memory_cmp
 
+
 def get_stored_path(
     user_id: str, item: Union[Path, os.PathLike[str], str], superuser: bool = False
 ) -> Path:
     """
     获取用户文件存储路径
-    
+
     参数：
     user_id: str
         用户id
@@ -268,7 +270,7 @@ def get_stored_path(
         文件名（对于用户目录的相对路径）
     superuser: bool
         是否为超级用户，默认为 `False` 若为 `True` 则在用户文件中寻找
-    
+
     返回：
     Path
         文件路径
@@ -718,6 +720,7 @@ async def _(
     nonebot.logger.info(result.options)
 
     usr_id = event.get_user_id()
+    ulang = get_user_lang(usr_id)
 
     superuser_permission = await SUPERUSER(bot, event)
 
@@ -726,9 +729,10 @@ async def _(
     ):
         await linglun_convert.finish(
             UniMessage.text(
-                "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
-                    qres[1],
-                    configdict["maxPersonConvert"]["music"],
+                ulang.get(
+                    "convet.not_enough_point",
+                    NOW=qres[1],
+                    TOTAL=configdict["maxPersonConvert"]["music"],
                 )
             ),
             at_sender=True,
@@ -784,7 +788,7 @@ async def _(
         )
     ):
         await linglun_convert.finish(
-            UniMessage.text("服务器内未存入你的任何文件，请先上传midi文件吧")
+            UniMessage.text(ulang.get("convert.no_file", TYPE="midi"))
         )
         return
 
@@ -814,7 +818,13 @@ async def _(
         pitched_notechart.update(json.load(_ppnt.open("r")))
     else:
         await linglun_convert.finish(
-            UniMessage.text("乐器对照表 {} 不存在".format(_args["pitched-note-table"]))
+            UniMessage.text(
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="乐音乐器对照表",
+                    NAME=_args["pitched-note-table"],
+                )
+            )
         )
         return
 
@@ -842,7 +852,11 @@ async def _(
     else:
         await linglun_convert.finish(
             UniMessage.text(
-                "乐器对照表 {} 不存在".format(_args["percussion-note-table"])
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="打击乐器对照表",
+                    NAME=_args["percussion-note-table"],
+                )
             )
         )
         return
@@ -859,7 +873,11 @@ async def _(
     else:
         await linglun_convert.finish(
             UniMessage.text(
-                "音量处理曲线 {} 不存在".format(_args["volume-processing-function"])
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="音量处理曲线",
+                    NAME=_args["volume-processing-function"],
+                )
             )
         )
         return
@@ -889,10 +907,12 @@ async def _(
             random.random() % 0.5 + 0.3,
         )
         if not res:
-            buffer.write("中途退出，转换点不足：{}\n".format(pnt))
+            buffer.write(ulang.get("convert.break.not_enough_point", NOW=pnt))
         return res
 
-    await linglun_convert.send(UniMessage.text("转换开始……"))
+    await linglun_convert.send(
+        UniMessage.text(ulang.get("convert.start"))
+    )
 
     try:
 
@@ -935,7 +955,9 @@ async def _(
 
                 if identify_cmp in something_temporary.keys():
                     nonebot.logger.info("载入已有缓存。")
-                    msct_obj: Musicreater.MidiConvert = read_memory_from_temporary(identify_cmp)
+                    msct_obj: Musicreater.MidiConvert = read_memory_from_temporary(
+                        identify_cmp
+                    )
                     msct_obj.redefine_execute_format(_args["old-execute-format"])
                     msct_obj.set_min_volume(_args["minimal-volume"])
                     # msct_obj.set_deviation()

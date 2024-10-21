@@ -2,3 +2,17 @@
 upexecute.same=令未变
 upexecute.enable=更令之法方用
 upexecute.disable=更令之法方去
+
+writefile.no_text=无文以写，换行以供
+writefile.no_file=无典案名，曰其以参所谓"-f|--file-name"者
+writefile.file_not_exist=案虚
+writefile.append_success=案曰 {NAME} 者，填{COUNT}字，现{SIZE}字节
+writefile.write_success=案曰{NAME}者，{SIZE}字节攥
+
+convet.not_enough_point=点阙，余{NOW:.2f}，满{TOTAL}
+convert.break.not_enough_point=点阙而不可继，现{NOW}
+convert.no_file=无案机内，先传之{TYPE}
+convert.table_not_exist={WHAT}曰 {NAME} 者虚
+convert.start=始……
+
+cmd2struct.axis_wrong=产型误指，应合此法，曰“轴正负”，类x+、z-。

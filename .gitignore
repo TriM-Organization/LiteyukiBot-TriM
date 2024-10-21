@@ -27,6 +27,7 @@ src/nonebot_plugins/trimo_plugin_msctconverter/config
 src/nonebot_plugins/trimo_plugin_msctconverter/temp
 src/nonebot_plugins/trimo_plugin_msctconverter/MusicPreview/assets/wav
 src/nonebot_plugins/dislink_plugin_ccnd
+# src/nonebot_plugins/dislink_plugin_ccnd
 
 # vuepress
 .github

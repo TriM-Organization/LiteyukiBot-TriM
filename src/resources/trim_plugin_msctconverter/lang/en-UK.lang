@@ -1,0 +1,20 @@
+
+upexecute.same=It's same of the command after convert
+upexecute.enable="execute" command auto update is enabled
+upexecute.disable=It is a disable of the "execute" command auto update
+
+writefile.no_text=No text provided to write, please give the text after the first line
+writefile.no_file=No file assigned to write, provide it with arg "-f|--file-name"
+writefile.
+writefile.file_not_exist=The file is not existed
+writefile.append_success=File which is called {NAME} have appended {COUNT} characters in the tail of the original text and now have got {SIZE} bytes in totally the full file.
+writefile.write_success={NAME}, {SIZE} bytes written
+
+convet.not_enough_point=Not enough convert provide, now ⌊p⌋≈{NOW:.2f} of {TOTAL}
+convert.break.not_enough_point=In the reason of lack of convert point and you cannot continue to convert the thing you want. Now you have only {NOW} points and maybe you need to get more in using some unspecified methods.
+convert.no_file=No any file in the server, upload a {TYPE} file first
+convert.table_not_exist={WHAT} called {NAME} is not exist
+convert.start=The convertion is started and soon will come to a result
+
+cmd2struct.axis_wrong=It is a truth that you have entered a totally uncorrect argument that states into the wrong format of tie direction of the structure the program is going to form and the actually input should under the format of Axis±, like x+, z-, etc.
+
