@@ -43,7 +43,7 @@ from Musicreater.plugin.bdx import (
 )
 from Musicreater.plugin.archive import compress_zipfile
 
-from src.utils.io import read_file
+from src.utils.io import read_file, write_file
 from src.utils.base.language import get_user_lang
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
 from src.utils.message.html_tool import md_to_pic
@@ -250,17 +250,18 @@ async def read_file_into_command_lines(
     return functionList
 
 
-write_2_file = on_alconna(
-    Alconna(
-        "写入文本文件",
-        Option(
-            "-n|-f|--file-name",
-            default="新建文本文档",
-            args=Args["file-name", str, "新建文本文档"],
-        ),
-        Option("-a|--append", default=False, action=store_true),
-    ),
-    aliases=(
+write_2_file = nonebot.on_command(
+    # Alconna(
+    #     "写入文本文件",
+    #     Option(
+    #         "-n|-f|--file-name",
+    #         default="新建文本文档",
+    #         args=Args["file-name", str, "新建文本文档"],
+    #     ),
+    #     Option("-a|--append", default=False, action=store_true),
+    # ),
+    "写入文本文件",
+    aliases={
         "write file",
         "write down",
         "写入",
@@ -269,7 +270,7 @@ write_2_file = on_alconna(
         "write2file",
         "写入文件",
         "写入文本",
-    ),
+    },
     rule=to_me(),
     # ignorecase=True,
 )
@@ -277,12 +278,12 @@ write_2_file = on_alconna(
 
 @write_2_file.handle()
 async def _(
-    result: Arparma,
+    # result: Arparma,
     event: T_MessageEvent,
     bot: T_Bot,
 ):
 
-    nonebot.logger.info(result.options)
+    # nonebot.logger.info(result.options)
 
     usr_id = event.get_user_id()
     ulang = get_user_lang(usr_id)
@@ -291,19 +292,16 @@ async def _(
 
     if len(whole_texts) < 2:
         await write_2_file.finish(ulang.get("writefile.no_text"))
-
-    file_2_write = (
-        result.options["file-name"].args["file-name"]
-        if result.options["file-name"].args
-        else "新建文本文档"
-    ) + ".txt"
+    
+    cmd_arg = whole_texts[0].split(" ",2)
+    
+    file_2_write = (cmd_arg[1]+ ".txt") if len(cmd_arg) > 1 else "新建文本文档.txt"
 
     file_path = get_stored_path(usr_id, file_2_write, superuser=False)
 
-    if result.options["append"].value:
+    if "-a" in whole_texts[0]:
         if file_2_write in filesaves[usr_id].keys():
-            with file_path.open(mode="a", encoding="utf-8") as f:
-                f.write(whole_texts[1])
+            await write_file(file_path,content=whole_texts[1], mode="a", encoding="utf-8")
             file_size = os.path.getsize(file_path)
             filesaves[usr_id]["totalSize"] += (
                 file_size - filesaves[usr_id][file_2_write]["size"]
@@ -320,8 +318,7 @@ async def _(
         else:
             await write_2_file.finish(ulang.get("writefile.file_not_exist"))
     else:
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(whole_texts[1])
+        await write_file(file_path,content=whole_texts[1], mode="w", encoding="utf-8")
         now = zhDateTime.DateTime.now()
         file_size = os.path.getsize(file_path)
         try:

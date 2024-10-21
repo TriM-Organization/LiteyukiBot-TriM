@@ -1,8 +1,8 @@
 import aiofiles
-
+from pathlib import Path
 
 async def write_file(
-        file_path: str,
+        file_path: str | Path,
         content: str | bytes,
         mode: str = "w",
         **kws,
@@ -18,7 +18,7 @@ async def write_file(
         await f.write(content)
 
 
-async def read_file(file_path: str, mode: str = "r", **kws) -> str:
+async def read_file(file_path: str | Path, mode: str = "r", **kws) -> str:
     """
     读取文件
     Args:
