@@ -505,7 +505,7 @@ async def _(
     def go_chk_point() -> bool:
         res, pnt = query_convert_points(
             usr_id,
-            "music",
+            "structure",
             random.random() % 0.4 + 0.1,
         )
         if not res:
@@ -576,7 +576,7 @@ async def _(
         fp := str(
             (
                 temporary_dir
-                / (fn := "msctr[{}]-{}.zip".format(hanzi_timeid(), usr_id))
+                / (fn := "struct[{}]-{}.zip".format(hanzi_timeid(), usr_id))
             ).resolve()
         ),
     )
@@ -639,10 +639,10 @@ async def _(
             "转换结束，当前剩余转换点数：⌊p⌋≈{:.2f}|{}".format(
                 query_convert_points(
                     usr_id,
-                    "music",
+                    "structure",
                     0,
                 )[1],
-                configdict["maxPersonConvert"]["music"],
+                configdict["maxPersonConvert"]["structure"],
             )
         ),
         at_sender=True,

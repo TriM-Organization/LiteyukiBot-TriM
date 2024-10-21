@@ -95,9 +95,9 @@ else:
         "donateSite": "",
         "helpPicPath": "https://foruda.gitee.com/images/1685873169584963569/95fe9b0b_9911226.png",
         "maxCacheSize": 1048576,
-        "maxCacheTime": {".mcfunction": 900, ".mid .midi": 1800, ".json": 1800},
+        "maxCacheTime": {".mcfunction .txt": 900, ".mid .midi": 1800, ".json": 1800},
         "maxSingleFileSize": {
-            ".mcfunction": 524288,
+            ".mcfunction .txt": 524288,
             ".mid .midi": 131072,
             ".json": 8192,
         },
