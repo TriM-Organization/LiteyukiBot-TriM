@@ -506,7 +506,7 @@ async def _(
         res, pnt = query_convert_points(
             usr_id,
             "structure",
-            random.random() % 0.4 + 0.1,
+            random.random() % 0.5 + 0.2,
         )
         if not res:
             buffer.write(ulang.get("convert.break.not_enough_point", NOW=pnt))
