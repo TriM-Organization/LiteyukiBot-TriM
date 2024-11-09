@@ -89,6 +89,7 @@ mspv_sync = on_alconna(
             default="natural",
             args=Args["volume-processing-function", str, "natural"],
         ),
+        Option("--debug", default=False, action=store_true),
     ),
     aliases={
         "midi合成",
@@ -142,6 +143,7 @@ async def _(
         "pitched-note-table": "touch",
         "percussion-note-table": "touch",
         "volume-processing-function": "natural",
+        "debug": False,
     }
     for arg in _args.keys():
         _args[arg] = (
@@ -395,6 +397,8 @@ async def _(
         buffer.write(
             "[ERROR] {}\n".format(e).replace(str(Path(__file__).parent.resolve()), "[]")
         )
+        if _args["debug"]:
+            raise e
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
@@ -427,13 +431,14 @@ async def _(
 
         add_file_to_delete(fp, 1)
 
-    img_bytes = await md_to_pic(
-        "##{}\n\n```\n{}\n```".format(
-            MarkdownMessage.escape("日志信息："),
-            buffer.getvalue().replace("\\", "/"),
-        ),
-    )
-    await UniMessage.send(UniMessage.image(raw=img_bytes))
+    if buffer.getvalue().strip():
+        img_bytes = await md_to_pic(
+            "##{}\n\n```\n{}\n```".format(
+                MarkdownMessage.escape("日志信息："),
+                buffer.getvalue().replace("\\", "/"),
+            ),
+        )
+        await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     # nonebot.logger.info(buffer.getvalue())
 

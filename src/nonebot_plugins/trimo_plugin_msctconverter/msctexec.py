@@ -420,7 +420,7 @@ async def _(
     event: GroupUploadNoticeEvent,
     bot: T_Bot,
 ):
-    
+
     common_permission = not (await SUPERUSER(bot, event))
 
     # global cache_limit_data
@@ -429,7 +429,9 @@ async def _(
 
     if file_subtype in cache_limit_data.keys():
 
-        if (file_infomation["size"] > cache_limit_data[file_subtype][0]) and common_permission:
+        if (
+            file_infomation["size"] > cache_limit_data[file_subtype][0]
+        ) and common_permission:
             await notece_.finish(
                 "文件 {} 大小过大，这不是网盘\n单个{}文件不应大于 {} 千字节".format(
                     file_infomation["name"],
@@ -439,7 +441,7 @@ async def _(
                 at_sender=True,
             )
             return
-        
+
         if (usr_id := str(event.user_id)) in filesaves.keys():
             if (
                 filesaves[usr_id]["totalSize"] + file_infomation["size"]
@@ -468,7 +470,7 @@ async def _(
                 return
         else:
             filesaves[usr_id] = {"totalSize": 0}
-        
+
         savepath = database_dir / usr_id
 
         os.makedirs(savepath, exist_ok=True)
@@ -921,9 +923,7 @@ async def _(
             buffer.write(ulang.get("convert.break.not_enough_point", NOW=pnt))
         return res
 
-    await linglun_convert.send(
-        UniMessage.text(ulang.get("convert.start"))
-    )
+    await linglun_convert.send(UniMessage.text(ulang.get("convert.start")))
 
     try:
 
@@ -1174,13 +1174,14 @@ async def _(
             "upload_private_file", user_id=event.user_id, name=fn, file=fp
         )
 
-    img_bytes = await md_to_pic(
-        "##{}\n\n```\n{}\n```".format(
-            MarkdownMessage.escape("日志信息："),
-            buffer.getvalue().replace("\\", "/"),
-        ),
-    )
-    await UniMessage.send(UniMessage.image(raw=img_bytes))
+    if buffer.getvalue().strip():
+        img_bytes = await md_to_pic(
+            "##{}\n\n```\n{}\n```".format(
+                MarkdownMessage.escape("日志信息："),
+                buffer.getvalue().replace("\\", "/"),
+            ),
+        )
+        await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     # nonebot.logger.info(buffer.getvalue())
     img_bytes = await md_to_pic(

@@ -375,6 +375,7 @@ cmd2struct = on_alconna(
             default="DefaultUser",
             args=Args["author", str, "DefaultUser"],
         ),
+        Option("--debug", default=False, action=store_true),
     ),
     aliases={
         "函数转结构",
@@ -569,6 +570,8 @@ async def _(
         buffer.write(
             "[ERROR] {}\n".format(e).replace(str(Path(__file__).parent.resolve()), "[]")
         )
+        if result.options["debug"].value:
+            raise e
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
@@ -600,13 +603,14 @@ async def _(
             "upload_private_file", user_id=event.user_id, name=fn, file=fp
         )
 
-    img_bytes = await md_to_pic(
-        "##{}\n\n```\n{}\n```".format(
-            MarkdownMessage.escape("日志信息："),
-            buffer.getvalue().replace("\\", "/"),
-        ),
-    )
-    await UniMessage.send(UniMessage.image(raw=img_bytes))
+    if buffer.getvalue().strip():
+        img_bytes = await md_to_pic(
+            "##{}\n\n```\n{}\n```".format(
+                MarkdownMessage.escape("日志信息："),
+                buffer.getvalue().replace("\\", "/"),
+            ),
+        )
+        await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     # nonebot.logger.info(buffer.getvalue())
     img_bytes = await md_to_pic(
