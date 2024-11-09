@@ -5,7 +5,7 @@ import nonebot.plugin
 import pip
 from io import StringIO
 from arclet.alconna import MultiVar
-from nonebot import Bot, require
+from nonebot import Bot, require # type: ignore
 from nonebot.exception import FinishedException, IgnoredException, MockApiException
 from nonebot.internal.adapter import Event
 from nonebot.internal.matcher import Matcher
@@ -111,7 +111,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
     if not os.path.exists("data/liteyuki/plugins.json"):
         await npm_update()
     # 判断会话类型
-    ulang = get_user_lang(str(event.user_id))
+    ulang = get_user_lang(event.get_user_id())
     plugin_name = result.args.get("plugin_name")
     sc = result.subcommands  # 获取子命令
     perm_s = await SUPERUSER(bot, event)  # 判断是否为超级用户

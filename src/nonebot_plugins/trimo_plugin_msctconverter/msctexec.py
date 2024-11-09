@@ -420,11 +420,16 @@ async def _(
     event: GroupUploadNoticeEvent,
     bot: T_Bot,
 ):
+    
+    common_permission = not (await SUPERUSER(bot, event))
+
     # global cache_limit_data
     file_infomation = event.model_dump()["file"]
     file_subtype: str = os.path.splitext(file_infomation["name"])[-1].lower()
+
     if file_subtype in cache_limit_data.keys():
-        if file_infomation["size"] > cache_limit_data[file_subtype][0]:
+        
+        if (file_infomation["size"] > cache_limit_data[file_subtype][0]) and common_permission:
             await notece_.finish(
                 "文件 {} 大小过大，这不是网盘\n单个{}文件不应大于 {} 千字节".format(
                     file_infomation["name"],
@@ -434,11 +439,12 @@ async def _(
                 at_sender=True,
             )
             return
-        elif (usr_id := str(event.user_id)) in filesaves.keys():
+        
+        if (usr_id := str(event.user_id)) in filesaves.keys():
             if (
                 filesaves[usr_id]["totalSize"] + file_infomation["size"]
                 > max_cache_size
-            ):
+            ) and common_permission:
                 await notece_.send(
                     "缓存容量已经耗尽，当前你在服务器内的占有为 {} 字节，合 {}/{} 千字节\n而服务器最多支持每个人占有 {} 兆字节（即 {} 字节）".format(
                         filesaves[usr_id]["totalSize"],
@@ -460,6 +466,9 @@ async def _(
                     )
                 )
                 return
+        else:
+            filesaves[usr_id] = {"totalSize": 0}
+        
         savepath = database_dir / usr_id
 
         os.makedirs(savepath, exist_ok=True)
@@ -471,32 +480,32 @@ async def _(
             )
 
         now = zhDateTime.DateTime.now()
-        try:
-            filesaves[usr_id][file_infomation["name"]] = {
-                "date": [
-                    now.year,
-                    now.month,
-                    now.day,
-                    now.hour,
-                    now.minute,
-                ],
-                "size": file_infomation["size"],
-            }
-            filesaves[usr_id]["totalSize"] += file_infomation["size"]
-        except:
-            filesaves[usr_id] = {
-                file_infomation["name"]: {
-                    "date": [
-                        now.year,
-                        now.month,
-                        now.day,
-                        now.hour,
-                        now.minute,
-                    ],
-                    "size": file_infomation["size"],
-                }
-            }
-            filesaves[usr_id]["totalSize"] = file_infomation["size"]
+        # try:
+        filesaves[usr_id][file_infomation["name"]] = {
+            "date": [
+                now.year,
+                now.month,
+                now.day,
+                now.hour,
+                now.minute,
+            ],
+            "size": file_infomation["size"],
+        }
+        filesaves[usr_id]["totalSize"] += file_infomation["size"]
+        # except:
+        #     filesaves[usr_id] = {
+        #         file_infomation["name"]: {
+        #             "date": [
+        #                 now.year,
+        #                 now.month,
+        #                 now.day,
+        #                 now.hour,
+        #                 now.minute,
+        #             ],
+        #             "size": file_infomation["size"],
+        #         }
+        #     }
+        #     filesaves[usr_id]["totalSize"] = file_infomation["size"]
         save_filesaves()
         await notece_.finish(
             "文件 {} 已经保存，此文件在{:.1f}分内有效。".format(
