@@ -428,7 +428,7 @@ async def _(
     file_subtype: str = os.path.splitext(file_infomation["name"])[-1].lower()
 
     if file_subtype in cache_limit_data.keys():
-        
+
         if (file_infomation["size"] > cache_limit_data[file_subtype][0]) and common_permission:
             await notece_.finish(
                 "文件 {} 大小过大，这不是网盘\n单个{}文件不应大于 {} 千字节".format(
@@ -714,6 +714,7 @@ linglun_convert = on_alconna(
         Option(
             "-fa|--forward-axis", default="z+", args=Args["forward-axis", str, "z+"]
         ),
+        Option("--debug", default=False, action=store_true),
     ),
     # permission=SUPERUSER,
 )
@@ -770,6 +771,7 @@ async def _(
         "height-limit": 32,
         "author": "Eilles",
         "forward-axis": "z+",
+        "debug": False,
     }
     for arg in _args.keys():
         _args[arg] = (
@@ -1137,6 +1139,8 @@ async def _(
         buffer.write(
             "[ERROR] {}\n".format(e).replace(str(Path(__file__).parent.resolve()), "[]")
         )
+        if _args["debug"]:
+            raise e
 
     sys.stdout = sys.__stdout__
     sys.stderr = sys.__stderr__
