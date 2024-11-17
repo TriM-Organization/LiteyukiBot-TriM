@@ -85,7 +85,7 @@ async def update_yanlun():
     nonebot.logger.info("正在获取言·论信息")
     try:
         async with aiohttp.ClientSession() as client:
-            resp = await client.get(yanlun_path)
+            resp = await client.get(yanlun_path, timeout=15)
             yanlun_texts = (await resp.text()).strip("\n").split("\n")
     except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as err:
         nonebot.logger.warning("读取言·论信息发生 客户端或通道 错误：\n{}".format(err))
