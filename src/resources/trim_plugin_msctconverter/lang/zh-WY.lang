@@ -13,6 +13,6 @@ convet.not_enough_point=点阙，余{NOW:.2f}，满{TOTAL}
 convert.break.not_enough_point=点阙而不可继，现{NOW}
 convert.no_file=无案机内，先传之{TYPE}
 convert.table_not_exist={WHAT}曰 {NAME} 者虚
-convert.start=始……
+convert.start=始变之……
 
 cmd2struct.axis_wrong=产型误指，应合此法，曰“轴正负”，类x+、z-。

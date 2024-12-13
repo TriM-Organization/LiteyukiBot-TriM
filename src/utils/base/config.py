@@ -32,6 +32,7 @@ class BasicConfig(BaseModel):
     command_start: list[str] = ["/", ""]
     nickname: list[str] = [f"灵温-{random_hex_string(6)}"]
     default_language: str = "zh-WY"
+    default_interact_language: str = "zh-CN"
     satori: SatoriConfig = SatoriConfig()
     data_path: str = "data/liteyuki"
     chromium_path: str = (
@@ -43,6 +44,7 @@ class BasicConfig(BaseModel):
             else "/usr/bin/chromium-browser"
         )
     )
+    status_acknowledgement: str = ""
 
 
 def load_from_yaml(file_: str) -> dict:

@@ -155,4 +155,33 @@ status.minutes=分鐘
 status.seconds=秒
 status.cores=核心
 status.threads=線程
-status.process=進程
+status.process=進程所占用
+status.description=轻雪 Bot 狀態面板
+
+status.cpubrand.amd=超威
+status.cpubrand.intel=英特爾
+status.cpubrand.apple=蘋果
+status.cpubrand.qualcomm=高通
+status.cpubrand.mediatek=聯發科
+status.cpubrand.samsung=三星
+status.cpubrand.nvidia=英偉達
+status.cpubrand.huawei=華為
+status.cpubrand.unknown=未知處理器
+
+status.arch.unknown=未知架構
+status.disk.other=虛擬磁碟和其他
+
+status.unit.GHz=吉赫茲
+status.unit.Byte=位元組
+status.unit.binary_middile=二進
+status.unit.Bit_Units= ;千;百萬;吉;兆;拍;艾;皆;佑;羅;昆
+
+yanlun.refresh.success=言·論 成功更新得 {COUNT} 條
+yanlun.refresh.failed=言·論因 {ERR} 其 {ERRCODE} 而無法更新
+yanlun.errtype.net=網際網路連結
+yanlun.errtype.unknown=不可知
+yanlun.count.head=出處ttt數目(比例)
+yanlun.count.tail=...(縂 {NUM} 條)
+yanlun.length.toolong=言·論數目不可過多
+yanlun.length.tooshort=言·論數目不可為無或負
+yanlun.length.float=言·論數目不可謂為小數

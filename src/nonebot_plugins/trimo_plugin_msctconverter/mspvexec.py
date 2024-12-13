@@ -53,6 +53,7 @@ from .msctexec import (
     add_memory_to_temporary,
     read_memory_from_temporary,
     get_stored_path,
+    get_user_lang,
 )
 from .utils import hanzi_timeid
 
@@ -116,6 +117,7 @@ async def _(
     nonebot.logger.info(result.options)
 
     usr_id = event.get_user_id()
+    ulang = get_user_lang(usr_id)
 
     superuser_permission = await SUPERUSER(bot, event)
 
@@ -124,9 +126,10 @@ async def _(
     ):
         await mspv_sync.finish(
             UniMessage.text(
-                "转换点数不足，当前剩余：⌊p⌋≈{:.2f}|{}".format(
-                    qres[1],
-                    configdict["maxPersonConvert"]["music"],
+                ulang.get(
+                    "convet.not_enough_point",
+                    NOW=qres[1],
+                    TOTAL=configdict["maxPersonConvert"]["music"],
                 )
             ),
             at_sender=True,
@@ -168,12 +171,18 @@ async def _(
         )
     ):
         await mspv_sync.finish(
-            UniMessage.text("服务器内未存入你的任何文件，请先上传midi文件吧")
+            UniMessage.text(ulang.get("convert.no_file", TYPE="midi"))
         )
 
     if _args["mode"] not in [0, 1, 2, 3, 4]:
         await mspv_sync.finish(
-            UniMessage.text("模式 {} 不存在，请详阅文档。".format(_args["mode"]))
+            UniMessage.text(
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="模式",
+                    NAME=_args["mode"],
+                )
+            )
         )
 
     if _args["get-value-method"] not in [
@@ -182,7 +191,11 @@ async def _(
     ]:
         await mspv_sync.finish(
             UniMessage.text(
-                "取值法 {} 不存在，请详阅文档。".format(_args["get-value-method"])
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="取值法",
+                    NAME=_args["get-value-method"],
+                )
             )
         )
 
@@ -212,7 +225,11 @@ async def _(
         pitched_notechart.update(json.load(_ppnt.open("r")))
     else:
         await mspv_sync.finish(
-            UniMessage.text("乐器对照表 {} 不存在".format(_args["pitched-note-table"]))
+            ulang.get(
+                "convert.something_not_exist",
+                WHAT="乐音乐器对照表",
+                NAME=_args["pitched-note-table"],
+            )
         )
         return
 
@@ -240,7 +257,11 @@ async def _(
     else:
         await mspv_sync.finish(
             UniMessage.text(
-                "乐器对照表 {} 不存在".format(_args["percussion-note-table"])
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="打击乐器对照表",
+                    NAME=_args["percussion-note-table"],
+                )
             )
         )
         return
@@ -257,7 +278,11 @@ async def _(
     else:
         await mspv_sync.finish(
             UniMessage.text(
-                "音量处理曲线 {} 不存在".format(_args["volume-processing-function"])
+                ulang.get(
+                    "convert.something_not_exist",
+                    WHAT="音量处理曲线",
+                    NAME=_args["volume-processing-function"],
+                )
             )
         )
         return
@@ -274,10 +299,10 @@ async def _(
             random.random() % 1.6 + 1.3,
         )
         if not res:
-            buffer.write("中途退出，转换点不足：{}\n".format(pnt))
+            buffer.write(ulang.get("convert.break.not_enough_point", NOW=pnt))
         return res
 
-    await mspv_sync.send(UniMessage.text("转换开始……"))
+    await mspv_sync.send(UniMessage.text(ulang.get("convert.start")))
 
     try:
 

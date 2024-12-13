@@ -1,9 +1,12 @@
 const data = JSON.parse(document.getElementById("data").innerText);
 const bot_data = data["bot"]; // 机器人数据
-const hardwareData = data["hardware"]; // 硬件数据
-const liteyukiData = data["liteyuki"]; // LiteYuki数据
-const localData = data["localization"]; // 本地化语言数据
+const hardware_data = data["hardware"]; // 硬件数据
+const liteyuki_data = data["liteyuki"]; // LiteYuki数据
+const local_data = data["localization"]; // 本地化语言数据
 const motto_ = data["motto"]; // 言论数据
+const acknowledgement = data["acknowledgement"]; // 鸣谢内容数据
+const o_units = local_data["units"]; // 单位的翻译
+const bin_units = o_units["Bin_Units"]; // 字节单位（千、兆…）
 
 /**
  * 创建CPU/内存/交换饼图
@@ -64,15 +67,20 @@ function createPieChartOption(title, data) {
     };
 }
 
-function convertSize(size, precision = 2, addUnit = true, suffix = " X字节") {
+function convertSize(
+    size,
+    precision = 2,
+    addUnit = true,
+    suffix = ` X${o_units["Byte"]}`
+) {
     let isNegative = size < 0;
     size = Math.abs(size);
-    let units = ["", "千", "兆", "吉", "太", "拍", "艾", "泽"];
+    // let units = ["", "千", "兆", "吉", "太", "拍", "艾", "泽"];
     let unit = "";
 
-    for (let i = 0; i < units.length; i++) {
+    for (let i = 0; i < bin_units.length; i++) {
         if (size < 1024) {
-            unit = units[i];
+            unit = bin_units[i];
             break;
         }
         size /= 1024;
@@ -125,7 +133,7 @@ function secondsToTextTime(seconds) {
     let hours = Math.floor((seconds % 86400) / 3600);
     let minutes = Math.floor((seconds % 3600) / 60);
     let seconds_ = Math.floor(seconds % 60);
-    return `${days}${localData["days"]} ${hours}${localData["hours"]} ${minutes}${localData["minutes"]} ${seconds_}${localData["seconds"]}`;
+    return `${days}${local_data["days"]} ${hours}${local_data["hours"]} ${minutes}${local_data["minutes"]} ${seconds_}${local_data["seconds"]}`;
 }
 
 // 主函数
@@ -140,15 +148,17 @@ function main() {
         // 设置机器人信息
         botInfoDiv.className = "info-box bot-info";
 
-        botInfoDiv.querySelector(".bot-icon-img").setAttribute("src", bot["icon"]);
+        botInfoDiv
+            .querySelector(".bot-icon-img")
+            .setAttribute("src", bot["icon"]);
         botInfoDiv.querySelector(".bot-name").innerText = bot["name"];
         let tagArray = [
             bot["protocol_name"],
             `${bot["app_name"]}`,
-            `${localData["groups"]}${bot["groups"]}`,
-            `${localData["friends"]}${bot["friends"]}`,
-            `${localData["message_sent"]}${bot["message_sent"]}`,
-            `${localData["message_received"]}${bot["message_received"]}`,
+            `${local_data["groups"]}${bot["groups"]}`,
+            `${local_data["friends"]}${bot["friends"]}`,
+            `${local_data["message_sent"]}${bot["message_sent"]}`,
+            `${local_data["message_received"]}${bot["message_received"]}`,
         ];
         // 添加一些标签
         tagArray.forEach((tag, index) => {
@@ -156,7 +166,10 @@ function main() {
             tagSpan.className = "bot-tag";
             tagSpan.innerText = tag;
             // 给最后一个标签不添加后缀
-            tagSpan.setAttribute("suffix", index === 0 || tag[0] == "\n" ? "0" : "1");
+            tagSpan.setAttribute(
+                "suffix",
+                index === 0 || tag[0] == "\n" ? "0" : "1"
+            );
             botInfoDiv.querySelector(".bot-tags").appendChild(tagSpan);
         });
         document.body.insertBefore(
@@ -176,24 +189,27 @@ function main() {
         .setAttribute("src", "./img/litetrimo.png");
     liteyukiInfoDiv.querySelector(
         ".bot-name"
-    ).innerText = `${liteyukiData["name"]} - 睿乐`;
+    ).innerText = `${liteyuki_data["name"]} - 睿乐`;
 
     let tagArray = [
-        `灵温 ${liteyukiData["version"]}`,
-        `Nonebot ${liteyukiData["nonebot"]}`,
-        `${liteyukiData["python"]}`,
-        liteyukiData["system"],
-        `${localData["plugins"]}${liteyukiData["plugins"]}`,
-        `${localData["resources"]}${liteyukiData["resources"]}`,
-        `${localData["bots"]}${liteyukiData["bots"]}`,
-        `${localData["runtime"]} ${secondsToTextTime(liteyukiData["runtime"])}`,
+        `灵温 ${liteyuki_data["version"]}`,
+        `Nonebot ${liteyuki_data["nonebot"]}`,
+        `${liteyuki_data["python"]}`,
+        liteyuki_data["system"],
+        `${local_data["plugins"]}${liteyuki_data["plugins"]}`,
+        `${local_data["resources"]}${liteyuki_data["resources"]}`,
+        `${local_data["bots"]}${liteyuki_data["bots"]}`,
+        `${local_data["runtime"]} ${secondsToTextTime(liteyuki_data["runtime"])}`,
     ];
     tagArray.forEach((tag, index) => {
         let tagSpan = document.createElement("span");
         tagSpan.className = "bot-tag";
         tagSpan.innerText = tag;
         // 给最后一个标签不添加后缀
-        tagSpan.setAttribute("suffix", index === 0 || tag[0] == "\n" ? "0" : "1");
+        tagSpan.setAttribute(
+            "suffix",
+            index === 0 || tag[0] == "\n" ? "0" : "1"
+        );
         liteyukiInfoDiv.querySelector(".bot-tags").appendChild(tagSpan);
     });
     document.body.insertBefore(
@@ -202,27 +218,27 @@ function main() {
     ); // 插入对象
 
     // 添加硬件信息
-    const cpuData = hardwareData["cpu"];
-    const memData = hardwareData["memory"];
-    const swapData = hardwareData["swap"];
+    const cpuData = hardware_data["cpu"];
+    const memData = hardware_data["memory"];
+    const swapData = hardware_data["swap"];
 
     const cpuTagArray = [
         cpuData["name"],
-        `${cpuData["cores"]}${localData["cores"]} ${cpuData["threads"]}${localData["threads"]}`,
-        `${(cpuData["freq"] / 1000).toFixed(2)}吉赫兹`,
+        `${cpuData["cores"]}${local_data["cores"]} ${cpuData["threads"]}${local_data["threads"]}`,
+        `${(cpuData["freq"] / 1000).toFixed(2)}${o_units["GHz"]}`,
     ];
 
     const memTagArray = [
-        `${localData["process"]} ${convertSize(memData["usedProcess"])}`,
-        `${localData["used"]} ${convertSize(memData["used"])}`,
-        `${localData["free"]} ${convertSize(memData["free"])}`,
-        `${localData["total"]} ${convertSize(memData["total"])}`,
+        `${local_data["process"]} ${convertSize(memData["usedProcess"])}`,
+        `${local_data["used"]} ${convertSize(memData["used"])}`,
+        `${local_data["free"]} ${convertSize(memData["free"])}`,
+        `${local_data["total"]} ${convertSize(memData["total"])}`,
     ];
 
     const swapTagArray = [
-        `${localData["used"]} ${convertSize(swapData["used"])}`,
-        `${localData["free"]} ${convertSize(swapData["free"])}`,
-        `${localData["total"]} ${convertSize(swapData["total"])}`,
+        `${local_data["used"]} ${convertSize(swapData["used"])}`,
+        `${local_data["free"]} ${convertSize(swapData["free"])}`,
+        `${local_data["total"]} ${convertSize(swapData["total"])}`,
     ];
     let cpuDeviceInfoDiv = document.importNode(
         document.getElementById("device-info").content,
@@ -237,8 +253,12 @@ function main() {
         true
     );
 
-    cpuDeviceInfoDiv.querySelector(".device-info").setAttribute("id", "cpu-info");
-    memDeviceInfoDiv.querySelector(".device-info").setAttribute("id", "mem-info");
+    cpuDeviceInfoDiv
+        .querySelector(".device-info")
+        .setAttribute("id", "cpu-info");
+    memDeviceInfoDiv
+        .querySelector(".device-info")
+        .setAttribute("id", "mem-info");
     swapDeviceInfoDiv
         .querySelector(".device-info")
         .setAttribute("id", "swap-info");
@@ -276,7 +296,10 @@ function main() {
             tagDiv.className = "device-tag";
             tagDiv.innerText = tag;
             // 给最后一个标签不添加后缀
-            tagDiv.setAttribute("suffix", index === tagArray.length - 1 ? "0" : "1");
+            tagDiv.setAttribute(
+                "suffix",
+                index === tagArray.length - 1 ? "0" : "1"
+            );
             devices[device].querySelector(".device-tags").appendChild(tagDiv);
         });
     }
@@ -292,7 +315,7 @@ function main() {
 
     cpuChart.setOption(
         createPieChartOption(
-            `${localData["cpu"]}\n${cpuData["percent"].toFixed(1)}%`,
+            `${local_data["cpu"]}\n${cpuData["percent"].toFixed(1)}%`,
             [
                 { name: "used", value: cpuData["percent"] },
                 { name: "free", value: 100 - cpuData["percent"] },
@@ -302,10 +325,13 @@ function main() {
 
     memChart.setOption(
         createPieChartOption(
-            `${localData["memory"]}\n${memData["percent"].toFixed(1)}%`,
+            `${local_data["memory"]}\n${memData["percent"].toFixed(1)}%`,
             [
                 { name: "process", value: memData["usedProcess"] },
-                { name: "used", value: memData["used"] - memData["usedProcess"] },
+                {
+                    name: "used",
+                    value: memData["used"] - memData["usedProcess"],
+                },
                 { name: "free", value: memData["free"] },
             ]
         )
@@ -313,7 +339,7 @@ function main() {
 
     swapChart.setOption(
         createPieChartOption(
-            `${localData["swap"]}\n${swapData["percent"].toFixed(1)}%`,
+            `${local_data["swap"]}\n${swapData["percent"].toFixed(1)}%`,
             [
                 { name: "used", value: swapData["used"] },
                 { name: "free", value: swapData["free"] },
@@ -322,24 +348,28 @@ function main() {
     );
 
     // 磁盘信息
-    const diskData = hardwareData["disk"];
+    const diskData = hardware_data["disk"];
     diskData.forEach((disk) => {
-        let diskTitle = `${localData['free']} ${convertSize(disk['free'])} ${localData['total']} ${convertSize(disk['total'])}`;
-        let diskDiv = createBarChart(diskTitle, disk['percent'], disk['name']);
+        let diskTitle = `${local_data["free"]} ${convertSize(disk["free"])} ${
+            local_data["total"]
+        } ${convertSize(disk["total"])}`;
+        let diskDiv = createBarChart(diskTitle, disk["percent"], disk["name"]);
         // 最后一个把margin-bottom去掉
         if (disk === diskData[diskData.length - 1]) {
             diskDiv.style.marginBottom = "0";
         }
-        document.getElementById('disk-info').appendChild(diskDiv);
+        document.getElementById("disk-info").appendChild(diskDiv);
     });
     // 随机一言
-    let mottoText = motto_["text"];
-    let mottoFrom = motto_["source"];
-    document.getElementById("motto-text").innerText = mottoText;
-    document.getElementById("motto-from").innerText = mottoFrom;
+    // let mottoText = ;
+    // let mottoFrom = ;
+    document.getElementById("motto-text").innerText = motto_["text"];
+    document.getElementById("motto-from").innerText = motto_["source"];
     // 致谢
-    document.getElementById("addition-info").innerText =
-        "感谢 锅炉 云裳工作室 提供服务器支持";
+    if (acknowledgement.length > 0) {
+        document.getElementById("addition-info").innerText = acknowledgement;
+        // "感谢 锅炉 云裳工作室 提供服务器支持";
+    }
 }
 
 main();

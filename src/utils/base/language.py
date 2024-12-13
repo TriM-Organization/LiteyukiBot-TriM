@@ -104,7 +104,7 @@ def load_from_dict(data: dict, lang_code: str):
 
 class Language:
     # 三重fallback
-    # 用户语言 > 默认语言/系统语言 > zh-CN
+    # 用户语言 > 默认语言/系统语言 > zh-CN | en
     def __init__(self, lang_code: str = None, fallback_lang_code: str = None):
         self.lang_code = lang_code
 
@@ -116,6 +116,12 @@ class Language:
             self.fallback_lang_code = config.get(
                 "default_language", get_system_lang_code()
             )
+
+        self.__fallback_list = (
+            self.lang_code,
+            self.fallback_lang_code,
+            "en" if "en" in self.lang_code else "zh-CN",
+        )
 
     def _get(self, item: str, *args, **kwargs) -> str | Any:
         """
@@ -133,15 +139,14 @@ class Language:
 
         """
         default = kwargs.pop("default", None)
-        fallback = (self.lang_code, self.fallback_lang_code, "zh-CN")
 
-        for lang_code in fallback:
+        for lang_code in self.__fallback_list:
             if lang_code in _language_data and item in _language_data[lang_code]:
                 trans: str = _language_data[lang_code][item]
                 try:
                     return trans.format(*args, **kwargs)
                 except Exception as e:
-                    nonebot.logger.warning(f"Failed to format language data: {e}")
+                    nonebot.logger.warning("因 {} 无法格式化本地化数据".format(e))
                     return trans
         return default or item
 
@@ -203,7 +208,7 @@ def get_user_lang(user_id: str) -> Language:
             user_id,
             default=User(user_id=user_id, username="Unknown"),
         )
-        lang_code = user.profile.get("lang", get_default_lang_code())
+        lang_code = user.profile.get("lang", get_default_user_lang_code())
         _user_lang[user_id] = lang_code
 
     return Language(_user_lang[user_id])
@@ -223,6 +228,13 @@ def get_default_lang_code() -> str:
 
     """
     return get_config("default_language", default=get_system_lang_code())
+
+
+def get_default_user_lang_code() -> str:
+    """
+    获取默认用户语言代码，和上面的默认语言不同，此处为显示给用户的语言
+    """
+    return get_config("default_interact_language", default=get_default_lang_code())
 
 
 def get_all_lang() -> dict[str, str]:

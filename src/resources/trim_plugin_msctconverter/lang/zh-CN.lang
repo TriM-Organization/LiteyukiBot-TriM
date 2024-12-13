@@ -12,7 +12,7 @@ writefile.write_success=文件{NAME}已写入{SIZE}字节
 convet.not_enough_point=转换点数不足，当前剩余：⌊p⌋≈{NOW:.2f}|{TOTAL}
 convert.break.not_enough_point=中途退出，转换点不足：{NOW}
 convert.no_file=服务器内未存入你的任何文件，请先上传{TYPE}文件吧
-convert.something_not_exist={WHAT} {NAME} 不存在
+convert.something_not_exist={WHAT} {NAME} 不存在，请详阅文档。
 convert.start=转换开始……
 
 cmd2struct.axis_wrong=生成结构的生成方向格式错误，输入数据应符合“轴正负”（如x+、z-）的格式。

@@ -20,18 +20,18 @@ def default_filter(record: "Record"):
 
 # DEBUG日志格式
 debug_format: str = (
-        "<c>{time:YYYY-MM-DD HH:mm:ss}</c> "
-        "<lvl>[{level.icon}]</lvl> "
-        "<c><{name}.{module}.{function}:{line}></c> "
-        "{message}"
+    "<c>{time:YYYY-MM-DD HH:mm:ss}</c> "
+    "<lvl>[{level.icon}]</lvl> "
+    "<c><{name}.{module}.{function}:{line}></c> "
+    "{message}"
 )
 
 # 默认日志格式
 default_format: str = (
-        "<c>{time:MM-DD HH:mm:ss}</c> "
-        "<lvl>[{level.icon}]</lvl> "
-        "<c><{name}></c> "
-        "{message}"
+    "<c>{time:MM-DD HH:mm:ss}</c> "
+    "<lvl>[{level.icon}]</lvl> "
+    "<c><{name}></c> "
+    "{message}"
 )
 
 
@@ -74,6 +74,10 @@ def init_log():
 
     logger.level("DEBUG", color="<blue>", icon=f"{'🐛' if show_icon else ''}{debug}")
     logger.level("INFO", color="<normal>", icon=f"{'ℹ️' if show_icon else ''}{info}")
-    logger.level("SUCCESS", color="<green>", icon=f"{'✅' if show_icon else ''}{success}")
-    logger.level("WARNING", color="<yellow>", icon=f"{'⚠️' if show_icon else ''}{warning}")
+    logger.level(
+        "SUCCESS", color="<green>", icon=f"{'✅' if show_icon else ''}{success}"
+    )
+    logger.level(
+        "WARNING", color="<yellow>", icon=f"{'⚠️' if show_icon else ''}{warning}"
+    )
     logger.level("ERROR", color="<red>", icon=f"{'⭕' if show_icon else ''}{error}")

@@ -7,7 +7,7 @@ import inspect
 import multiprocessing
 import threading
 from pathlib import Path
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, Coroutine, Sequence
 
 from liteyuki.log import logger
 
@@ -104,3 +104,23 @@ def async_wrapper(func: Callable[..., Any]) -> Callable[..., Coroutine]:
 
     wrapper.__signature__ = inspect.signature(func)
     return wrapper
+
+
+def for_in(
+    elements: Sequence,
+    test_list: Sequence,
+):
+    """
+    判断元素是否在列表中
+    Args:
+        elements: 元素列表
+        test_list: 测试列表
+    Returns:
+        List 在列表中的元素
+    """
+    return [element for element in elements if element in test_list]
+    # for element in elements:
+    #     if element in test_list:
+    #         return True
+
+    # return False

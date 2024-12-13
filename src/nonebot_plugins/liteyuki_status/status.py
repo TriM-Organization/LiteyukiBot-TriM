@@ -2,6 +2,7 @@ import random
 
 import aiohttp
 import zhDateTime
+from nonebot import require
 
 from src.utils import event as event_utils
 from src.utils.base.language import get_user_lang, get_default_lang_code, Language
@@ -33,6 +34,12 @@ status_alc = on_alconna(
             "-r|--refresh",
             default=False,
             alias={"refr", "r", "刷新"},
+            action=store_true,
+        ),
+        Option(
+            "-t|-md|--markdown",
+            default=False,
+            # alias={"refr", "r", "刷新"},
             action=store_true,
         ),
         Subcommand(
@@ -72,7 +79,7 @@ yanlun_path = "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
 # 每天4点更新
 @scheduler.scheduled_job("cron", hour=4)
 async def every_day_update():
-    ulang = Language(get_default_lang_code(), "zh-WY")
+    ulang = Language(get_default_lang_code(), "zh-CN")
     nonebot.logger.success(
         ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
     )
@@ -88,7 +95,7 @@ async def update_yanlun():
             resp = await client.get(yanlun_path, timeout=15)
             yanlun_texts = (await resp.text()).strip("\n").split("\n")
     except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as err:
-        nonebot.logger.warning("读取言·论信息发生 客户端或通道 错误：\n{}".format(err))
+        nonebot.logger.warning("读取言·论信息发生 连接 错误：\n{}".format(err))
         yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
     # noinspection PyBroadException
     except BaseException as err:
@@ -117,13 +124,21 @@ async def _():
         yanlun_seqs = yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
     elif solar_date == (8, 6):
         yanlun_seqs = yanlun_texts = [
-            "诸葛亮与八卦阵 生日快乐~！",
-            "Happy Birthday, bgArray~!",
+            "玉衡 生日快乐~！",
+            "Happy Birthday, Alioth~!",
         ]
     elif solar_date == (8, 16):
         yanlun_seqs = yanlun_texts = [
             "鱼旧梦 生日快乐~！",
             "Happy Birthday, ElapsingDreams~!",
+        ]
+    elif lunar_date == (1, 1):
+        yanlun_seqs = yanlun_texts = [
+            "新春快乐~",
+            "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
+            "爆竹声中一岁除，春风送暖入屠苏\t——王安石《元日》",
+            "半盏屠苏犹未举，灯前小草写桃符\t—— 陆游《除夜雪》",
+            "愿得长如此，年年物候新\t—— 卢照邻《元日述怀》",
         ]
     else:
         await update_yanlun()
@@ -163,13 +178,25 @@ async def _(
         )
     ):
         status_card_cache[ulang.lang_code] = (
-            await generate_status_card(
-                bot=await get_bots_data(),
-                hardware=await get_hardware_data(),
-                liteyuki=await get_liteyuki_data(),
-                lang=ulang.lang_code,
-                motto=dict(zip(["text", "source"], random_yanlun())),
-                bot_id=bot.self_id,
+            (
+                await generate_status_card_markdown(
+                    bot=await get_bots_data(),
+                    hardware=await get_hardware_data(ulang.lang_code),
+                    liteyuki=await get_liteyuki_data(),
+                    lang=ulang.lang_code,
+                    motto=dict(zip(["text", "source"], random_yanlun())),
+                )
+                if result.options["markdown"].value
+                else (
+                    await generate_status_card(
+                        bot=await get_bots_data(),
+                        hardware=await get_hardware_data(ulang.lang_code),
+                        liteyuki=await get_liteyuki_data(),
+                        lang=ulang.lang_code,
+                        motto=dict(zip(["text", "source"], random_yanlun())),
+                        bot_id=bot.self_id,
+                    )
+                )
             ),
             time.time(),
         )

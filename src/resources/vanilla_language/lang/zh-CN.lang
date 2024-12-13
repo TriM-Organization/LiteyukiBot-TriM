@@ -155,8 +155,26 @@ status.minutes=分
 status.seconds=秒
 status.cores=核心
 status.threads=线程
-status.process=进程
+status.process=进程占用
 status.description=轻雪机器人状态面板
+
+status.cpubrand.amd=超微
+status.cpubrand.intel=英特尔
+status.cpubrand.apple=苹果
+status.cpubrand.qualcomm=高通
+status.cpubrand.mediatek=联发科
+status.cpubrand.samsung=三星
+status.cpubrand.nvidia=英伟达
+status.cpubrand.huawei=华为
+status.cpubrand.unknown=未知处理器
+
+status.arch.unknown=未知架构
+status.disk.other=虚拟磁盘及其他
+
+status.unit.GHz=吉赫兹
+status.unit.Byte=字节
+status.unit.binary_middile=二幂
+status.unit.Bit_Units= ;千;兆;吉;太;拍;艾;泽;尧;容;昆
 
 yanlun.refresh.success=言·论 更新成功，共 {COUNT} 条
 yanlun.refresh.failed=更新 言·论 信息发生 {ERR} 错误：{ERRCODE}
@@ -164,6 +182,6 @@ yanlun.errtype.net=互联网连接
 yanlun.errtype.unknown=未知
 yanlun.count.head=出处ttt数量(占比)
 yanlun.count.tail=...(共 {NUM} 条)
-yanlun.length.toolong=言·论过长
-yanlun.length.tooshort=言·论过短
-yanlun.length.float=言·论不可是非整数长度
+yanlun.length.toolong=言·论过多
+yanlun.length.tooshort=言·论过少
+yanlun.length.float=言·论数量不可为非整数
