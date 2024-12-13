@@ -6,7 +6,7 @@ from src.utils.base.ly_typing import T_MessageEvent
 from src.utils import satori_utils
 from nonebot.adapters import satori
 from nonebot_plugin_alconna.typings import Event
-from src.nonebot_plugins.liteyuki_status.counter_for_satori import satori_counter
+from src.nonebot_plugins.trimo_status.counter_for_satori import satori_counter
 
 
 @event_preprocessor

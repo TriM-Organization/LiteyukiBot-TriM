@@ -80,7 +80,7 @@ from nonebot_plugin_alconna import (
 from nonebot_plugin_apscheduler import scheduler
 
 
-from ..liteyuki_status.status import random_yanlun_text
+from ..trimo_status.status import random_yanlun_text
 
 (config_dir := Path(__file__).parent / "config").mkdir(exist_ok=True)
 (database_dir := Path(__file__).parent / "db").mkdir(exist_ok=True)

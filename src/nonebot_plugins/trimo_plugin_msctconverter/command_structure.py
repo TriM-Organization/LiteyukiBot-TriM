@@ -64,7 +64,7 @@ from .msctexec import (
     get_stored_path,
 )
 
-from ..liteyuki_status.status import random_yanlun_text
+from ..trimo_status.status import random_yanlun_text
 
 
 FACE_VALUE = {
