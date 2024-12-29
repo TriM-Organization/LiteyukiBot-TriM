@@ -27,7 +27,7 @@ async def load_plugins():
             for installed_plugin in installed_plugins:
                 if not check_for_package(installed_plugin.module_name):
                     nonebot.logger.error(
-                        f"插件 {installed_plugin.module_name} 仍在加载列表中但未安装。"
+                        f"加载列表中的 {installed_plugin.module_name} 插件无法安装，可能是是未找到插件。"
                     )
                 else:
                     nonebot.load_plugin(installed_plugin.module_name)

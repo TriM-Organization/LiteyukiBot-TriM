@@ -783,7 +783,7 @@ async def _(
                 else result.options[arg].args
             )
             if (
-                (_vlu := result.options[arg].value) is None
+                ((_vlu := result.options[arg].value) is None)
                 or isinstance(_vlu, EllipsisType)
             )
             else _vlu
@@ -925,13 +925,16 @@ async def _(
 
     await linglun_convert.send(UniMessage.text(ulang.get("convert.start")))
 
-    try:
-
-        progress_bar_style = (
-            Musicreater.ProgressBarStyle(**_args["progress-bar"])
-            if _args["progress-bar"]
-            else None
+    progress_bar_style = (
+        Musicreater.ProgressBarStyle(**_args["progress-bar"])
+        if (
+            _args["progress-bar"]
+            and ("base_s" in _args["progress-bar"] and _args["progress-bar"]["base_s"])
         )
+        else None
+    )
+
+    try:
 
         all_files: dict[str, dict[str, dict[str, int | tuple | str | list]]] = {}
 
