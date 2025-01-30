@@ -115,24 +115,27 @@ async def _():
 
     global yanlun_texts, yanlun_seqs
 
-    solar_datetime = zhDateTime.DateTime.now()
-    lunar_datetime = solar_datetime.to_lunar()
-    solar_date = (solar_datetime.month, solar_datetime.day)
-    lunar_date = (lunar_datetime.lunar_month, lunar_datetime.lunar_day)
+    western_datetime = zhDateTime.DateTime.now()
+    chinese_datetime = western_datetime.chinesize
+    western_date = (western_datetime.month, western_datetime.day)
+    chinese_date = (
+        chinese_datetime.chinese_calendar_month,
+        chinese_datetime.chinese_calendar_day,
+    )
 
-    if solar_date == (4, 3):
+    if western_date == (4, 3):
         yanlun_seqs = yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
-    elif solar_date == (8, 6):
+    elif western_date == (8, 6):
         yanlun_seqs = yanlun_texts = [
             "玉衡 生日快乐~！",
             "Happy Birthday, Alioth~!",
         ]
-    elif solar_date == (8, 16):
+    elif western_date == (8, 16):
         yanlun_seqs = yanlun_texts = [
             "鱼旧梦 生日快乐~！",
             "Happy Birthday, ElapsingDreams~!",
         ]
-    elif lunar_date == (1, 1):
+    elif chinese_date == (1, 1):
         yanlun_seqs = yanlun_texts = [
             "新春快乐~",
             "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
@@ -316,5 +319,5 @@ async def _(
 ):
     # ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
     await time_query.finish(
-        UniMessage.text(zhDateTime.DateTime.now().to_lunar().hanzify())
+        UniMessage.text(zhDateTime.DateTime.now().chinesize.chinese_text)
     )

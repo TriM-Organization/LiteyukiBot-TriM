@@ -7,17 +7,17 @@ def hanzi_timeid(
     zhd: Optional[zhDateTime.zhDateTime] = None,
 ) -> str:
     if not zhd:
-        zhd = zhDateTime.DateTime.now().to_lunar()
+        zhd = zhDateTime.DateTime.now().chinesize
     
     return "{地支时}{刻}{分}{秒}".format(
-        地支时=zhDateTime.DÌZHĪ[zhd.shichen]
+        地支时=zhDateTime.TERRESTRIAL_BRANCHES[zhd.shichen]
         + (
             ""
             if ((zhd.quarters) or (zhd.minutes) or (zhd.seconds) or (zhd.microseconds))
             else "整"
         ),
         刻=(
-            (zhDateTime.HANNUM[zhd.quarters])
+            (zhDateTime.NUM_IN_HANZI[zhd.quarters])
             + ("" if ((zhd.minutes) or (zhd.seconds) or (zhd.microseconds)) else "整")
         ),
         分=(
@@ -25,8 +25,8 @@ def hanzi_timeid(
             + ("" if ((zhd.seconds) or (zhd.microseconds)) else "整")
         ),
         秒=(
-            zhDateTime.HANNUM[zhd.seconds // 10]
-            + zhDateTime.HANNUM[zhd.seconds % 10]
+            zhDateTime.NUM_IN_HANZI[zhd.seconds // 10]
+            + zhDateTime.NUM_IN_HANZI[zhd.seconds % 10]
             + ("" if (zhd.microseconds) else "整")
         ),
     ).strip()

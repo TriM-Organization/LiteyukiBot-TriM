@@ -13,7 +13,7 @@ nonebot_plugin_apscheduler>=0.4.0
 nonebot-adapter-satori>=0.11.5
 # pyppeteer>=2.0.0
 markdown>=3.3.6
-zhDateTime>=1.1.1
+zhDateTime>=2.0.0
 numpy<2.0.0
 packaging>=23.1
 psutil>=5.9.8
