@@ -22,9 +22,9 @@
 
 - `-dftp | --default-tempo <整数>` : 默认的 tempo；默认为`500000`
 
-- `-ptc | --pitched-note-table <字符串>` : **不可多填** : 乐音乐器对照表，需要提前上传 json 文件，此处输入缓存中的 json 文件名称，或者默认存有的三组对照表名称：`touch`、`classic`、`dislink`；默认为`touch`
+- `-ptc | --pitched-note-table <字符串>` : **不可多填** : 乐音乐器对照表，需要提前上传 json 文件，此处输入缓存中的 json 文件名称，或者默认存有的三组对照表名称：`touch`、`classic`、`dislink`、`nbs`；默认为`touch`
 
-- `-pcs | --percussion-note-table <字符串>` : **不可多填** : 打击乐器对照表，需要提前上传 json 文件，此处输入缓存中的 json 文件名称，或者默认存有的三组对照表名称：`touch`、`classic`、`dislink`；默认为`touch`
+- `-pcs | --percussion-note-table <字符串>` : **不可多填** : 打击乐器对照表，需要提前上传 json 文件，此处输入缓存中的 json 文件名称，或者默认存有的三组对照表名称：`touch`、`classic`、`dislink`、`nbs`；默认为`touch`
 
 - `-e | --old-execute-format` : 是否使用旧版 execute 指令格式；默认为关
 
@@ -36,7 +36,7 @@
 
 - `-htp | --high-time-precision` : **仅当结果类型包含 `msq` 时生效** : 是否使用高精度时间存储 MSQ 文件；默认为关
 
-- `-pgb | --progress-bar <字符串> <字符串> <字符串>` : **仅当结果包含 `addon-*`、`bdx-*` 之一时生效、不可多填** : 进度条样式，参照[进度条自定义](https://gitee.com/TriM-Organization/Musicreater/blob/master/docs/%E5%BA%93%E7%9A%84%E7%94%9F%E6%88%90%E4%B8%8E%E5%8A%9F%E8%83%BD%E6%96%87%E6%A1%A3.md#%E8%BF%9B%E5%BA%A6%E6%9D%A1%E8%87%AA%E5%AE%9A%E4%B9%89)，以空格拆分三个字符串；默认请查阅上述文档
+- `-pgb | --progress-bar [字符串] [字符串] [字符串]` : **仅当结果包含 `addon-*`、`bdx-*` 之一时生效、不可多填** : 进度条样式，参照[进度条自定义](https://gitee.com/TriM-Organization/Musicreater/blob/master/docs/%E5%BA%93%E7%9A%84%E7%94%9F%E6%88%90%E4%B8%8E%E5%8A%9F%E8%83%BD%E6%96%87%E6%A1%A3.md#%E8%BF%9B%E5%BA%A6%E6%9D%A1%E8%87%AA%E5%AE%9A%E4%B9%89)，以空格拆分三个字符串；默认请查阅上述文档。如要使用默认内容，可以不填写后面的参数，但是需要将此选项开关放在所有参数或选项最后。
 
 - `-s | --scoreboard-name <字符串>` : **仅当结果类型包含 `*-score` 之一时生效、不可多填** : 播放使用的计分板名称；默认为`mscplay`
 
