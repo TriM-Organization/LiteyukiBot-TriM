@@ -30,7 +30,7 @@ jieba>=0.42.1
 python-dotenv>=1.0.1
 nonebot_plugin_session
 pypinyin
-Musicreater>=2.2.2
+Musicreater[full]>=2.4.0
 librosa==0.10.1
 TrimMCStruct
 brotli

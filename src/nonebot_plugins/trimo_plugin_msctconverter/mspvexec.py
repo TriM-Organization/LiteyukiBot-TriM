@@ -6,9 +6,11 @@ import random
 
 from io import StringIO
 from pathlib import Path
+from types import EllipsisType
 
 # import nonebot.rule
 
+import mido
 import nonebot
 import soundfile
 import Musicreater
@@ -70,10 +72,8 @@ mspv_sync = on_alconna(
         Option("-ps|--play-speed", default=1.0, args=Args["play-speed", float, 1.0]),
         Option(
             "-dftp|--default-tempo",
-            default=Musicreater.mido.midifiles.midifiles.DEFAULT_TEMPO,
-            args=Args[
-                "default-tempo", int, Musicreater.mido.midifiles.midifiles.DEFAULT_TEMPO
-            ],
+            default=mido.midifiles.midifiles.DEFAULT_TEMPO,
+            args=Args["default-tempo", int, mido.midifiles.midifiles.DEFAULT_TEMPO],
         ),
         Option(
             "-ptc|--pitched-note-table",
@@ -155,7 +155,8 @@ async def _(
                 if arg in result.options[arg].args.keys()
                 else result.options[arg].args
             )
-            if (_vlu := result.options[arg].value) is None
+            if ((_vlu := result.options[arg].value) is None)
+            or isinstance(_vlu, EllipsisType)
             else _vlu
         )
     # await musicreater_convert.finish(
@@ -173,8 +174,9 @@ async def _(
         await mspv_sync.finish(
             UniMessage.text(ulang.get("convert.no_file", TYPE="midi"))
         )
+        return
 
-    if _args["mode"] not in [0, 1, 2, 3, 4]:
+    if _args["mode"] not in (0, 1, 2, 3, 4):
         await mspv_sync.finish(
             UniMessage.text(
                 ulang.get(
@@ -185,10 +187,7 @@ async def _(
             )
         )
 
-    if _args["get-value-method"] not in [
-        0,
-        1,
-    ]:
+    if _args["get-value-method"] not in (0, 1):
         await mspv_sync.finish(
             UniMessage.text(
                 ulang.get(
@@ -202,18 +201,23 @@ async def _(
     # usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
 
-    if (_ppnt := _args["pitched-note-table"].lower()) in [
+    if (_ppnt := _args["pitched-note-table"].lower()) in (
         "touch",
         "classic",
         "dislink",
-    ]:
+        "nbs",
+    ):
         pitched_notechart = (
             Musicreater.MM_DISLINK_PITCHED_INSTRUMENT_TABLE
             if _ppnt == "dislink"
             else (
                 Musicreater.MM_CLASSIC_PITCHED_INSTRUMENT_TABLE
                 if _ppnt == "classic"
-                else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
+                else (
+                    Musicreater.MM_NBS_PITCHED_INSTRUMENT_TABLE
+                    if _ppnt == "nbs"
+                    else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
+                )
             )
         )
     elif (
@@ -233,18 +237,23 @@ async def _(
         )
         return
 
-    if (_ppnt := _args["percussion-note-table"].lower()) in [
+    if (_ppnt := _args["percussion-note-table"].lower()) in (
         "touch",
         "classic",
         "dislink",
-    ]:
+        "nbs",
+    ):
         percussion_notechart = (
             Musicreater.MM_DISLINK_PERCUSSION_INSTRUMENT_TABLE
             if _ppnt == "dislink"
             else (
                 Musicreater.MM_CLASSIC_PERCUSSION_INSTRUMENT_TABLE
                 if _ppnt == "classic"
-                else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
+                else (
+                    Musicreater.MM_NBS_PERCUSSION_INSTRUMENT_TABLE
+                    if _ppnt == "nbs"
+                    else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
+                )
             )
         )
     elif (
@@ -271,9 +280,9 @@ async def _(
         "straight",
     ]:
         volume_curve = (
-            Musicreater.straight_line
+            Musicreater.velocity_2_distance_straight
             if _ppnt == "straight"
-            else Musicreater.natural_curve
+            else Musicreater.velocity_2_distance_natural
         )
     else:
         await mspv_sync.finish(
@@ -409,7 +418,7 @@ async def _(
 
         if not all_files:
             nonebot.logger.warning(
-                "无可供转换的文件",
+                "无可供读入的文件",
             )
             await mspv_sync.finish(
                 UniMessage(

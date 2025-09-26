@@ -13,6 +13,7 @@ from types import EllipsisType
 
 # from nonebot import require
 
+import mido
 import aiohttp
 import zhDateTime
 import Musicreater
@@ -666,10 +667,8 @@ linglun_convert = on_alconna(
         Option("-ps|--play-speed", default=1.0, args=Args["play-speed", float, 1.0]),
         Option(
             "-dftp|--default-tempo",
-            default=Musicreater.mido.midifiles.midifiles.DEFAULT_TEMPO,
-            args=Args[
-                "default-tempo", int, Musicreater.mido.midifiles.midifiles.DEFAULT_TEMPO
-            ],
+            default=mido.midifiles.midifiles.DEFAULT_TEMPO,
+            args=Args["default-tempo", int, mido.midifiles.midifiles.DEFAULT_TEMPO],
         ),
         Option(
             "-ptc|--pitched-note-table",
@@ -808,18 +807,23 @@ async def _(
     # usr_data_path = database_dir / usr_id
     (usr_temp_path := temporary_dir / usr_id).mkdir(exist_ok=True)
 
-    if (_ppnt := _args["pitched-note-table"].lower()) in [
+    if (_ppnt := _args["pitched-note-table"].lower()) in (
         "touch",
         "classic",
         "dislink",
-    ]:
+        "nbs",
+    ):
         pitched_notechart = (
             Musicreater.MM_DISLINK_PITCHED_INSTRUMENT_TABLE
             if _ppnt == "dislink"
             else (
                 Musicreater.MM_CLASSIC_PITCHED_INSTRUMENT_TABLE
                 if _ppnt == "classic"
-                else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
+                else (
+                    Musicreater.MM_NBS_PITCHED_INSTRUMENT_TABLE
+                    if _ppnt == "nbs"
+                    else Musicreater.MM_TOUCH_PITCHED_INSTRUMENT_TABLE
+                )
             )
         )
     elif (
@@ -841,18 +845,23 @@ async def _(
         )
         return
 
-    if (_ppnt := _args["percussion-note-table"].lower()) in [
+    if (_ppnt := _args["percussion-note-table"].lower()) in (
         "touch",
         "classic",
         "dislink",
-    ]:
+        "nbs",
+    ):
         percussion_notechart = (
             Musicreater.MM_DISLINK_PERCUSSION_INSTRUMENT_TABLE
             if _ppnt == "dislink"
             else (
                 Musicreater.MM_CLASSIC_PERCUSSION_INSTRUMENT_TABLE
                 if _ppnt == "classic"
-                else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
+                else (
+                    Musicreater.MM_NBS_PERCUSSION_INSTRUMENT_TABLE
+                    if _ppnt == "nbs"
+                    else Musicreater.MM_TOUCH_PERCUSSION_INSTRUMENT_TABLE
+                )
             )
         )
     elif (
@@ -879,9 +888,9 @@ async def _(
         "straight",
     ]:
         volume_curve = (
-            Musicreater.straight_line
+            Musicreater.velocity_2_distance_straight
             if _ppnt == "straight"
-            else Musicreater.natural_curve
+            else Musicreater.velocity_2_distance_natural
         )
     else:
         await linglun_convert.finish(
@@ -904,6 +913,7 @@ async def _(
             "bdx-delay",
             "bdx-score",
             "msq",
+            "fsq",
         ]
     else:
         all_cvt_types = _ppnt.split("&")
@@ -1005,7 +1015,7 @@ async def _(
                 # people_convert_point[usr_id] += 0.5
 
                 if "msq" in all_cvt_types:
-                    all_files[file_to_convert]["msq"] = {"MSQ版本": "2-MSQ@"}
+                    all_files[file_to_convert]["msq"] = {"MSQ版本": "4-MSQ$"}
                     (usr_temp_path / "{}.msq".format(msct_obj.music_name)).open(
                         "wb"
                     ).write(
@@ -1013,7 +1023,16 @@ async def _(
                             high_time_precision=_args["high-time-precision"]
                         )
                     )
-
+                if "fsq" in all_cvt_types:
+                    all_files[file_to_convert]["fsq"] = {"FSQ版本": "4-FSQ$"}
+                    (usr_temp_path / "{}.fsq".format(msct_obj.music_name)).open(
+                        "wb"
+                    ).write(
+                        msct_obj.encode_dump(
+                            flowing_codec_support=True,
+                            high_time_precision=_args["high-time-precision"],
+                        )
+                    )
                 if go_chk_point() and "addon-delay" in all_cvt_types:
                     all_files[file_to_convert]["addon-delay"] = dict(
                         zip(
