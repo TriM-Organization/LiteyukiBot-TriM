@@ -32,7 +32,7 @@
 
 - `-vpf | --volume-processing-function <字符串>` : 音量处理函数，支持两种音量函数：`natural`、`straight`；默认为`natural`
 
-- `-t | --type <字符串>` : 转换结果类型，支持的类型有：`addon-delay`、`addon-score`、 `mcstructure-dalay`、`mcstructure-score`、`bdx-delay`、`bdx-score`、`msq`；默认为`all`
+- `-t | --type <字符串>` : 转换结果类型，支持的类型有：`addon-delay`、`addon-score`、 `mcstructure-delay`、`mcstructure-score`、`bdx-delay`、`bdx-score`、`msq`；默认为`all`
 
 - `-htp | --high-time-precision` : **仅当结果类型包含 `msq` 时生效** : 是否使用高精度时间存储 MSQ 文件；默认为关
 

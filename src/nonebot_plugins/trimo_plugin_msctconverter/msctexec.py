@@ -908,7 +908,7 @@ async def _(
         all_cvt_types = [
             "addon-delay",
             "addon-score",
-            "mcstructure-dalay",
+            "mcstructure-delay",
             "mcstructure-score",
             "bdx-delay",
             "bdx-score",
@@ -1065,8 +1065,8 @@ async def _(
                     # people_convert_point[usr_id] += 0.5
                     # all_cvt_types.remove("addon-score")
 
-                if go_chk_point() and "mcstructure-dalay" in all_cvt_types:
-                    all_files[file_to_convert]["mcstructure-dalay"] = dict(
+                if go_chk_point() and "mcstructure-delay" in all_cvt_types:
+                    all_files[file_to_convert]["mcstructure-delay"] = dict(
                         zip(
                             ["结构尺寸", "音乐刻长"],
                             to_mcstructure_file_in_delay(
@@ -1078,7 +1078,7 @@ async def _(
                         )
                     )
                     # people_convert_point[usr_id] += 0.5
-                    # all_cvt_types.remove("mcstructure-dalay")
+                    # all_cvt_types.remove("mcstructure-delay")
 
                 if go_chk_point() and "mcstructure-score" in all_cvt_types:
                     all_files[file_to_convert]["mcstructure-score"] = dict(
