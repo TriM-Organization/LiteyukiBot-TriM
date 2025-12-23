@@ -369,7 +369,7 @@ async def _():
             elif (
                 zhDateTime.DateTime.now()
                 - zhDateTime.DateTime(*filesaves[qqid][name]["date"])
-            ).seconds > cache_limit_data[os.path.splitext(name)[-1]][1]:
+            ).seconds > cache_limit_data[os.path.splitext(name)[-1].lower()][1]:
                 try:
                     os.remove(database_dir / qqid / name)
                 except:
