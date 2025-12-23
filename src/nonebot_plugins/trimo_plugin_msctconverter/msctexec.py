@@ -997,6 +997,7 @@ async def _(
                             old_exe_format=_args["old-execute-format"],
                             min_volume=_args["minimal-volume"],
                             vol_processing_func=volume_curve,
+                            midi_charset="latin1",
                         )
                         add_memory_to_temporary(
                             identify_cmp,

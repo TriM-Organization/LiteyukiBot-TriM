@@ -363,6 +363,7 @@ async def _(
                             pitched_note_table=pitched_notechart,
                             percussion_note_table=percussion_notechart,
                             vol_processing_func=volume_curve,
+                            midi_charset="latin1",
                         )
                         add_memory_to_temporary(
                             identify_cmp,
