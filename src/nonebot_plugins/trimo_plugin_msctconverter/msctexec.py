@@ -476,8 +476,25 @@ async def _(
 
         os.makedirs(savepath, exist_ok=True)
 
+        if not (file_url := file_infomation.get("url", None)):
+            file_url = await bot.get_group_file_url(
+                group_id=int(event.group_id),
+                file_id=file_infomation["id"],
+                bus_id=file_infomation["busid"],
+            )
+            if isinstance(file_url, dict):
+                file_url = file_url.get("url", None)
+
+        if not file_url:
+            await notece_.finish(
+                "无法获取文件下载链接：{}，此问题通常并非用户所产生，请上报给机器人开发者。".format(
+                    file_infomation["name"],
+                ),
+                at_sender=True,
+            )
+
         async with aiohttp.ClientSession() as client:
-            resp = await client.get(file_infomation["url"], verify_ssl=False)
+            resp = await client.get(file_url, verify_ssl=False)
             (savepath / file_infomation["name"]).open("wb").write(
                 await resp.content.read()
             )
