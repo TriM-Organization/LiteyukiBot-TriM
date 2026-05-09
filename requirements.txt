@@ -13,8 +13,8 @@ nonebot_plugin_apscheduler>=0.4.0
 nonebot-adapter-satori>=0.11.5
 # pyppeteer>=2.0.0
 markdown>=3.3.6
-zhDateTime>=2.0.0
-numpy<2.0.0
+numba==0.65.1
+numpy==2.2.6
 packaging>=23.1
 psutil>=5.9.8
 py-cpuinfo>=9.0.0
@@ -30,6 +30,7 @@ jieba>=0.42.1
 python-dotenv>=1.0.1
 nonebot_plugin_session
 pypinyin
+zhDateTime>=2.0.0
 Musicreater[full]>=2.4.0
 librosa==0.10.1
 TrimMCStruct

@@ -99,6 +99,7 @@ npm.plugin_already=Plugin {NAME} is already {STATUS}, no need to repeat operatio
 npm.toggle_failed=Plugin {NAME} {STATUS} failed: {ERROR}
 npm.toggle_success=Plugin {NAME} {STATUS} successful
 npm.page=Page {PAGE}/{TOTAL}
+npm.cannot=Cannot 
 npm.update_index=Update Plugin Index
 npm.list_plugins=Plugin List
 npm.disable_session=Disable plugin for current session

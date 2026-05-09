@@ -5,7 +5,7 @@ import nonebot.plugin
 import pip
 from io import StringIO
 from arclet.alconna import MultiVar
-from nonebot import Bot, require # type: ignore
+from nonebot import Bot, require  # type: ignore
 from nonebot.exception import FinishedException, IgnoredException, MockApiException
 from nonebot.internal.adapter import Event
 from nonebot.internal.matcher import Matcher
@@ -25,7 +25,6 @@ from src.utils.message.markdown import MarkdownComponent as mdc, compile_md, esc
 from src.utils.message.html_tool import md_to_pic
 from .common import *
 
-
 require("nonebot_plugin_alconna")
 from nonebot_plugin_alconna import (
     UniMessage,
@@ -37,6 +36,7 @@ from nonebot_plugin_alconna import (
     Option,
     OptionResult,
     SubcommandResult,
+    store_true,
 )
 
 # const
@@ -103,6 +103,11 @@ disable = "disable"
         Subcommand(
             "list",
             Args["page", int, 1]["num", int, 10],
+            Option(
+                "-m|--markdown",
+                action=store_true,
+                help_text="以 Markdown 交互形式显示列表",
+            ),
             alias=["ls", "列表"],
         ),
     ),
@@ -357,120 +362,165 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
 
     elif sc.get("list"):
         loaded_plugin_list = sorted(nonebot.get_loaded_plugins(), key=lambda x: x.name)
-        num_per_page = result.subcommands.get("list").args.get("num")
+        num_per_page = result.subcommands["list"].args["num"]
         total = len(loaded_plugin_list) // num_per_page + (
             1 if len(loaded_plugin_list) % num_per_page else 0
         )
+        page = clamp(result.subcommands["list"].args["page"], 1, total)
+        markdown_mode = result.subcommands["list"].options["markdown"].value
 
-        page = clamp(result.subcommands.get("list").args.get("page"), 1, total)
-
-        # 已加载插件 | 总计10 | 第1/3页
-        reply = (
-            f"# {ulang.get('npm.loaded_plugins')} | "
-            f"{ulang.get('npm.total', TOTAL=len(nonebot.get_loaded_plugins()))} | "
-            f"{ulang.get('npm.page', PAGE=page, TOTAL=total)} \n***\n"
-        )
-
-        permission_oas = (
-            await GROUP_ADMIN(bot, event)
-            or await GROUP_OWNER(bot, event)
-            or await SUPERUSER(bot, event)
-        )
-        permission_s = await SUPERUSER(bot, event)
-
-        for storePlugin in loaded_plugin_list[
-            (page - 1)
-            * num_per_page : min(page * num_per_page, len(loaded_plugin_list))
-        ]:
-            # 检查是否有 metadata 属性
-            # 添加帮助按钮
-
-            btn_usage = md.btn_cmd(
-                ulang.get("npm.usage"), f"help {storePlugin.name}", False
+        if not markdown_mode:
+            # 文字显示模式
+            reply = " - {} | {} -\n".format(
+                ulang.get("npm.loaded_plugins"),
+                ulang.get("npm.page", PAGE=page, TOTAL=total),
             )
-            store_plugin = await get_store_plugin(storePlugin.name)
-            session_enable = get_plugin_session_enable(event, storePlugin.name)
-            if store_plugin:
-                # btn_homepage = md.btn_link(ulang.get("npm.homepage"), store_plugin.homepage)
-                show_name = store_plugin.name
-            elif storePlugin.metadata:
-                # if storePlugin.metadata.extra.get("liteyuki"):
-                #     btn_homepage = md.btn_link(ulang.get("npm.homepage"), "https://github.com/snowykami/LiteyukiBot")
-                # else:
-                #     btn_homepage = ulang.get("npm.homepage")
-                show_name = storePlugin.metadata.name
-            else:
-                # btn_homepage = ulang.get("npm.homepage")
-                show_name = storePlugin.name
-                ulang.get("npm.no_description")
+            for pi in range(
+                (page - 1) * num_per_page,
+                min(page * num_per_page, len(loaded_plugin_list)),
+            ):
+                # 遍历插件，通过插件编号
+                storePlugin = loaded_plugin_list[pi]
+                store_plugin = await get_store_plugin(storePlugin.name)
+                session_enable = get_plugin_session_enable(event, storePlugin.name)
 
-            if storePlugin.metadata:
-                reply += f"\n**{md.escape(show_name)}**\n"
-            else:
-                reply += f"**{md.escape(show_name)}**\n"
+                if store_plugin:
+                    show_name = store_plugin.name
+                elif storePlugin.metadata:
+                    show_name = storePlugin.metadata.name
+                else:
+                    show_name = storePlugin.name
+                    ulang.get("npm.no_description")
 
-            reply += f"\n > {btn_usage}"
+                reply += "{}. {}".format(pi + 1, show_name)
 
-            if permission_oas:
-                # 添加启用/停用插件按钮
-                cmd_toggle = f"npm {'disable' if session_enable else 'enable'} {storePlugin.name}"
-                text_toggle = ulang.get(
-                    "npm.disable" if session_enable else "npm.enable"
+                if not get_plugin_can_be_toggle(storePlugin.name):
+                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get(
+                            "npm.disable" if session_enable else "npm.enable"
+                        ))
+                
+                if not plugin_db.where_one(
+                            InstalledPlugin(), "module_name = ?", storePlugin.name
+                        ):
+                    
+                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get("npm.uninstall"))
+                
+                reply += "\n>\t{}\n".format(storePlugin.name)
+
+                await npm.send(reply)
+
+        else:
+            # 已加载插件 | 总计10 | 第1/3页
+            reply = (
+                f"# {ulang.get('npm.loaded_plugins')} | "
+                f"{ulang.get('npm.total', TOTAL=len(nonebot.get_loaded_plugins()))} | "
+                f"{ulang.get('npm.page', PAGE=page, TOTAL=total)} \n***\n"
+            )
+
+            permission_oas = (
+                await GROUP_ADMIN(bot, event)
+                or await GROUP_OWNER(bot, event)
+                or await SUPERUSER(bot, event)
+            )
+            permission_s = await SUPERUSER(bot, event)
+
+            for storePlugin in loaded_plugin_list[
+                (page - 1)
+                * num_per_page : min(page * num_per_page, len(loaded_plugin_list))
+            ]:
+                # 检查是否有 metadata 属性
+                # 添加帮助按钮
+
+                btn_usage = md.btn_cmd(
+                    ulang.get("npm.usage"), f"help {storePlugin.name}", False
                 )
-                can_be_toggle = get_plugin_can_be_toggle(storePlugin.name)
-                btn_toggle = (
-                    text_toggle
-                    if not can_be_toggle
-                    else md.btn_cmd(text_toggle, cmd_toggle)
-                )
-                reply += f"    {btn_toggle}"
+                store_plugin = await get_store_plugin(storePlugin.name)
+                session_enable = get_plugin_session_enable(event, storePlugin.name)
+                if store_plugin:
+                    # btn_homepage = md.btn_link(ulang.get("npm.homepage"), store_plugin.homepage)
+                    show_name = store_plugin.name
+                elif storePlugin.metadata:
+                    # if storePlugin.metadata.extra.get("liteyuki"):
+                    #     btn_homepage = md.btn_link(ulang.get("npm.homepage"), "https://github.com/snowykami/LiteyukiBot")
+                    # else:
+                    #     btn_homepage = ulang.get("npm.homepage")
+                    show_name = storePlugin.metadata.name
+                else:
+                    # btn_homepage = ulang.get("npm.homepage")
+                    show_name = storePlugin.name
+                    ulang.get("npm.no_description")
 
-                if permission_s:
-                    plugin_in_database = plugin_db.where_one(
-                        InstalledPlugin(), "module_name = ?", storePlugin.name
+
+                # 何意味？ —— 金羿 260510
+                if storePlugin.metadata:
+                    reply += f"\n**{md.escape(show_name)}**\n"
+                else:
+                    reply += f"**{md.escape(show_name)}**\n"
+
+                reply += f"\n > {btn_usage}"
+
+                if permission_oas:
+                    # 添加启用/停用插件按钮
+                    cmd_toggle = f"npm {'disable' if session_enable else 'enable'} {storePlugin.name}"
+                    text_toggle = ulang.get(
+                        "npm.disable" if session_enable else "npm.enable"
                     )
-                    # 添加移除插件和全局切换按钮
-                    global_enable = get_plugin_global_enable(storePlugin.name)
-                    btn_uninstall = (
-                        (
-                            md.btn_cmd(
-                                ulang.get("npm.uninstall"),
-                                f"npm uninstall {storePlugin.name}",
-                            )
-                        )
-                        if plugin_in_database
-                        else ulang.get("npm.uninstall")
-                    )
-                    btn_toggle_global_text = ulang.get(
-                        "npm.disable_global" if global_enable else "npm.enable_global"
-                    )
-                    cmd_toggle_global = f"npm {'disable' if global_enable else 'enable'}-global {storePlugin.name}"
-                    btn_toggle_global = (
-                        btn_toggle_global_text
+                    can_be_toggle = get_plugin_can_be_toggle(storePlugin.name)
+                    btn_toggle = (
+                        text_toggle
                         if not can_be_toggle
-                        else md.btn_cmd(btn_toggle_global_text, cmd_toggle_global)
+                        else md.btn_cmd(text_toggle, cmd_toggle)
                     )
+                    reply += f"    {btn_toggle}"
 
-                    reply += f"    {btn_uninstall}    {btn_toggle_global}"
-            reply += "\n\n***\n"
-        # 根据页数添加翻页按钮。第一页显示上一页文本而不是按钮，最后一页显示下一页文本而不是按钮
-        btn_prev = (
-            md.btn_cmd(
-                ulang.get("npm.prev_page"), f"npm list {page - 1} {num_per_page}"
+                    if permission_s:
+                        plugin_in_database = plugin_db.where_one(
+                            InstalledPlugin(), "module_name = ?", storePlugin.name
+                        )
+                        # 添加移除插件和全局切换按钮
+                        global_enable = get_plugin_global_enable(storePlugin.name)
+                        btn_uninstall = (
+                            (
+                                md.btn_cmd(
+                                    ulang.get("npm.uninstall"),
+                                    f"npm uninstall {storePlugin.name}",
+                                )
+                            )
+                            if plugin_in_database
+                            else ulang.get("npm.uninstall")
+                        )
+                        btn_toggle_global_text = ulang.get(
+                            "npm.disable_global"
+                            if global_enable
+                            else "npm.enable_global"
+                        )
+                        cmd_toggle_global = f"npm {'disable' if global_enable else 'enable'}-global {storePlugin.name}"
+                        btn_toggle_global = (
+                            btn_toggle_global_text
+                            if not can_be_toggle
+                            else md.btn_cmd(btn_toggle_global_text, cmd_toggle_global)
+                        )
+
+                        reply += f"    {btn_uninstall}    {btn_toggle_global}"
+                reply += "\n\n***\n"
+            # 根据页数添加翻页按钮。第一页显示上一页文本而不是按钮，最后一页显示下一页文本而不是按钮
+            btn_prev = (
+                md.btn_cmd(
+                    ulang.get("npm.prev_page"), f"npm list {page - 1} {num_per_page}"
+                )
+                if page > 1
+                else ulang.get("npm.prev_page")
             )
-            if page > 1
-            else ulang.get("npm.prev_page")
-        )
-        btn_next = (
-            md.btn_cmd(
-                ulang.get("npm.next_page"), f"npm list {page + 1} {num_per_page}"
+            btn_next = (
+                md.btn_cmd(
+                    ulang.get("npm.next_page"), f"npm list {page + 1} {num_per_page}"
+                )
+                if page < total
+                else ulang.get("npm.next_page")
             )
-            if page < total
-            else ulang.get("npm.next_page")
-        )
-        reply += f"\n{btn_prev}  {page}/{total}  {btn_next}"
-        img_bytes = await md_to_pic(reply)
-        await UniMessage.send(UniMessage.image(raw=img_bytes))
+            reply += f"\n{btn_prev}  {page}/{total}  {btn_next}"
+            img_bytes = await md_to_pic(reply)
+            await UniMessage.send(UniMessage.image(raw=img_bytes))
 
     else:
         if await SUPERUSER(bot, event):

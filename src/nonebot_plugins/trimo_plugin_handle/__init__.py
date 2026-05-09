@@ -236,6 +236,79 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
         await UniMessage.image(raw=await run_sync(game.draw)()).send()
 
 
+handle_update_pinyin = on_alconna(
+    Alconna(
+        "更正成语拼音",
+        Args["idiom", str, ""],
+        Args["pinyin1", str, ""],
+        Args["pinyin2", str, ""],
+        Args["pinyin3", str, ""],
+        Args["pinyin4", str, ""],
+    ),
+    aliases=(
+        "更新猜成语词库拼音",
+        "猜成语更新拼音",
+        "更新猜成语拼音",
+        "更新成语拼音",
+        "更正猜成语拼音",
+    ),
+    use_cmd_start=True,
+    permission=SUPERUSER,
+    block=True,
+    priority=13,
+)
+
+
+@handle_update_pinyin.handle()
+async def _(
+    result: Arparma,
+    matcher: Matcher,
+    user_id: UserId,
+    bot: T_Bot,
+):
+
+    if not (
+        (idiom := result.main_args["idiom"])
+        and (pinyin1 := result.main_args["pinyin1"])
+        and (pinyin2 := result.main_args["pinyin2"])
+        and (pinyin3 := result.main_args["pinyin3"])
+        and (pinyin4 := result.main_args["pinyin4"])
+    ):
+        await handle_update_pinyin.finish(
+            "用法：更正成语拼音 <成语> <拼音1> <拼音2> <拼音3> <拼音4>"
+        )
+
+    if idiom not in HANDLE_LEGAL_PHRASES:
+        await handle_update_pinyin.finish(
+            "未在词库中找到该成语，请使用 `新成语 <成语>` 来添加成语"
+        )
+
+    HANDLE_ANSWER_PHRASES[idiom]["pinyin"] = pynow = [
+        pinyin1,
+        pinyin2,
+        pinyin3,
+        pinyin4,
+    ]
+
+    json.dump(
+        HANDLE_ANSWER_PHRASES,
+        handle_answer_path.open("w", encoding="utf-8"),
+        ensure_ascii=False,
+        indent=4,
+        sort_keys=True,
+    )
+    await handle_update_idiom.finish(
+        "成功修改：{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
+            idiom,
+            len(HANDLE_LEGAL_PHRASES),
+            len(HANDLE_COMMON_PHRASES),
+            "\n\t释义：{}\n\t拼音：{}".format(
+                HANDLE_ANSWER_PHRASES[idiom]["explanation"], " ".join(pynow)
+            ),
+        )
+    )
+
+
 handle_update_idiom = on_alconna(
     Alconna(
         "新成语",
@@ -267,31 +340,39 @@ async def _(
     bot: T_Bot,
 ):
 
-    try:
-        if result.options["explanation"].args["explanation"]:
-            explanation = result.options["explanation"].args["explanation"]
-        else:
-            nonebot.logger.info("！！！！这里永远不可能被执行到")
-            explanation = "未提供该成语的解释说明"
-    except:
-        explanation = None
-
-    if hard := result.options["hard"].value:
-        if not explanation:
-            explanation = "未提供该成语的解释说明"
-
     if not (idiom := result.main_args["idiom"]):
         await handle_update_idiom.finish("请在命令后带上你要增加的成语")
 
-    HANDLE_LEGAL_PHRASES.append(idiom)
-    json.dump(
-        HANDLE_LEGAL_PHRASES,
-        handle_all_idiom_path.open("w", encoding="utf-8"),
-        ensure_ascii=False,
-        indent=4,
-        sort_keys=True,
-    )
-    if not hard:
+    existance = idiom in HANDLE_LEGAL_PHRASES
+
+    try:
+        explanation = (
+            result.options["explanation"].args["explanation"]
+            if result.options["explanation"].args["explanation"]
+            else None
+        )
+    except:
+        explanation = None
+
+    if existance and (not explanation):
+        # 这个判断的顺序必须高于下面的判断语句
+        explanation = HANDLE_ANSWER_PHRASES[idiom]["explanation"]
+
+    if not explanation:
+        explanation = "未提供该成语的解释说明"
+
+    if not existance:
+        HANDLE_LEGAL_PHRASES.append(idiom)
+        json.dump(
+            HANDLE_LEGAL_PHRASES,
+            handle_all_idiom_path.open("w", encoding="utf-8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=True,
+        )
+    if (not (hard := result.options["hard"].value)) and (
+        idiom not in HANDLE_COMMON_PHRASES
+    ):
         HANDLE_COMMON_PHRASES.append(idiom)
         json.dump(
             HANDLE_COMMON_PHRASES,
@@ -301,25 +382,33 @@ async def _(
             sort_keys=True,
         )
 
-    if explanation:
-        HANDLE_ANSWER_PHRASES[idiom] = {
-            "explanation": explanation,
-            "pinyin": [
-                j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
-            ],
-        }
-        json.dump(
-            HANDLE_ANSWER_PHRASES,
-            handle_answer_path.open("w", encoding="utf-8"),
-            ensure_ascii=False,
-            indent=4,
-            sort_keys=True,
-        )
+    HANDLE_ANSWER_PHRASES[idiom] = {
+        "explanation": explanation,
+        "pinyin": (
+            pynow := (
+                HANDLE_ANSWER_PHRASES[idiom]["pinyin"].copy()
+                if existance
+                else [
+                    j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
+                ]
+            )
+        ),
+    }
+    json.dump(
+        HANDLE_ANSWER_PHRASES,
+        handle_answer_path.open("w", encoding="utf-8"),
+        ensure_ascii=False,
+        indent=4,
+        sort_keys=True,
+    )
 
     await handle_update_idiom.finish(
-        "新增成功，当前词库总数：{}个\n可用普通模式成语：{}个".format(
+        "成功{}：{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
+            "修改" if existance else "新增",
+            idiom,
             len(HANDLE_LEGAL_PHRASES),
             len(HANDLE_COMMON_PHRASES),
+            "\n\t释义：{}\n\t拼音：{}".format(explanation, " ".join(pynow)),
         )
     )
 
