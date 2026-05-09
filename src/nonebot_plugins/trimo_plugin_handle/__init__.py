@@ -59,7 +59,9 @@ __plugin_meta__ = PluginMetadata(
         "当四个格子都为青色时，你便赢得了游戏！\n"
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
         "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，\n"
-        "如：@我 猜成语 --strict"
+        "如：@我 猜成语 --strict\n"
+        "使用 --hard 选项开启困难词库\n"
+        "管理员可以使用 新成语、成语答案 两个命令进行成语词库添加和答案查看"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
@@ -341,6 +343,8 @@ handle_answer = on_alconna(
     block=True,
     priority=13,
 )
+
+
 @handle_answer.handle()
 async def _(
     result: Arparma,
@@ -376,5 +380,3 @@ async def _(
         await handle_answer.finish(
             UniMessage.text("{} 不存在开局的游戏".format(session_numstr))
         )
-
-
