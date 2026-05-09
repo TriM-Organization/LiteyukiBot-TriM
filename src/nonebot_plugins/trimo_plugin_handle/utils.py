@@ -2,7 +2,7 @@ import json
 import random
 from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union, Literal, TypedDict
 
 # from watchdog.observers import Observer
 # from watchdog.events import FileSystemEventHandler, FileModifiedEvent
@@ -15,19 +15,28 @@ from pypinyin import Style, pinyin
 resource_dir = Path(__file__).parent / "resources"
 fonts_dir = resource_dir / "fonts"
 data_dir = resource_dir / "data"
-handle_idiom_path = data_dir / "idioms.json"
+handle_common_idiom_path = data_dir / "common_idioms.json"
+handle_all_idiom_path = data_dir / "idioms.json"
 handle_answer_path = data_dir / "answers.json"
-handle_answer_hard_path = data_dir / "answers_hard.json"
 
 
+class IdiomEntry(TypedDict):
+    """
+    成语答案类型
+    """
+
+    explanation: str
+    pinyin: List[str]
+
+
+HANDLE_COMMON_PHRASES: List[str] = json.load(
+    handle_common_idiom_path.open("r", encoding="utf-8")
+)
 HANDLE_LEGAL_PHRASES: List[str] = json.load(
-    handle_idiom_path.open("r", encoding="utf-8")
+    handle_all_idiom_path.open("r", encoding="utf-8")
 )
-HANDLE_ANSWER_PHRASES: List[Dict[str, str]] = json.load(
+HANDLE_ANSWER_PHRASES: Dict[str, IdiomEntry] = json.load(
     handle_answer_path.open("r", encoding="utf-8")
-)
-HANDLE_HARD_ANSWER_PHRASES: List[Dict[str, str]] = json.load(
-    handle_answer_hard_path.open("r", encoding="utf-8")
 )
 
 # class LegalPhrasesModifiedHandler(FileSystemEventHandler):
@@ -57,16 +66,17 @@ HANDLE_HARD_ANSWER_PHRASES: List[Dict[str, str]] = json.load(
 #     event_filter=FileModifiedEvent,
 # )
 
+# 答案转换器
+# json.dump({ i["word"]:{"explanation":i["explanation"], "pinyin":(lambda x : [i for j in pinyin(x, style=Style.TONE3, v_to_u=True) for i in j])(i["word"])} for i in json.load(open("answers_hard-old.json",encoding="utf-8"))},open("answers.json", "w",encoding="utf-8"), ensure_ascii=False, indent=4)
+
 
 def legal_idiom(word: str) -> bool:
     return word in HANDLE_LEGAL_PHRASES
 
 
 def random_idiom(is_hard: bool = False) -> Tuple[str, str]:
-    answer = random.choice(
-        HANDLE_HARD_ANSWER_PHRASES if is_hard else HANDLE_ANSWER_PHRASES
-    )
-    return answer["word"], answer["explanation"]
+    answer = random.choice(HANDLE_LEGAL_PHRASES if is_hard else HANDLE_COMMON_PHRASES)
+    return answer, HANDLE_ANSWER_PHRASES[answer]["explanation"]
 
 
 # fmt: off
@@ -85,28 +95,53 @@ FINALS = [
 # fmt: on
 
 
-def get_pinyin(idiom: str) -> List[Tuple[str, str, str]]:
-    pys = pinyin(idiom, style=Style.TONE3, v_to_u=True)
-    results = []
-    for p in pys:
-        py = p[0]
-        if py[-1].isdigit():
-            tone = py[-1]
-            py = py[:-1]
-        else:
-            tone = ""
-        initial = ""
-        for i in INITIALS:
-            if py.startswith(i):
-                initial = i
-                break
-        final = ""
-        for f in FINALS:
-            if py.endswith(f):
-                final = f
-                break
-        results.append((initial, final, tone))  # 声母，韵母，声调
-    return results
+def split_pinyin(py: str) -> Tuple[str, str, str]:
+    """
+    py: 输入的拼音
+    return: 返回一个三元组，分别表示该拼音的声母，韵母，声调
+    """
+
+    if py[-1].isdigit():
+        tone = py[-1]
+        py = py[:-1]
+    else:
+        tone = ""
+    initial = ""
+    for i in INITIALS:
+        if py.startswith(i):
+            initial = i
+            break
+    final = ""
+    for f in FINALS:
+        if py.endswith(f):
+            final = f
+            break
+    return initial, final, tone
+
+
+def get_pinyin(
+    idiom: str,
+) -> List[Tuple[str, str, str]]:
+    """
+    idiom: 输入的汉字
+    return: 返回一个元组，每个元素是一个三元组，分别表示该汉字的声母，韵母，声调
+    """
+    if idiom_entry := HANDLE_ANSWER_PHRASES.get(idiom):
+        pinyin_per_char = idiom_entry["pinyin"]
+        if not pinyin_per_char:
+            pinyin_per_char = [
+                j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
+            ]
+            idiom_entry["pinyin"] = pinyin_per_char.copy()
+            handle_answer_path.open("w", encoding="utf-8").write(
+                json.dumps(HANDLE_ANSWER_PHRASES, ensure_ascii=False, indent=4)
+            )
+    else:
+        pinyin_per_char = [
+            j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
+        ]
+
+    return [split_pinyin(py) for py in pinyin_per_char]
 
 
 def save_jpg(frame: IMG) -> BytesIO:

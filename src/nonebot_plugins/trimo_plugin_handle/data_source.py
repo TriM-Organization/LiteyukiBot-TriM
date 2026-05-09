@@ -47,7 +47,7 @@ class Handle:
         self.idiom: str = idiom  # 成语
         self.explanation: str = explanation  # 释义
         self.strict: bool = strict  # 是否判断输入词语为成语
-        self.result = f"【成语】：{idiom}\n【释义】：{explanation}"
+        self.result = "【成语】：{}\n【释义】：{}".format(self.idiom, self.explanation)
         self.pinyin: List[Tuple[str, str, str]] = get_pinyin(idiom)  # 拼音
         self.length = 4
         self.times: int = 10  # 可猜次数

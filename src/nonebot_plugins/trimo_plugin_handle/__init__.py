@@ -13,6 +13,7 @@ from nonebot.utils import run_sync
 from nonebot.permission import SUPERUSER
 
 import json
+from pypinyin import Style, pinyin
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
@@ -38,12 +39,12 @@ from .config import Config, handle_config
 from .data_source import GuessResult, Handle
 from .utils import (
     random_idiom,
-    HANDLE_ANSWER_PHRASES,
-    HANDLE_HARD_ANSWER_PHRASES,
+    HANDLE_COMMON_PHRASES,
     HANDLE_LEGAL_PHRASES,
-    handle_answer_hard_path,
+    HANDLE_ANSWER_PHRASES,
+    handle_common_idiom_path,
+    handle_all_idiom_path,
     handle_answer_path,
-    handle_idiom_path,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -177,7 +178,7 @@ async def _(
     set_timeout(matcher, user_id)
 
     msg = Text(
-        f"你有{game.times}次机会猜一个四字成语，"
+        "你有{}次机会猜一个四字成语，".format(game.times)
         + ("发送有效成语以参与游戏。" if is_strict else "发送任意四字词语以参与游戏。")
     ) + Image(raw=await run_sync(game.draw)())
     await msg.send()
@@ -221,7 +222,7 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
                 if result == GuessResult.WIN
                 else "很遗憾，没有人猜出来呢"
             )
-            + f"\n{game.result}"
+            + "\n{}".format(game.result)
         ) + Image(raw=await run_sync(game.draw)())
         await msg.send()
 
@@ -229,7 +230,7 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
         await matcher.finish("你已经猜过这个成语了呢")
 
     elif result == GuessResult.ILLEGAL:
-        await matcher.finish(f"你确定“{idiom}”是个成语吗？")
+        await matcher.finish("你确定“{}”是个成语吗？".format(idiom))
 
     else:
         await UniMessage.image(raw=await run_sync(game.draw)()).send()
@@ -285,39 +286,40 @@ async def _(
     HANDLE_LEGAL_PHRASES.append(idiom)
     json.dump(
         HANDLE_LEGAL_PHRASES,
-        handle_idiom_path.open("w", encoding="utf-8"),
+        handle_all_idiom_path.open("w", encoding="utf-8"),
         ensure_ascii=False,
         indent=4,
         sort_keys=True,
     )
+    if not hard:
+        HANDLE_COMMON_PHRASES.append(idiom)
+        json.dump(
+            HANDLE_COMMON_PHRASES,
+            handle_common_idiom_path.open("w", encoding="utf-8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=True,
+        )
 
     if explanation:
-        if hard:
-            HANDLE_HARD_ANSWER_PHRASES.append(
-                {"word": idiom, "explanation": explanation}
-            )
-            json.dump(
-                HANDLE_HARD_ANSWER_PHRASES,
-                handle_answer_hard_path.open("w", encoding="utf-8"),
-                ensure_ascii=False,
-                indent=4,
-                sort_keys=True,
-            )
-        else:
-            HANDLE_ANSWER_PHRASES.append({"word": idiom, "explanation": explanation})
-            json.dump(
-                HANDLE_ANSWER_PHRASES,
-                handle_answer_path.open("w", encoding="utf-8"),
-                ensure_ascii=False,
-                indent=4,
-                sort_keys=True,
-            )
+        HANDLE_ANSWER_PHRASES[idiom] = {
+            "explanation": explanation,
+            "pinyin": [
+                j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
+            ],
+        }
+        json.dump(
+            HANDLE_ANSWER_PHRASES,
+            handle_answer_path.open("w", encoding="utf-8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=True,
+        )
 
     await handle_update_idiom.finish(
-        "新增成功，当前词库总数：{}个\n可用普通模式成语：{}个\n可用困难模式成语：{}个".format(
+        "新增成功，当前词库总数：{}个\n可用普通模式成语：{}个".format(
             len(HANDLE_LEGAL_PHRASES),
-            len(HANDLE_ANSWER_PHRASES),
-            len(HANDLE_HARD_ANSWER_PHRASES),
+            len(HANDLE_COMMON_PHRASES),
         )
     )
 
