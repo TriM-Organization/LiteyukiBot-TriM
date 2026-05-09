@@ -315,7 +315,7 @@ handle_update_idiom = on_alconna(
         Option(
             "-e|--explanation",
             default="",
-            args=Args["explanation", str, "未提供该成语的解释说明"],
+            args=Args["explanation", str, ""],
         ),
         Option(
             "-d|--hard",
@@ -341,16 +341,12 @@ async def _(
 ):
 
     if not (idiom := result.main_args["idiom"]):
-        await handle_update_idiom.finish("请在命令后带上你要增加的成语")
+        await handle_update_idiom.finish("用法：新成语 <成语> [-e|--explanation <释义>] [-d|--hard]")
 
     existance = idiom in HANDLE_LEGAL_PHRASES
 
     try:
-        explanation = (
-            result.options["explanation"].args["explanation"]
-            if result.options["explanation"].args["explanation"]
-            else None
-        )
+        explanation = result.options["explanation"].args["explanation"] or None
     except:
         explanation = None
 
@@ -370,17 +366,26 @@ async def _(
             indent=4,
             sort_keys=True,
         )
-    if (not (hard := result.options["hard"].value)) and (
-        idiom not in HANDLE_COMMON_PHRASES
-    ):
-        HANDLE_COMMON_PHRASES.append(idiom)
-        json.dump(
-            HANDLE_COMMON_PHRASES,
-            handle_common_idiom_path.open("w", encoding="utf-8"),
-            ensure_ascii=False,
-            indent=4,
-            sort_keys=True,
-        )
+    if hard := result.options["hard"].value:
+        if idiom in HANDLE_COMMON_PHRASES:
+            HANDLE_COMMON_PHRASES.remove(idiom)
+            json.dump(
+                HANDLE_COMMON_PHRASES,
+                handle_common_idiom_path.open("w", encoding="utf-8"),
+                ensure_ascii=False,
+                indent=4,
+                sort_keys=True,
+            )
+    else:
+        if idiom not in HANDLE_COMMON_PHRASES:
+            HANDLE_COMMON_PHRASES.append(idiom)
+            json.dump(
+                HANDLE_COMMON_PHRASES,
+                handle_common_idiom_path.open("w", encoding="utf-8"),
+                ensure_ascii=False,
+                indent=4,
+                sort_keys=True,
+            )
 
     HANDLE_ANSWER_PHRASES[idiom] = {
         "explanation": explanation,
@@ -403,8 +408,9 @@ async def _(
     )
 
     await handle_update_idiom.finish(
-        "成功{}：{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
+        "成功{}：[{}词汇]{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
             "修改" if existance else "新增",
+            "困难" if hard else "普通",
             idiom,
             len(HANDLE_LEGAL_PHRASES),
             len(HANDLE_COMMON_PHRASES),

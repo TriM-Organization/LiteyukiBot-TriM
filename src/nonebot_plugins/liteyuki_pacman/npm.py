@@ -105,6 +105,7 @@ disable = "disable"
             Args["page", int, 1]["num", int, 10],
             Option(
                 "-m|--markdown",
+                default=False,
                 action=store_true,
                 help_text="以 Markdown 交互形式显示列表",
             ),
@@ -369,47 +370,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
         page = clamp(result.subcommands["list"].args["page"], 1, total)
         markdown_mode = result.subcommands["list"].options["markdown"].value
 
-        if not markdown_mode:
-            # 文字显示模式
-            reply = " - {} | {} -\n".format(
-                ulang.get("npm.loaded_plugins"),
-                ulang.get("npm.page", PAGE=page, TOTAL=total),
-            )
-            for pi in range(
-                (page - 1) * num_per_page,
-                min(page * num_per_page, len(loaded_plugin_list)),
-            ):
-                # 遍历插件，通过插件编号
-                storePlugin = loaded_plugin_list[pi]
-                store_plugin = await get_store_plugin(storePlugin.name)
-                session_enable = get_plugin_session_enable(event, storePlugin.name)
-
-                if store_plugin:
-                    show_name = store_plugin.name
-                elif storePlugin.metadata:
-                    show_name = storePlugin.metadata.name
-                else:
-                    show_name = storePlugin.name
-                    ulang.get("npm.no_description")
-
-                reply += "{}. {}".format(pi + 1, show_name)
-
-                if not get_plugin_can_be_toggle(storePlugin.name):
-                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get(
-                            "npm.disable" if session_enable else "npm.enable"
-                        ))
-                
-                if not plugin_db.where_one(
-                            InstalledPlugin(), "module_name = ?", storePlugin.name
-                        ):
-                    
-                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get("npm.uninstall"))
-                
-                reply += "\n>\t{}\n".format(storePlugin.name)
-
-                await npm.send(reply)
-
-        else:
+        if markdown_mode:
             # 已加载插件 | 总计10 | 第1/3页
             reply = (
                 f"# {ulang.get('npm.loaded_plugins')} | "
@@ -521,7 +482,47 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
             reply += f"\n{btn_prev}  {page}/{total}  {btn_next}"
             img_bytes = await md_to_pic(reply)
             await UniMessage.send(UniMessage.image(raw=img_bytes))
+        else:
+            
+            # 文字显示模式
+            reply = " - {} | {} -\n".format(
+                ulang.get("npm.loaded_plugins"),
+                ulang.get("npm.page", PAGE=page, TOTAL=total),
+            )
+            for pi in range(
+                (page - 1) * num_per_page,
+                min(page * num_per_page, len(loaded_plugin_list)),
+            ):
+                # 遍历插件，通过插件编号
+                storePlugin = loaded_plugin_list[pi]
+                store_plugin = await get_store_plugin(storePlugin.name)
+                session_enable = get_plugin_session_enable(event, storePlugin.name)
 
+                if store_plugin:
+                    show_name = store_plugin.name
+                elif storePlugin.metadata:
+                    show_name = storePlugin.metadata.name
+                else:
+                    show_name = storePlugin.name
+                    ulang.get("npm.no_description")
+
+                reply += "{}. {}".format(pi + 1, show_name)
+
+                if not get_plugin_can_be_toggle(storePlugin.name):
+                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get(
+                            "npm.disable" if session_enable else "npm.enable"
+                        ))
+                
+                if not plugin_db.where_one(
+                            InstalledPlugin(), "module_name = ?", storePlugin.name
+                        ):
+                    
+                    reply += " [{}{}]".format(ulang.get('npm.cannot'), ulang.get("npm.uninstall"))
+                
+                reply += "\n>\t{}\n".format(storePlugin.name)
+
+                await npm.send(reply)
+                
     else:
         if await SUPERUSER(bot, event):
             btn_enable_global = md.btn_cmd(
