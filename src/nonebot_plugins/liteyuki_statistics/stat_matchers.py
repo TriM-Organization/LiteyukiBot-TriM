@@ -80,7 +80,7 @@ stat_msg = on_alconna(
 
 @stat_msg.assign("message")
 async def _(result: Arparma, event: T_MessageEvent, bot: Bot):
-    ulang = Language(event_utils.get_user_id(event))
+    ulang = Language(str(event_utils.get_user_id(event)))
     try:
         duration = convert_time_to_seconds(
             result.other_args.get("duration", "2d")
@@ -123,7 +123,7 @@ async def _(result: Arparma, event: T_MessageEvent, bot: Bot):
 
 @stat_msg.assign("rank")
 async def _(result: Arparma, event: T_MessageEvent, bot: Bot):
-    ulang = Language(event_utils.get_user_id(event))
+    ulang = Language(str(event_utils.get_user_id(event)))
     rank_type = "user"
     duration = convert_time_to_seconds(result.other_args.get("duration", "1d"))
     if result.subcommands.get("rank").options.get("user"):

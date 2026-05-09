@@ -521,8 +521,8 @@ async def _(result: Arparma, event: T_MessageEvent, bot: T_Bot, npm: Matcher):
                 
                 reply += "\n>\t{}\n".format(storePlugin.name)
 
-                await npm.send(reply)
-                
+            await npm.send(reply)
+
     else:
         if await SUPERUSER(bot, event):
             btn_enable_global = md.btn_cmd(
