@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import TimerHandle
 from typing import Any, Dict
+from typing_extensions import Annotated
 
 import nonebot
 from nonebot import on_regex, require, on_command
@@ -10,7 +11,8 @@ from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.rule import to_me
 from nonebot.utils import run_sync
 from nonebot.permission import SUPERUSER
-from typing_extensions import Annotated
+
+import json
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
@@ -30,9 +32,19 @@ from nonebot_plugin_alconna import (
 )
 from nonebot_plugin_session import SessionId, SessionIdType
 
+from src.utils.base.ly_typing import T_Bot
+
 from .config import Config, handle_config
 from .data_source import GuessResult, Handle
-from .utils import random_idiom
+from .utils import (
+    random_idiom,
+    HANDLE_ANSWER_PHRASES,
+    HANDLE_HARD_ANSWER_PHRASES,
+    HANDLE_LEGAL_PHRASES,
+    handle_answer_hard_path,
+    handle_answer_path,
+    handle_idiom_path,
+)
 
 __plugin_meta__ = PluginMetadata(
     name="猜成语",
@@ -103,26 +115,6 @@ handle_stop = on_alconna(
     priority=13,
 )
 
-handle_answer = on_alconna(
-    Alconna(
-        "答案",
-        Option(
-            "-g|--group",
-            default="Now",
-            args=Args["group", str, "Now"],
-        ),
-        Option(
-            "-l|--list",
-            default=False,
-            action=store_true,
-        ),
-    ),
-    # rule=game_is_running,
-    use_cmd_start=True,
-    permission=SUPERUSER,
-    block=True,
-    priority=13,
-)
 
 # handle_update = on_alconna(
 #     "更新词库",
@@ -241,17 +233,129 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
         await UniMessage.image(raw=await run_sync(game.draw)()).send()
 
 
+handle_update_idiom = on_alconna(
+    Alconna(
+        "新成语",
+        Option(
+            "-e|--explanation",
+            default="",
+            args=Args["explanation", str, "未提供该成语的解释说明"],
+        ),
+        Option(
+            "-d|--hard",
+            default=False,
+            action=store_true,
+        ),
+        Args["idiom", str, ""],
+    ),
+    aliases=("新增成语", "猜成语新增成语"),
+    use_cmd_start=True,
+    permission=SUPERUSER,
+    block=True,
+    priority=13,
+)
+
+
+@handle_update_idiom.handle()
+async def _(
+    result: Arparma,
+    matcher: Matcher,
+    user_id: UserId,
+    bot: T_Bot,
+):
+
+    try:
+        if result.options["explanation"].args["explanation"]:
+            explanation = result.options["explanation"].args["explanation"]
+        else:
+            nonebot.logger.info("！！！！这里永远不可能被执行到")
+            explanation = "未提供该成语的解释说明"
+    except:
+        explanation = None
+
+    if hard := result.options["hard"].value:
+        if not explanation:
+            explanation = "未提供该成语的解释说明"
+
+    if not (idiom := result.main_args["idiom"]):
+        await handle_update_idiom.finish("请在命令后带上你要增加的成语")
+
+    HANDLE_LEGAL_PHRASES.append(idiom)
+    json.dump(
+        HANDLE_LEGAL_PHRASES,
+        handle_idiom_path.open("w", encoding="utf-8"),
+        ensure_ascii=False,
+        indent=4,
+        sort_keys=True,
+    )
+
+    if explanation:
+        if hard:
+            HANDLE_HARD_ANSWER_PHRASES.append(
+                {"word": idiom, "explanation": explanation}
+            )
+            json.dump(
+                HANDLE_HARD_ANSWER_PHRASES,
+                handle_answer_hard_path.open("w", encoding="utf-8"),
+                ensure_ascii=False,
+                indent=4,
+                sort_keys=True,
+            )
+        else:
+            HANDLE_ANSWER_PHRASES.append({"word": idiom, "explanation": explanation})
+            json.dump(
+                HANDLE_ANSWER_PHRASES,
+                handle_answer_path.open("w", encoding="utf-8"),
+                ensure_ascii=False,
+                indent=4,
+                sort_keys=True,
+            )
+
+    await handle_update_idiom.finish(
+        "新增成功，当前词库总数：{}个\n可用普通模式成语：{}个\n可用困难模式成语：{}个".format(
+            len(HANDLE_LEGAL_PHRASES),
+            len(HANDLE_ANSWER_PHRASES),
+            len(HANDLE_HARD_ANSWER_PHRASES),
+        )
+    )
+
+
+handle_answer = on_alconna(
+    Alconna(
+        "成语答案",
+        Option(
+            "-g|--group",
+            default="Now",
+            args=Args["group", str, "Now"],
+        ),
+        Option(
+            "-l|--list",
+            default=False,
+            action=store_true,
+        ),
+    ),
+    aliases=("handle-answer", "猜成语答案"),
+    # rule=game_is_running,
+    use_cmd_start=True,
+    permission=SUPERUSER,
+    block=True,
+    priority=13,
+)
 @handle_answer.handle()
 async def _(
     result: Arparma,
     matcher: Matcher,
     user_id: UserId,
+    bot: T_Bot,
 ):
 
     if result.options["list"].value:
         await handle_answer.finish(
             UniMessage.text(
-                "\n".join("{}-{}".format(i, j.idiom) for i, j in games.items())
+                "\n".join(
+                    "群{}，答案“{}”".format(i.split("_")[-1], j.idiom)
+                    for i, j in games.items()
+                )
             )
         )
         return
@@ -260,8 +364,8 @@ async def _(
         if result.options["group"].args["group"] == "Now":
             session_numstr = user_id
         else:
-            session_numstr = "qq_OneBot V11_2378756507_{}".format(
-                result.options["group"].args["group"]
+            session_numstr = "qq_OneBot V11_{}_{}".format(
+                bot.self_id, result.options["group"].args["group"]
             )
     except:
         session_numstr = user_id
@@ -272,3 +376,5 @@ async def _(
         await handle_answer.finish(
             UniMessage.text("{} 不存在开局的游戏".format(session_numstr))
         )
+
+
