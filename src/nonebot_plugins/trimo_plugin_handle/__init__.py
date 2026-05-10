@@ -384,9 +384,9 @@ handle_answer_matcher = on_alconna(
     Alconna(
         "handle_answer",
         Option(
-            "-g|--group",
+            "-s|--specify",
             default="Now",
-            args=Args["group", str, "Now"],
+            args=Args["specify", str, "Now"],
         ),
         Option(
             "-l|--list",
@@ -407,6 +407,7 @@ handle_answer_matcher = on_alconna(
 async def _(
     result: Arparma,
     user_id: UserId,
+    uninfo: Uninfo,
 ):
 
     if handle_config.handle_superuser_get_answer:
@@ -422,12 +423,10 @@ async def _(
             return
 
         try:
-            if result.options["group"].args["group"] == "Now":
+            if (spn := result.options["specify"].args["specify"]) == "Now":
                 session_numstr = user_id
             else:
-                await handle_answer_matcher.finish(
-                    UniMessage.text("暂不支持指定群组")  # TODO: 指定群组获取答案
-                )
+                session_numstr = user_id.replace(uninfo.scene_path, spn)
 
         except:
             session_numstr = user_id
