@@ -1,23 +1,25 @@
 import asyncio
 from asyncio import TimerHandle
-from typing import Any, Dict
-from typing_extensions import Annotated
+from typing import Any, Dict, Annotated
 
-import nonebot
 from nonebot import on_regex, require
+from nonebot.log import logger
 from nonebot.matcher import Matcher
-from nonebot.params import RegexDict
+from nonebot.params import EventToMe, Depends, RegexDict
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.rule import to_me
 from nonebot.utils import run_sync
 from nonebot.permission import SUPERUSER
-from nonebot.internal.adapter import Bot
+
+from typing_extensions import Annotated
 
 require("nonebot_plugin_alconna")
-require("nonebot_plugin_session")
+require("nonebot_plugin_uninfo")
 
 from nonebot_plugin_alconna import (
+    AlcMatches,
     Alconna,
+    At,
     Image,
     Option,
     Text,
@@ -27,11 +29,12 @@ from nonebot_plugin_alconna import (
     Args,
     Arparma,
 )
-from nonebot_plugin_session import SessionId, SessionIdType
+from nonebot_plugin_uninfo import Uninfo
 
 from .config import Config, handle_config
 from .data_source import GuessResult, Handle
 from .utils import (
+    v_to_u,
     random_idiom,
     wordbase_updater,
     HANDLE_COMMON_PHRASES,
@@ -40,7 +43,7 @@ from .utils import (
 
 __plugin_meta__ = PluginMetadata(
     name="猜成语",
-    description="猜成语-睿乐特别版",
+    description="汉字 Wordle 猜成语",
     usage=(
         "@我 + “猜成语”开始游戏；\n"
         "你有十次的机会猜一个四字词语；\n"
@@ -50,29 +53,32 @@ __plugin_meta__ = PluginMetadata(
         "每个格子的 汉字、声母、韵母、声调 都会独立进行颜色的指示。\n"
         "当四个格子都为青色时，你便赢得了游戏！\n"
         "可发送“结束”结束游戏；可发送“提示”查看提示。\n"
-        "使用 --strict 选项开启非默认的成语检查，即猜测的短语必须是成语，\n"
-        "如：@我 猜成语 --strict\n"
-        "使用 --hard 选项开启困难词库\n"
+        "使用 --strict|-s 选项开启非默认的成语检查，即猜测的短语必须是成语，\n"
+        "如：猜成语 --strict\n"
+        "使用 --difficult|-d 选项开启困难词库\n"
         "管理员可以使用 新成语、成语答案 两个命令进行成语词库添加和答案查看"
     ),
     type="application",
     homepage="https://github.com/noneplugin/nonebot-plugin-handle",
     config=Config,
     supported_adapters=inherit_supported_adapters(
-        "nonebot_plugin_alconna", "nonebot_plugin_session"
+        "nonebot_plugin_alconna", "nonebot_plugin_uninfo"
     ),
-    extra={
-        "example": "@小Q 猜成语",
-    },
 )
 
 
 games: Dict[str, Handle] = {}
 timers: Dict[str, TimerHandle] = {}
 
-UserId = Annotated[str, SessionId(SessionIdType.GROUP)]
+
+def get_user_id(uninfo: Uninfo) -> str:
+    return f"{uninfo.scope}_{uninfo.self_id}_{uninfo.scene_path}"
 
 
+UserId = Annotated[str, Depends(get_user_id)]
+
+
+# 游戏运行判断规则
 def game_is_running(user_id: UserId) -> bool:
     return user_id in games
 
@@ -81,53 +87,7 @@ def game_not_running(user_id: UserId) -> bool:
     return user_id not in games
 
 
-handle = on_alconna(
-    Alconna(
-        "handle",
-        Option("-s|--strict", default=False, action=store_true),
-        Option("-d|--difficult", default=False, action=store_true),
-    ),
-    aliases=("猜成语",),
-    rule=to_me() & game_not_running,
-    use_cmd_start=True,
-    block=True,
-    priority=13,
-)
-handle_hint = on_alconna(
-    "提示",
-    rule=game_is_running,
-    use_cmd_start=True,
-    block=True,
-    priority=13,
-)
-handle_stop = on_alconna(
-    "结束",
-    aliases=("结束游戏", "结束猜成语"),
-    rule=game_is_running,
-    use_cmd_start=True,
-    block=True,
-    priority=13,
-)
-
-
-# handle_update = on_alconna(
-#     "更新词库",
-#     aliases=("刷新词库", "猜成语刷新词库"),
-#     rule=to_me(),
-#     use_cmd_start=True,
-#     block=True,
-#     priority=13,
-# )
-
-
-handle_idiom = on_regex(
-    r"^(?P<idiom>[\u4e00-\u9fa5]{4})$",
-    rule=game_is_running,
-    block=True,
-    priority=14,
-)
-
-
+# 游戏过程中的功能实现
 def stop_game(user_id: str):
     if timer := timers.pop(user_id, None):
         timer.cancel()
@@ -154,13 +114,46 @@ def set_timeout(matcher: Matcher, user_id: str, timeout: float = 300):
     timers[user_id] = timer
 
 
-@handle.handle()
+# ————
+
+handle_alc = Alconna(
+    "handle",
+    Option("-s|--strict", default=False, action=store_true),
+    Option("-d|--difficult", default=False, action=store_true),
+)
+
+handle_matcher = on_alconna(
+    handle_alc,
+    aliases=("猜成语",),
+    rule=(
+        (to_me() & game_not_running)
+        if handle_config.handle_require_tome
+        else (game_not_running)
+    ),
+    use_cmd_start=True,
+    block=True,
+    priority=13,
+)
+
+
+@handle_matcher.handle()
 async def _(
     result: Arparma,
     matcher: Matcher,
     user_id: UserId,
+    alc_matches: AlcMatches,
+    to_me: bool = EventToMe(),
 ):
-    nonebot.logger.info(result.options)
+
+    header_match = str(alc_matches.header_match.result)
+    command = str(handle_alc.command)
+    if not (to_me or bool(header_match.rstrip(command))):
+        # 既不是对机器人说话，也不是以命令开头……
+        logger.debug("非 To me 命令，忽略")
+        matcher.block = False
+        await matcher.finish()
+
+    # nonebot.logger.info(result.options)
     is_strict = handle_config.handle_strict_mode or result.options["strict"].value
     idiom, explanation = random_idiom(result.options["difficult"].value)
     game = Handle(idiom, explanation, strict=is_strict)
@@ -175,7 +168,19 @@ async def _(
     await msg.send()
 
 
-@handle_hint.handle()
+# ————
+
+handle_hint_matcher = on_alconna(
+    "handle_hint",
+    aliases=("提示", "猜成语提示"),
+    rule=game_is_running,
+    use_cmd_start=True,
+    block=True,
+    priority=13,
+)
+
+
+@handle_hint_matcher.handle()
 async def _(matcher: Matcher, user_id: UserId):
     game = games[user_id]
     set_timeout(matcher, user_id)
@@ -183,7 +188,19 @@ async def _(matcher: Matcher, user_id: UserId):
     await UniMessage.image(raw=await run_sync(game.draw_hint)()).send()
 
 
-@handle_stop.handle()
+# ————
+
+handle_stop_matcher = on_alconna(
+    "handle_stop",
+    aliases=("结束", "结束游戏", "结束猜成语"),
+    rule=game_is_running,
+    use_cmd_start=True,
+    block=True,
+    priority=13,
+)
+
+
+@handle_stop_matcher.handle()
 async def _(matcher: Matcher, user_id: UserId):
     game = games[user_id]
     stop_game(user_id)
@@ -194,11 +211,23 @@ async def _(matcher: Matcher, user_id: UserId):
     await matcher.finish(msg)
 
 
-# @handle_update.handle()
+# ————
+
+handle_idiom_matcher = on_regex(
+    r"^(?P<idiom>[\u4e00-\u9fa5]{4})$",
+    rule=game_is_running,
+    block=True,
+    priority=14,
+)
 
 
-@handle_idiom.handle()
-async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDict()):
+@handle_idiom_matcher.handle()
+async def _(
+    matcher: Matcher,
+    uninfo: Uninfo,
+    user_id: UserId,
+    matched: Dict[str, Any] = RegexDict(),
+):
     game = games[user_id]
     set_timeout(matcher, user_id)
 
@@ -207,15 +236,18 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
 
     if result in [GuessResult.WIN, GuessResult.LOSS]:
         stop_game(user_id)
-        msg = Text(
+        await UniMessage.template(
             (
-                "恭喜你猜出了成语！"
+                "恭喜{user}猜出了成语！"
                 if result == GuessResult.WIN
                 else "很遗憾，没有人猜出来呢"
             )
-            + "\n{}".format(game.result)
-        ) + Image(raw=await run_sync(game.draw)())
-        await msg.send()
+            + "\n{result}\n{image}"
+        ).format(
+            user="你" if uninfo.scene.is_private else At("user", uninfo.user.id),
+            result=game.result,
+            image=Image(raw=await run_sync(game.draw)()),
+        ).send()
 
     elif result == GuessResult.DUPLICATE:
         await matcher.finish("你已经猜过这个成语了呢")
@@ -227,9 +259,11 @@ async def _(matcher: Matcher, user_id: UserId, matched: Dict[str, Any] = RegexDi
         await UniMessage.image(raw=await run_sync(game.draw)()).send()
 
 
-handle_update_pinyin = on_alconna(
+# ————
+
+handle_update_pinyin_matcher = on_alconna(
     Alconna(
-        "更正成语拼音",
+        "handle_update_pinyin",
         Args["idiom", str, ""],
         Args["pinyin1", str, ""],
         Args["pinyin2", str, ""],
@@ -237,6 +271,8 @@ handle_update_pinyin = on_alconna(
         Args["pinyin4", str, ""],
     ),
     aliases=(
+        "更正拼音",
+        "更正成语拼音",
         "更新猜成语词库拼音",
         "猜成语更新拼音",
         "更新猜成语拼音",
@@ -250,7 +286,7 @@ handle_update_pinyin = on_alconna(
 )
 
 
-@handle_update_pinyin.handle()
+@handle_update_pinyin_matcher.handle()
 async def _(
     result: Arparma,
 ):
@@ -262,28 +298,23 @@ async def _(
         and (pinyin3 := result.main_args["pinyin3"])
         and (pinyin4 := result.main_args["pinyin4"])
     ):
-        await handle_update_pinyin.finish(
-            "用法：更正成语拼音 <成语> <拼音1> <拼音2> <拼音3> <拼音4>"
+        await handle_update_pinyin_matcher.finish(
+            "用法：更正拼音 <成语> <拼音1> <拼音2> <拼音3> <拼音4>"
         )
 
     if idiom not in HANDLE_LEGAL_PHRASES:
-        await handle_update_pinyin.finish(
+        await handle_update_pinyin_matcher.finish(
             "未在词库中找到该成语，请使用 `新成语 <成语>` 来添加成语"
         )
 
     _, explanation, pinyin_now = wordbase_updater(
         idiom,
         explanation=None,
-        pinyin=[
-            pinyin1,
-            pinyin2,
-            pinyin3,
-            pinyin4,
-        ],
+        pinyin=v_to_u([pinyin1, pinyin2, pinyin3, pinyin4]),
         hard=None,
     )
 
-    await handle_update_idiom.finish(
+    await handle_update_pinyin_matcher.finish(
         "成功修改：{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
             idiom,
             len(HANDLE_LEGAL_PHRASES),
@@ -293,9 +324,11 @@ async def _(
     )
 
 
-handle_update_idiom = on_alconna(
+# ————
+
+handle_update_idiom_matcher = on_alconna(
     Alconna(
-        "新成语",
+        "handle_update_idiom",
         Option(
             "-e|--explanation",
             default="",
@@ -308,7 +341,7 @@ handle_update_idiom = on_alconna(
         ),
         Args["idiom", str, ""],
     ),
-    aliases=("新增成语", "猜成语新增成语"),
+    aliases=("新成语", "新增成语", "猜成语新增成语"),
     use_cmd_start=True,
     permission=SUPERUSER,
     block=True,
@@ -316,13 +349,13 @@ handle_update_idiom = on_alconna(
 )
 
 
-@handle_update_idiom.handle()
+@handle_update_idiom_matcher.handle()
 async def _(
     result: Arparma,
 ):
 
     if not (idiom := result.main_args["idiom"]):
-        await handle_update_idiom.finish(
+        await handle_update_idiom_matcher.finish(
             "用法：新成语 <成语> [-e|--explanation <释义>] [-d|--difficult]"
         )
 
@@ -333,7 +366,7 @@ async def _(
         hard=(hard := result.options["difficult"].value),
     )
 
-    await handle_update_idiom.finish(
+    await handle_update_idiom_matcher.finish(
         "成功{}：[{}词汇]{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
             "修改" if existance else "新增",
             "困难" if hard else "普通",
@@ -345,9 +378,11 @@ async def _(
     )
 
 
-handle_answer = on_alconna(
+# ————
+
+handle_answer_matcher = on_alconna(
     Alconna(
-        "成语答案",
+        "handle_answer",
         Option(
             "-g|--group",
             default="Now",
@@ -359,7 +394,7 @@ handle_answer = on_alconna(
             action=store_true,
         ),
     ),
-    aliases=("handle-answer", "猜成语答案"),
+    aliases=("成语答案", "猜成语答案"),
     # rule=game_is_running,
     use_cmd_start=True,
     permission=SUPERUSER,
@@ -368,37 +403,43 @@ handle_answer = on_alconna(
 )
 
 
-@handle_answer.handle()
+@handle_answer_matcher.handle()
 async def _(
     result: Arparma,
     user_id: UserId,
-    bot: Bot,
 ):
 
-    if result.options["list"].value:
-        await handle_answer.finish(
-            UniMessage.text(
-                "\n".join(
-                    "群{}，答案“{}”".format(i.split("_")[-1], j.idiom)
-                    for i, j in games.items()
+    if handle_config.handle_superuser_get_answer:
+
+        if result.options["list"].value:
+            await handle_answer_matcher.finish(
+                UniMessage.text(
+                    "\n".join(
+                        "`{}`，答案“{}”".format(i, j.idiom) for i, j in games.items()
+                    )
                 )
             )
-        )
-        return
+            return
 
-    try:
-        if result.options["group"].args["group"] == "Now":
+        try:
+            if result.options["group"].args["group"] == "Now":
+                session_numstr = user_id
+            else:
+                await handle_answer_matcher.finish(
+                    UniMessage.text("暂不支持指定群组")  # TODO: 指定群组获取答案
+                )
+
+        except:
             session_numstr = user_id
-        else:
-            session_numstr = "qq_OneBot V11_{}_{}".format(
-                bot.self_id, result.options["group"].args["group"]
-            )
-    except:
-        session_numstr = user_id
 
-    if session_numstr in games.keys():
-        await handle_answer.finish(UniMessage.text(games[session_numstr].idiom))
+        if session_numstr in games.keys():
+            await handle_answer_matcher.finish(
+                UniMessage.text(games[session_numstr].idiom)
+            )
+        else:
+            await handle_answer_matcher.finish(
+                UniMessage.text("{} 不存在开局的游戏".format(session_numstr))
+            )
+
     else:
-        await handle_answer.finish(
-            UniMessage.text("{} 不存在开局的游戏".format(session_numstr))
-        )
+        await handle_answer_matcher.finish(UniMessage.text("本机器人不许可超管作弊"))

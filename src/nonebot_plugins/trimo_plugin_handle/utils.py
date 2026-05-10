@@ -4,9 +4,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import Dict, List, Tuple, TypedDict, Optional
 
-# from watchdog.observers import Observer
-# from watchdog.events import FileSystemEventHandler, FileModifiedEvent
-
 from PIL import ImageFont
 from PIL.Image import Image as IMG
 from PIL.ImageFont import FreeTypeFont
@@ -39,35 +36,13 @@ HANDLE_ANSWER_PHRASES: Dict[str, IdiomEntry] = json.load(
     handle_answer_path.open("r", encoding="utf-8")
 )
 
-# class LegalPhrasesModifiedHandler(FileSystemEventHandler):
-#     """
-#     Handler for resource file changes
-#     """
 
-#     def on_modified(self, event):
-#         print(f"{event.src_path} modified, reloading resource...")
-#         if "idioms.txt" in event.src_path:
-#             global LEGAL_PHRASES
-#             LEGAL_PHRASES = [
-#                 idiom.strip()
-#                 for idiom in idiom_path.open("r", encoding="utf-8").readlines()
-#             ]
-#         elif "answers.json" in event.src_path:
-#             global ANSWER_PHRASES
-#             ANSWER_PHRASES = json.load(
-#                 answer_path.open("r", encoding="utf-8")
-#             )
+def v_to_u(v_strings: List[str]) -> List[str]:
+    """
+    将韵母的v转为ü
+    """
 
-
-# Observer().schedule(
-#     LegalPhrasesModifiedHandler(),
-#     data_dir,
-#     recursive=False,
-#     event_filter=FileModifiedEvent,
-# )
-
-# 答案转换器
-# json.dump({ i["word"]:{"explanation":i["explanation"], "pinyin":(lambda x : [i for j in pinyin(x, style=Style.TONE3, v_to_u=True) for i in j])(i["word"])} for i in json.load(open("answers_hard-old.json",encoding="utf-8"))},open("answers.json", "w",encoding="utf-8"), ensure_ascii=False, indent=4)
+    return [v_str.replace("v", "ü") for v_str in v_strings]
 
 
 def wordbase_updater(
@@ -151,6 +126,7 @@ def wordbase_updater(
 
 def legal_idiom(word: str) -> bool:
     return word in HANDLE_LEGAL_PHRASES
+
 
 def random_idiom(is_hard: bool = False) -> Tuple[str, str]:
     answer = random.choice(HANDLE_LEGAL_PHRASES if is_hard else HANDLE_COMMON_PHRASES)
