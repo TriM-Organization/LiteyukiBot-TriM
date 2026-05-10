@@ -4,26 +4,22 @@ from typing import Any, Dict
 from typing_extensions import Annotated
 
 import nonebot
-from nonebot import on_regex, require, on_command
+from nonebot import on_regex, require
 from nonebot.matcher import Matcher
 from nonebot.params import RegexDict
 from nonebot.plugin import PluginMetadata, inherit_supported_adapters
 from nonebot.rule import to_me
 from nonebot.utils import run_sync
 from nonebot.permission import SUPERUSER
-
-import json
-from pypinyin import Style, pinyin
+from nonebot.internal.adapter import Bot
 
 require("nonebot_plugin_alconna")
 require("nonebot_plugin_session")
 
 from nonebot_plugin_alconna import (
     Alconna,
-    AlconnaQuery,
     Image,
     Option,
-    Query,
     Text,
     UniMessage,
     on_alconna,
@@ -33,18 +29,13 @@ from nonebot_plugin_alconna import (
 )
 from nonebot_plugin_session import SessionId, SessionIdType
 
-from src.utils.base.ly_typing import T_Bot
-
 from .config import Config, handle_config
 from .data_source import GuessResult, Handle
 from .utils import (
     random_idiom,
+    wordbase_updater,
     HANDLE_COMMON_PHRASES,
     HANDLE_LEGAL_PHRASES,
-    HANDLE_ANSWER_PHRASES,
-    handle_common_idiom_path,
-    handle_all_idiom_path,
-    handle_answer_path,
 )
 
 __plugin_meta__ = PluginMetadata(
@@ -94,7 +85,7 @@ handle = on_alconna(
     Alconna(
         "handle",
         Option("-s|--strict", default=False, action=store_true),
-        Option("-d|--hard", default=False, action=store_true),
+        Option("-d|--difficult", default=False, action=store_true),
     ),
     aliases=("猜成语",),
     rule=to_me() & game_not_running,
@@ -171,7 +162,7 @@ async def _(
 ):
     nonebot.logger.info(result.options)
     is_strict = handle_config.handle_strict_mode or result.options["strict"].value
-    idiom, explanation = random_idiom(result.options["hard"].value)
+    idiom, explanation = random_idiom(result.options["difficult"].value)
     game = Handle(idiom, explanation, strict=is_strict)
 
     games[user_id] = game
@@ -262,9 +253,6 @@ handle_update_pinyin = on_alconna(
 @handle_update_pinyin.handle()
 async def _(
     result: Arparma,
-    matcher: Matcher,
-    user_id: UserId,
-    bot: T_Bot,
 ):
 
     if not (
@@ -283,28 +271,24 @@ async def _(
             "未在词库中找到该成语，请使用 `新成语 <成语>` 来添加成语"
         )
 
-    HANDLE_ANSWER_PHRASES[idiom]["pinyin"] = pynow = [
-        pinyin1,
-        pinyin2,
-        pinyin3,
-        pinyin4,
-    ]
-
-    json.dump(
-        HANDLE_ANSWER_PHRASES,
-        handle_answer_path.open("w", encoding="utf-8"),
-        ensure_ascii=False,
-        indent=4,
-        sort_keys=True,
+    _, explanation, pinyin_now = wordbase_updater(
+        idiom,
+        explanation=None,
+        pinyin=[
+            pinyin1,
+            pinyin2,
+            pinyin3,
+            pinyin4,
+        ],
+        hard=None,
     )
+
     await handle_update_idiom.finish(
         "成功修改：{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
             idiom,
             len(HANDLE_LEGAL_PHRASES),
             len(HANDLE_COMMON_PHRASES),
-            "\n\t释义：{}\n\t拼音：{}".format(
-                HANDLE_ANSWER_PHRASES[idiom]["explanation"], " ".join(pynow)
-            ),
+            "\n\t释义：{}\n\t拼音：{}".format(explanation, " ".join(pinyin_now)),
         )
     )
 
@@ -318,7 +302,7 @@ handle_update_idiom = on_alconna(
             args=Args["explanation", str, ""],
         ),
         Option(
-            "-d|--hard",
+            "-d|--difficult",
             default=False,
             action=store_true,
         ),
@@ -335,76 +319,18 @@ handle_update_idiom = on_alconna(
 @handle_update_idiom.handle()
 async def _(
     result: Arparma,
-    matcher: Matcher,
-    user_id: UserId,
-    bot: T_Bot,
 ):
 
     if not (idiom := result.main_args["idiom"]):
-        await handle_update_idiom.finish("用法：新成语 <成语> [-e|--explanation <释义>] [-d|--hard]")
-
-    existance = idiom in HANDLE_LEGAL_PHRASES
-
-    try:
-        explanation = result.options["explanation"].args["explanation"] or None
-    except:
-        explanation = None
-
-    if existance and (not explanation):
-        # 这个判断的顺序必须高于下面的判断语句
-        explanation = HANDLE_ANSWER_PHRASES[idiom]["explanation"]
-
-    if not explanation:
-        explanation = "未提供该成语的解释说明"
-
-    if not existance:
-        HANDLE_LEGAL_PHRASES.append(idiom)
-        json.dump(
-            HANDLE_LEGAL_PHRASES,
-            handle_all_idiom_path.open("w", encoding="utf-8"),
-            ensure_ascii=False,
-            indent=4,
-            sort_keys=True,
+        await handle_update_idiom.finish(
+            "用法：新成语 <成语> [-e|--explanation <释义>] [-d|--difficult]"
         )
-    if hard := result.options["hard"].value:
-        if idiom in HANDLE_COMMON_PHRASES:
-            HANDLE_COMMON_PHRASES.remove(idiom)
-            json.dump(
-                HANDLE_COMMON_PHRASES,
-                handle_common_idiom_path.open("w", encoding="utf-8"),
-                ensure_ascii=False,
-                indent=4,
-                sort_keys=True,
-            )
-    else:
-        if idiom not in HANDLE_COMMON_PHRASES:
-            HANDLE_COMMON_PHRASES.append(idiom)
-            json.dump(
-                HANDLE_COMMON_PHRASES,
-                handle_common_idiom_path.open("w", encoding="utf-8"),
-                ensure_ascii=False,
-                indent=4,
-                sort_keys=True,
-            )
 
-    HANDLE_ANSWER_PHRASES[idiom] = {
-        "explanation": explanation,
-        "pinyin": (
-            pynow := (
-                HANDLE_ANSWER_PHRASES[idiom]["pinyin"].copy()
-                if existance
-                else [
-                    j for i in pinyin(idiom, style=Style.TONE3, v_to_u=True) for j in i
-                ]
-            )
-        ),
-    }
-    json.dump(
-        HANDLE_ANSWER_PHRASES,
-        handle_answer_path.open("w", encoding="utf-8"),
-        ensure_ascii=False,
-        indent=4,
-        sort_keys=True,
+    existance, explanation, pinyin_now = wordbase_updater(
+        idiom,
+        explanation=(result.options["explanation"].args["explanation"] or None),
+        pinyin=None,
+        hard=(hard := result.options["difficult"].value),
     )
 
     await handle_update_idiom.finish(
@@ -414,7 +340,7 @@ async def _(
             idiom,
             len(HANDLE_LEGAL_PHRASES),
             len(HANDLE_COMMON_PHRASES),
-            "\n\t释义：{}\n\t拼音：{}".format(explanation, " ".join(pynow)),
+            "\n\t释义：{}\n\t拼音：{}".format(explanation, " ".join(pinyin_now)),
         )
     )
 
@@ -445,9 +371,8 @@ handle_answer = on_alconna(
 @handle_answer.handle()
 async def _(
     result: Arparma,
-    matcher: Matcher,
     user_id: UserId,
-    bot: T_Bot,
+    bot: Bot,
 ):
 
     if result.options["list"].value:
