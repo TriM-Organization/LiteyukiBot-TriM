@@ -2,22 +2,34 @@
 """
 本模块定义了一个通用的通道类，用于进程间通信
 """
+
 import asyncio
 from multiprocessing import Pipe
-from typing import Any, Callable, Coroutine, Generic, Optional, TypeAlias, TypeVar, get_args
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+    Generic,
+    Optional,
+    TypeAlias,
+    TypeVar,
+    get_args,
+)
 
 from liteyuki.log import logger
 from liteyuki.utils import IS_MAIN_PROCESS, is_coroutine_callable
 
 T = TypeVar("T")
 
-SYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[T], Any]    # 同步接收函数
-ASYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[T], Coroutine[Any, Any, Any]]  # 异步接收函数
-ON_RECEIVE_FUNC: TypeAlias = SYNC_ON_RECEIVE_FUNC | ASYNC_ON_RECEIVE_FUNC   # 接收函数
+SYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[[T], Any]  # 同步接收函数
+ASYNC_ON_RECEIVE_FUNC: TypeAlias = Callable[
+    [T], Coroutine[Any, Any, Any]
+]  # 异步接收函数
+ON_RECEIVE_FUNC: TypeAlias = SYNC_ON_RECEIVE_FUNC | ASYNC_ON_RECEIVE_FUNC  # 接收函数
 
-SYNC_FILTER_FUNC: TypeAlias = Callable[[T], bool]   # 同步过滤函数
-ASYNC_FILTER_FUNC: TypeAlias = Callable[[T], Coroutine[Any, Any, bool]] # 异步过滤函数
-FILTER_FUNC: TypeAlias = SYNC_FILTER_FUNC | ASYNC_FILTER_FUNC   # 过滤函数
+SYNC_FILTER_FUNC: TypeAlias = Callable[[T], bool]  # 同步过滤函数
+ASYNC_FILTER_FUNC: TypeAlias = Callable[[T], Coroutine[Any, Any, bool]]  # 异步过滤函数
+FILTER_FUNC: TypeAlias = SYNC_FILTER_FUNC | ASYNC_FILTER_FUNC  # 过滤函数
 
 _func_id: int = 0
 _channel: dict[str, "Channel"] = {}
@@ -39,7 +51,9 @@ class Channel(Generic[T]):
         """
 
         self.conn_send, self.conn_recv = Pipe()
-        self._conn_send_inner, self._conn_recv_inner = Pipe()   # 内部通道，用于子进程通信
+        self._conn_send_inner, self._conn_recv_inner = (
+            Pipe()
+        )  # 内部通道，用于子进程通信
         self._closed = False
         self._on_main_receive_func_ids: list[int] = []
         self._on_sub_receive_func_ids: list[int] = []
@@ -64,7 +78,9 @@ class Channel(Generic[T]):
             _channel[name] = self
             logger.debug(f"Channel {name} 已在主进程中初始化")
         else:
-            logger.debug(f"Channel {name} 已初始化于子进程中，之后应于主进程中手动设置为妙")
+            logger.debug(
+                f"Channel {name} 已初始化于子进程中，之后应于主进程中手动设置为妙"
+            )
 
     def _get_generic_type(self) -> Optional[type]:
         """
@@ -72,7 +88,7 @@ class Channel(Generic[T]):
         Returns:
             Optional[type]: 泛型类型
         """
-        if hasattr(self, '__orig_class__'):
+        if hasattr(self, "__orig_class__"):
             return get_args(self.__orig_class__)[0]
         return None
 
@@ -98,7 +114,10 @@ class Channel(Generic[T]):
         elif isinstance(structure, dict):
             if not isinstance(data, dict):
                 return False
-            return all(k in data and self._validate_structure(data[k], structure[k]) for k in structure)
+            return all(
+                k in data and self._validate_structure(data[k], structure[k])
+                for k in structure
+            )
         return False
 
     def __str__(self):
@@ -142,7 +161,9 @@ class Channel(Generic[T]):
         data = await loop.run_in_executor(None, self.receive)
         return data
 
-    def on_receive(self, filter_func: Optional[FILTER_FUNC] = None) -> Callable[[Callable[[T], Any]], Callable[[T], Any]]:
+    def on_receive(
+        self, filter_func: Optional[FILTER_FUNC] = None
+    ) -> Callable[[Callable[[T], Any]], Callable[[T], Any]]:
         """
         接收数据并执行函数
         Args:
@@ -187,37 +208,52 @@ class Channel(Generic[T]):
             data: 数据
         """
         if IS_MAIN_PROCESS:
-            [asyncio.create_task(_callback_funcs[func_id](data)) for func_id in self._on_main_receive_func_ids]
+            [
+                asyncio.create_task(_callback_funcs[func_id](data))
+                for func_id in self._on_main_receive_func_ids
+            ]
         else:
-            [asyncio.create_task(_callback_funcs[func_id](data)) for func_id in self._on_sub_receive_func_ids]
+            [
+                asyncio.create_task(_callback_funcs[func_id](data))
+                for func_id in self._on_sub_receive_func_ids
+            ]
 
 
 """子进程可用的主动和被动通道"""
-active_channel: Channel = Channel(name="active_channel")    # 主动通道
+active_channel: Channel = Channel(name="active_channel")  # 主动通道
 passive_channel: Channel = Channel(name="passive_channel")  # 被动通道
-publish_channel: Channel[tuple[str, dict[str, Any]]] = Channel(name="publish_channel")  # 发布通道
+publish_channel: Channel[tuple[str, dict[str, Any]]] = Channel(
+    name="publish_channel"
+)  # 发布通道
 """通道传递通道，主进程创建单例，子进程初始化时实例化"""
-channel_deliver_active_channel: Channel[Channel[Any]]   # 主动通道传递通道
-channel_deliver_passive_channel: Channel[tuple[str, dict[str, Any]]]    # 被动通道传递通道
+channel_deliver_active_channel: Channel[Channel[Any]]  # 主动通道传递通道
+channel_deliver_passive_channel: Channel[tuple[str, dict[str, Any]]]  # 被动通道传递通道
 
 if IS_MAIN_PROCESS:
-    channel_deliver_active_channel = Channel(name="channel_deliver_active_channel") # 主动通道传递通道
-    channel_deliver_passive_channel = Channel(name="channel_deliver_passive_channel")   # 被动通道传递通道
+    channel_deliver_active_channel = Channel(
+        name="channel_deliver_active_channel"
+    )  # 主动通道传递通道
+    channel_deliver_passive_channel = Channel(
+        name="channel_deliver_passive_channel"
+    )  # 被动通道传递通道
 
-
-    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "set_channel")
+    @channel_deliver_passive_channel.on_receive(
+        filter_func=lambda data: data[0] == "set_channel"
+    )
     def on_set_channel(data: tuple[str, dict[str, Any]]):
         name, channel = data[1]["name"], data[1]["channel_"]
         set_channel(name, channel)
 
-
-    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "get_channel")
+    @channel_deliver_passive_channel.on_receive(
+        filter_func=lambda data: data[0] == "get_channel"
+    )
     def on_get_channel(data: tuple[str, dict[str, Any]]):
         name, recv_chan = data[1]["name"], data[1]["recv_chan"]
         recv_chan.send(get_channel(name))
 
-
-    @channel_deliver_passive_channel.on_receive(filter_func=lambda data: data[0] == "get_channels")
+    @channel_deliver_passive_channel.on_receive(
+        filter_func=lambda data: data[0] == "get_channels"
+    )
     def on_get_channels(data: tuple[str, dict[str, Any]]):
         recv_chan = data[1]["recv_chan"]
         recv_chan.send(get_channels())
@@ -241,10 +277,11 @@ def set_channel(name: str, channel: "Channel"):
         # 请求主进程设置通道
         channel_deliver_passive_channel.send(
             (
-                    "set_channel", {
-                            "name"    : name,
-                            "channel_": channel,
-                    }
+                "set_channel",
+                {
+                    "name": name,
+                    "channel_": channel,
+                },
             )
         )
 
@@ -273,13 +310,7 @@ def get_channel(name: str) -> "Channel":
     else:
         recv_chan = Channel[Channel[Any]]("recv_chan")
         channel_deliver_passive_channel.send(
-            (
-                    "get_channel",
-                    {
-                            "name"     : name,
-                            "recv_chan": recv_chan
-                    }
-            )
+            ("get_channel", {"name": name, "recv_chan": recv_chan})
         )
         return recv_chan.receive()
 
@@ -294,12 +325,5 @@ def get_channels() -> dict[str, "Channel"]:
         return _channel
     else:
         recv_chan = Channel[dict[str, Channel[Any]]]("recv_chan")
-        channel_deliver_passive_channel.send(
-            (
-                    "get_channels",
-                    {
-                            "recv_chan": recv_chan
-                    }
-            )
-        )
+        channel_deliver_passive_channel.send(("get_channels", {"recv_chan": recv_chan}))
         return recv_chan.receive()

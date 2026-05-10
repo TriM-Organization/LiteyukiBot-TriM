@@ -41,7 +41,7 @@ def convert_duration(text: str, default) -> float:
         return duration
 
     except BaseException as e:
-        nonebot.logger.info(f"convert_duration error: {e}")
+        nonebot.logger.info("无法转换自然语言时间为秒数，详阅：{}".format(e))
         return default
 
 

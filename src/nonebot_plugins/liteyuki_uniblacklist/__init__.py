@@ -9,9 +9,8 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/snowykami/LiteyukiBot",
     extra={
-            "liteyuki": True,
-            "toggleable"     : True,
-            "default_enable" : True,
-    }
+        "liteyuki": True,
+        "toggleable": True,
+        "default_enable": True,
+    },
 )
-

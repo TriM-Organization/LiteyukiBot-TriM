@@ -45,7 +45,7 @@ def load_from_lang(file_path: str, lang_code: str = None):
             _language_data[lang_code].update(data)
         nonebot.logger.debug(f"已从 {file_path} 读取语言文件")
     except Exception as e:
-        nonebot.logger.error(f"无法读取以下目录中的语言文件 {file_path}，详阅：{e}")
+        nonebot.logger.error(f"无法读取语言文件 {file_path}，详阅：{e}")
 
 
 def load_from_json(file_path: str, lang_code: str = None):
@@ -64,9 +64,9 @@ def load_from_json(file_path: str, lang_code: str = None):
             if lang_code not in _language_data:
                 _language_data[lang_code] = {}
             _language_data[lang_code].update(data)
-        nonebot.logger.debug(f"Loaded language data from {file_path}")
+        nonebot.logger.debug(f"已从 {file_path} 读取语言文件")
     except Exception as e:
-        nonebot.logger.error(f"Failed to load language data from {file_path}: {e}")
+        nonebot.logger.error(f"无法读取语言文件 {file_path}，详阅：{e}")
 
 
 def load_from_dir(dir_path: str):
@@ -85,7 +85,7 @@ def load_from_dir(dir_path: str):
                 elif file.endswith(".json"):
                     load_from_json(file_path)
         except Exception as e:
-            nonebot.logger.error(f"Failed to load language data from {file}: {e}")
+            nonebot.logger.error(f"无法读取以下目录中的语言文件 {file}，详阅：{e}")
             continue
 
 

@@ -81,7 +81,7 @@ async def _(bot: T_Bot, event: T_MessageEvent, matcher: Matcher):
     reply = "尹灵温 更新完成！\n"
     reply += f"```\n{logs}\n```\n"
     btn_restart = md.btn_cmd(ulang.get("liteyuki.restart_now"), "reload-liteyuki")
-    pip.main(["install", "-r", "requirements.txt"])
+    # pip.main(["install", "-r", "requirements.txt"])
     reply += f"{ulang.get('liteyuki.update_restart', RESTART=btn_restart)}"
     # await md.send_md(reply, bot)
     img_bytes = await md_to_pic(reply)

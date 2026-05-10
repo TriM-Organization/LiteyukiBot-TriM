@@ -34,7 +34,7 @@ def init():
         repo = Repo(".")
     except Exception as e:
         nonebot.logger.error(
-            f"无法读取 Git 仓库 `{e}`，你是否是从仓库直接下载的Zip文件？请使用git clone。"
+            f"无法读取 Git 仓库 `{e}`，你是否是从仓库直接下载的 `Zip` 文件？请使用 `git clone`。"
         )
 
     # temp_data: TempConfig = common_db.where_one(TempConfig(), default=TempConfig())

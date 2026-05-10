@@ -36,7 +36,7 @@ class BasicConfig(BaseModel):
     satori: SatoriConfig = SatoriConfig()
     data_path: str = "data/liteyuki"
     chromium_path: str = (
-        "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"  # type: ignore
+        "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome" # pyright: ignore[reportInvalidStringEscapeSequence]
         if platform.system() == "Darwin"
         else (
             "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"

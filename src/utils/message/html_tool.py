@@ -71,7 +71,7 @@ async def template2image(
             os.path.join(template_path, random_file_name), "w", encoding="utf-8"
         ) as f:
             await f.write(raw_html)
-        nonebot.logger.info("Debug HTML: %s" % f"{random_file_name}")
+        nonebot.logger.info("生成调试用 HTML 文件于 `%s`" % f"{random_file_name}")
 
     return await template_to_pic(
         template_name=template_name,

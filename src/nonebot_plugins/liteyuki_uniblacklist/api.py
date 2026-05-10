@@ -22,13 +22,9 @@ async def update_blacklist():
 
 async def request_for_blacklist():
     global blacklist
-    urls = [
-            "https://cdn.liteyuki.icu/static/ubl/"
-    ]
+    urls = ["https://cdn.liteyuki.icu/static/ubl/"]
 
-    platforms = [
-            "qq"
-    ]
+    platforms = ["qq"]
 
     for plat in platforms:
         for url in urls:
@@ -37,7 +33,7 @@ async def request_for_blacklist():
                 resp = await client.get(url)
                 blacklist_data[plat] = set((await resp.text()).splitlines())
     blacklist = get_uni_set()
-    nonebot.logger.info("blacklists updated")
+    nonebot.logger.info("轻雪联合黑名单已更新")
 
 
 def get_uni_set() -> set:
@@ -55,4 +51,4 @@ async def pre_handle(event: Event):
         return
 
     if user_id in get_uni_set():
-        raise IgnoredException("UserId in blacklist")
+        raise IgnoredException("用户处于黑名单之中，无法使用轻雪。")

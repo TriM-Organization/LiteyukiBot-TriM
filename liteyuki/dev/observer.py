@@ -2,6 +2,7 @@
 此模块用于注册观察者函数，使用watchdog监控文件变化并重启bot
 启用该模块需要在配置文件中设置`dev_mode`为True
 """
+
 import time
 from typing import Callable, TypeAlias
 
@@ -21,6 +22,7 @@ def debounce(wait):
     """
     防抖函数
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             nonlocal last_call_time
@@ -62,7 +64,9 @@ class CodeModifiedHandler(FileSystemEventHandler):
         self.on_modified(event)
 
 
-def on_file_system_event(directories: tuple[str], recursive: bool = True, event_filter: FILTER_FUNC = None) -> Callable[[CALLBACK_FUNC], CALLBACK_FUNC]:
+def on_file_system_event(
+    directories: tuple[str], recursive: bool = True, event_filter: FILTER_FUNC = None
+) -> Callable[[CALLBACK_FUNC], CALLBACK_FUNC]:
     """
     注册文件系统变化监听器
     Args:

@@ -273,7 +273,7 @@ class Database:
 
         """
         table_name = model.TABLE_NAME
-        logger.debug(f"Deleting {model} WHERE {condition} {args}")
+        logger.debug(f"数据库 Deleting {model} WHERE {condition} {args}")
         if not table_name:
             raise ValueError(f"数据模型 {model.__class__.__name__} 未提供表名")
         if model.id is not None:

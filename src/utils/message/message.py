@@ -193,7 +193,7 @@ class MarkdownMessage:
                     image = Image.open(io.BytesIO(await resp.read()))
                     return MarkdownMessage.image(url, image.size)
         except Exception as e:
-            nonebot.logger.error(f"获取图片错误：{e}")
+            nonebot.logger.error("无法获取图片，详阅：{}".format(e))
             return "[Image Error]"
 
     @staticmethod

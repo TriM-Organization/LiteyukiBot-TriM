@@ -39,5 +39,5 @@ def load_lib(lib_name: str) -> ctypes.CDLL:
     """
     whole_path = f"{lib_name}_{PLATFORM}_{ARCH}.{LIB_EXT}"
     if not os.path.exists(whole_path):
-        raise FileNotFoundError(f"未见动态链接库 {whole_path}")
+        raise FileNotFoundError(f"未找到动态链接库 {whole_path}")
     return ctypes.CDLL(whole_path)

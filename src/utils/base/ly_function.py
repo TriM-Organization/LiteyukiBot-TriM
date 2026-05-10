@@ -194,4 +194,4 @@ def load_from_file(path: str):
                 continue
             func.functions.append(line)
         loaded_functions[name] = func
-        nonebot.logger.debug(f"Loaded function {name}")
+        nonebot.logger.debug(f"已加载轻雪函数：{name}")

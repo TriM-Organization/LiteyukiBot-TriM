@@ -22,7 +22,7 @@ def load_from_file(file_path: str):
                 word_bank[key] = set()
             word_bank[key].update(value_list)
 
-    nonebot.logger.debug(f"Loaded word bank from {file_path}")
+    nonebot.logger.debug(f"已从 {file_path} 路径加载词库")
 
 
 def load_from_dir(dir_path: str):
@@ -39,7 +39,7 @@ def load_from_dir(dir_path: str):
                 if file.endswith(".json"):
                     load_from_file(file_path)
         except Exception as e:
-            nonebot.logger.error(f"Failed to load language data from {file}: {e}")
+            nonebot.logger.error(f"无法从 {file} 加载语言数据，出现如下问题：{e}")
             continue
 
 
