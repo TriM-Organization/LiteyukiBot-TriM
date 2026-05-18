@@ -5,6 +5,7 @@ import nonebot
 import psutil
 from cpuinfo import cpuinfo
 from nonebot.adapters import satori
+from git import Repo
 
 from liteyuki import __version__
 from liteyuki.utils import for_in
@@ -15,9 +16,9 @@ from src.utils.base.language import Language
 from src.utils.base.resource import get_loaded_resource_packs, get_path
 from src.utils.message.html_tool import template2image, md_to_pic
 from src.utils import satori_utils
-from .counter_for_satori import satori_counter
-from git import Repo
 
+from .counter_for_satori import satori_counter
+from .config import status_config
 # require("nonebot_plugin_apscheduler")
 # from nonebot_plugin_apscheduler import scheduler
 
@@ -277,7 +278,7 @@ async def generate_status_card_markdown(
         ),
         motto_text=motto["text"],
         motto_source=motto["source"],
-        acknowledgement=get_config("status_acknowledgement"),
+        acknowledgement=status_config.status_acknowledgement,
     )
 
     return await md_to_pic(fnl_text, width=540, device_scale_factor=4)
@@ -309,7 +310,7 @@ async def generate_status_card(
                 "liteyuki": liteyuki,
                 "localization": await get_local_data(lang),
                 "motto": motto,
-                "acknowledgement": get_config("status_acknowledgement"),
+                "acknowledgement": status_config.status_acknowledgement,
             }
         },
     )
@@ -406,7 +407,7 @@ async def get_bots_data(self_id: str = "0") -> dict:
             "icon": icon,
             "id": bot_id,
             "protocol_name": protocol_names.get(
-                version_info.get("protocol_name"), "在线"
+                version_info.get("protocol_name", ""), "在线"
             ),
             "groups": groups,
             "friends": friends,

@@ -44,7 +44,6 @@ class BasicConfig(BaseModel):
             else "/usr/bin/chromium-browser"
         )
     )
-    status_acknowledgement: str = ""
 
 
 def load_from_yaml(file_: str) -> dict:

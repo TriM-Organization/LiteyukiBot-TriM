@@ -7,6 +7,9 @@ from nonebot import require
 from src.utils import event as event_utils
 from src.utils.base.language import get_user_lang, get_default_lang_code, Language
 from src.utils.base.ly_typing import T_Bot, T_MessageEvent
+from src.utils.io import read_file
+
+from .config import status_config
 from .api import *
 
 require("nonebot_plugin_alconna")
@@ -73,34 +76,41 @@ yanlun = on_alconna(
 )
 
 
-yanlun_path = "https://nd.liteyuki.icu/api/v3/share/content/Xpue?path=null"
-
-
-# 每天4点更新
-@scheduler.scheduled_job("cron", hour=4)
-async def every_day_update():
-    ulang = Language(get_default_lang_code(), "zh-CN")
-    nonebot.logger.success(
-        ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
-    )
-
+if status_config.yanlun_type == "url":
+    # 每天4点更新
+    @scheduler.scheduled_job("cron", hour=4)
+    async def every_day_update():
+        ulang = Language(get_default_lang_code(), "zh-CN")
+        nonebot.logger.success(
+            ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
+        )
 
 async def update_yanlun():
-
     global yanlun_texts, yanlun_seqs
 
     nonebot.logger.info("正在获取言·论信息")
-    try:
-        async with aiohttp.ClientSession() as client:
-            resp = await client.get(yanlun_path, timeout=15)
-            yanlun_texts = (await resp.text()).strip("\n").split("\n")
-    except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as err:
-        nonebot.logger.warning("读取言·论信息发生 连接 错误：\n{}".format(err))
-        yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
-    # noinspection PyBroadException
-    except BaseException as err:
-        nonebot.logger.warning("读取言·论信息发生 未知 错误：\n{}".format(err))
-        yanlun_texts = ["灵光焕发 深艺献心"]
+
+    if status_config.yanlun_type == "url":
+        try:
+            async with aiohttp.ClientSession() as client:
+                resp = await client.get(status_config.yanlun_path, timeout=15)
+                yanlun_texts = (await resp.text()).strip("\n").split("\n")
+        except (ConnectionError, aiohttp.ClientError, aiohttp.WebSocketError) as err:
+            nonebot.logger.warning("读取言·论信息发生网络连接错误：\n{}".format(err))
+            yanlun_texts = ["以梦想为驱使 创造属于自己的未来"]
+        # noinspection PyBroadException
+        except BaseException as err:
+            nonebot.logger.warning("读取言·论信息发生未知错误：\n{}".format(err))
+            yanlun_texts = ["灵光焕发 深艺献心"]
+    elif status_config.yanlun_type == "file":
+        try:
+            yanlun_texts = (
+                await read_file(status_config.yanlun_path, "r", encoding="utf-8")
+            ).strip("\n").split("\n")
+        except BaseException as err:
+            nonebot.logger.warning("读取言·论信息发生文件输入输出错误：\n{}".format(err))
+            yanlun_texts = ["山高水长 日月圆缺"]
+
 
     yanlun_seqs = yanlun_texts.copy()
     random.shuffle(yanlun_seqs)
@@ -108,6 +118,7 @@ async def update_yanlun():
     nonebot.logger.success("成功取得 言·论 {} 条".format(res := len(yanlun_texts)))
 
     return res
+    
 
 
 @nonebot.get_driver().on_startup
