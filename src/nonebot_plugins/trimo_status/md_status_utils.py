@@ -51,7 +51,7 @@ markdown_status_card_text = """
 
 #### <div align="center">{acknowledgement}</div>
 
-#### <div align="center">该页样式由 <img src="https://q.qlogo.cn/g?b=qq&nk=3657522512&s=640" width=40>金羿Eilles 设计</div>
+#### <div align="center">该页样式由 <img src="https://q.qlogo.cn/g?b=qq&nk=2647547478&s=640" width=40>金羿Eilles 设计</div>
 """
 
 

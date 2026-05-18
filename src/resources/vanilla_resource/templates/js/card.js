@@ -14,7 +14,7 @@ avatar1.style.height = '50px';
 // avatar.style.borderRadius = '50%';
 
 let avatar2 = document.createElement("img");
-avatar2.src = 'https://q.qlogo.cn/g?b=qq&nk=3657522512&s=640'
+avatar2.src = 'https://q.qlogo.cn/g?b=qq&nk=2647547478&s=640'
 avatar2.style.height = '50px';
 
 let text1 = document.createElement("div");
