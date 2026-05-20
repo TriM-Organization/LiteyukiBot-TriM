@@ -142,7 +142,7 @@ async def update_yanlun():
     return res
 
 
-async def auto_update_yanlun():
+async def auto_update_yanlun() -> int:
 
     global yanlun_texts, yanlun_seqs
 
@@ -166,8 +166,9 @@ async def auto_update_yanlun():
 
     if yanlun_texts:
         yanlun_seqs = yanlun_texts.copy()
+        return len(yanlun_texts)
     else:
-        await update_yanlun()
+        return await update_yanlun()
 
 
 # 启动时更新
