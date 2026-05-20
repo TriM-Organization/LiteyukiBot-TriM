@@ -1,5 +1,7 @@
 import random
 
+from typing import Dict, List, Tuple, Optional
+
 import aiohttp
 import zhDateTime
 from nonebot import require
@@ -85,6 +87,7 @@ if status_config.yanlun_type == "url":
             ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
         )
 
+
 async def update_yanlun():
     global yanlun_texts, yanlun_seqs
 
@@ -105,12 +108,15 @@ async def update_yanlun():
     elif status_config.yanlun_type == "file":
         try:
             yanlun_texts = (
-                await read_file(status_config.yanlun_path, "r", encoding="utf-8")
-            ).strip("\n").split("\n")
+                (await read_file(status_config.yanlun_path, "r", encoding="utf-8"))
+                .strip("\n")
+                .split("\n")
+            )
         except BaseException as err:
-            nonebot.logger.warning("读取言·论信息发生文件输入输出错误：\n{}".format(err))
+            nonebot.logger.warning(
+                "读取言·论信息发生文件输入输出错误：\n{}".format(err)
+            )
             yanlun_texts = ["山高水长 日月圆缺"]
-
 
     yanlun_seqs = yanlun_texts.copy()
     random.shuffle(yanlun_seqs)
@@ -118,7 +124,32 @@ async def update_yanlun():
     nonebot.logger.success("成功取得 言·论 {} 条".format(res := len(yanlun_texts)))
 
     return res
-    
+
+
+WESTERN_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
+    ((4, 3),): ["金羿 生日快乐~！", "Happy Birthday, Eilles!"],
+    ((8, 6),): ["玉衡 生日快乐~！", "Happy Birthday, Alioth~!"],
+    ((8, 16),): ["鱼旧梦 生日快乐~！", "Happy Birthday, ElapsingDreams~!"],
+    ((7, 12), (5, 21)): ["华风夏韵 洛水天依"],
+    ((8, 31),): ["初始之音 响彻未来"],
+    ((2, 10),): ["桃之夭夭 灼灼其華"],
+    ((4, 12),): ["乐正司百曲 绫动万年红"],
+    ((10, 2),): ["龙翼振风雨 牙音彻天明"],
+    ((2, 21), (8, 12)): ["众星因你 皆降为尘", "浩瀚众星 皆降为尘"],
+    ((7, 11),): ["言出一人歌 歌起万人和"],
+    ((5, 20),): ["沾以清墨 书我弦歌"],
+    ((12, 10),): ["徵音飞羽 一梦南柯"],
+}
+
+CHINESE_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
+    ((1, 1),): [
+        "新春快乐~",
+        "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
+        "爆竹声中一岁除，春风送暖入屠苏\t——王安石《元日》",
+        "半盏屠苏犹未举，灯前小草写桃符\t—— 陆游《除夜雪》",
+        "愿得长如此，年年物候新\t—— 卢照邻《元日述怀》",
+    ]
+}
 
 
 @nonebot.get_driver().on_startup
@@ -134,26 +165,18 @@ async def _():
         chinese_datetime.chinese_calendar_day,
     )
 
-    if western_date == (4, 3):
-        yanlun_seqs = yanlun_texts = ["金羿ELS 生日快乐~！", "Happy Birthday, Eilles!"]
-    elif western_date == (8, 6):
-        yanlun_seqs = yanlun_texts = [
-            "玉衡 生日快乐~！",
-            "Happy Birthday, Alioth~!",
-        ]
-    elif western_date == (8, 16):
-        yanlun_seqs = yanlun_texts = [
-            "鱼旧梦 生日快乐~！",
-            "Happy Birthday, ElapsingDreams~!",
-        ]
-    elif chinese_date == (1, 1):
-        yanlun_seqs = yanlun_texts = [
-            "新春快乐~",
-            "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
-            "爆竹声中一岁除，春风送暖入屠苏\t——王安石《元日》",
-            "半盏屠苏犹未举，灯前小草写桃符\t—— 陆游《除夜雪》",
-            "愿得长如此，年年物候新\t—— 卢照邻《元日述怀》",
-        ]
+    yanlun_texts = []
+
+    for dates, yanlun in WESTERN_DATE_EVENT_YANLUN.items():
+        if western_date in dates:
+            yanlun_texts.extend(yanlun)
+
+    for dates, yanlun in CHINESE_DATE_EVENT_YANLUN.items():
+        if chinese_date in dates:
+            yanlun_texts.extend(yanlun)
+
+    if yanlun_texts:
+        yanlun_seqs = yanlun_texts.copy()
     else:
         await update_yanlun()
 
