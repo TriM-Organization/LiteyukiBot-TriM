@@ -31,53 +31,6 @@ from nonebot_plugin_alconna import (
 require("nonebot_plugin_apscheduler")
 from nonebot_plugin_apscheduler import scheduler
 
-status_alc = on_alconna(
-    aliases={"状态"},
-    command=Alconna(
-        "status",
-        Option(
-            "-r|--refresh",
-            default=False,
-            alias={"refr", "r", "刷新"},
-            action=store_true,
-        ),
-        Option(
-            "-t|-md|--markdown",
-            default=False,
-            # alias={"refr", "r", "刷新"},
-            action=store_true,
-        ),
-        Subcommand(
-            "memory",
-            alias={"mem", "m", "内存"},
-        ),
-        Subcommand(
-            "process",
-            alias={"proc", "p", "进程"},
-        ),
-        # Subcommand(
-        #     "refresh",
-        #     alias={"refr", "r", "刷新"},
-        # ),
-    ),
-)
-
-yanlun = on_alconna(
-    aliases={"yanlun", "言·论", "yan_lun"},
-    command=Alconna(
-        "言论",
-        Option(
-            "-r|--refresh",
-            default=False,
-            alias={"刷新", "更新", "update"},
-            action=store_true,
-        ),
-        Option("-c|--count", default=False, alias={"统计"}, action=store_true),
-        Option("-l|--length", default=1.0, args=Args["length", float | int, 1.0]),
-    ),
-)
-
-
 WESTERN_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
     ((4, 3),): ["金羿 生日快乐~！", "Happy Birthday, Eilles!"],
     ((8, 6),): ["玉衡 生日快乐~！", "Happy Birthday, Alioth~!"],
@@ -202,6 +155,38 @@ def random_yanlun() -> tuple:
     return seq[0], "" if len(seq) == 1 else seq[1]
 
 
+status_alc = on_alconna(
+    aliases={"状态"},
+    command=Alconna(
+        "status",
+        Option(
+            "-r|--refresh",
+            default=False,
+            alias={"refr", "r", "刷新"},
+            action=store_true,
+        ),
+        Option(
+            "-t|-md|--markdown",
+            default=False,
+            # alias={"refr", "r", "刷新"},
+            action=store_true,
+        ),
+        Subcommand(
+            "memory",
+            alias={"mem", "m", "内存"},
+        ),
+        Subcommand(
+            "process",
+            alias={"proc", "p", "进程"},
+        ),
+        # Subcommand(
+        #     "refresh",
+        #     alias={"refr", "r", "刷新"},
+        # ),
+    ),
+)
+
+
 status_card_cache = {}  # lang -> bytes
 
 
@@ -259,6 +244,23 @@ async def _():
     pass
 
 
+yanlun = on_alconna(
+    aliases={"yanlun", "言·论", "yan_lun"},
+    command=Alconna(
+        "言论",
+        Option(
+            "-r|--refresh",
+            default=False,
+            alias={"刷新", "更新", "update"},
+            action=store_true,
+        ),
+        Option("-s|--special", default=False, action=store_true),
+        Option("-c|--count", default=False, alias={"统计"}, action=store_true),
+        Option("-l|--length", default=1.0, args=Args["length", float | int, 1.0]),
+    ),
+)
+
+
 @yanlun.handle()
 async def _(
     result: Arparma,
@@ -270,9 +272,17 @@ async def _(
     # print(result.options)
     ulang = get_user_lang(event_utils.get_user_id(event))  # type: ignore
     if result.options["refresh"].value:
+
         await yanlun.send(
             UniMessage.text(
-                ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
+                ulang.get(
+                    "yanlun.refresh.success",
+                    COUNT=(
+                        (await auto_update_yanlun())
+                        if result.options["special"].value
+                        else (await update_yanlun())
+                    ),
+                )
             )
         )
     if result.options["count"].value:
