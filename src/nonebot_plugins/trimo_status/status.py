@@ -78,14 +78,30 @@ yanlun = on_alconna(
 )
 
 
-if status_config.yanlun_type == "url":
-    # 每天4点更新
-    @scheduler.scheduled_job("cron", hour=4)
-    async def every_day_update():
-        ulang = Language(get_default_lang_code(), "zh-CN")
-        nonebot.logger.success(
-            ulang.get("yanlun.refresh.success", COUNT=await update_yanlun())
-        )
+WESTERN_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
+    ((4, 3),): ["金羿 生日快乐~！", "Happy Birthday, Eilles!"],
+    ((8, 6),): ["玉衡 生日快乐~！", "Happy Birthday, Alioth~!"],
+    ((8, 16),): ["鱼旧梦 生日快乐~！", "Happy Birthday, ElapsingDreams~!"],
+    ((7, 12), (5, 21)): ["华风夏韵 洛水天依"],
+    ((8, 31),): ["初始之音 响彻未来"],
+    ((2, 10),): ["桃之夭夭 灼灼其華"],
+    ((4, 12),): ["乐正司百曲 绫动万年红"],
+    ((10, 2),): ["龙翼振风雨 牙音彻天明"],
+    ((2, 21), (8, 12)): ["众星因你 皆降为尘", "浩瀚众星 皆降为尘"],
+    ((7, 11),): ["言出一人歌 歌起万人和"],
+    ((5, 20),): ["沾以清墨 书我弦歌"],
+    ((12, 10),): ["徵音飞羽 一梦南柯"],
+}
+
+CHINESE_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
+    ((1, 1),): [
+        "新春快乐~",
+        "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
+        "爆竹声中一岁除，春风送暖入屠苏\t——王安石《元日》",
+        "半盏屠苏犹未举，灯前小草写桃符\t—— 陆游《除夜雪》",
+        "愿得长如此，年年物候新\t—— 卢照邻《元日述怀》",
+    ]
+}
 
 
 async def update_yanlun():
@@ -126,34 +142,7 @@ async def update_yanlun():
     return res
 
 
-WESTERN_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
-    ((4, 3),): ["金羿 生日快乐~！", "Happy Birthday, Eilles!"],
-    ((8, 6),): ["玉衡 生日快乐~！", "Happy Birthday, Alioth~!"],
-    ((8, 16),): ["鱼旧梦 生日快乐~！", "Happy Birthday, ElapsingDreams~!"],
-    ((7, 12), (5, 21)): ["华风夏韵 洛水天依"],
-    ((8, 31),): ["初始之音 响彻未来"],
-    ((2, 10),): ["桃之夭夭 灼灼其華"],
-    ((4, 12),): ["乐正司百曲 绫动万年红"],
-    ((10, 2),): ["龙翼振风雨 牙音彻天明"],
-    ((2, 21), (8, 12)): ["众星因你 皆降为尘", "浩瀚众星 皆降为尘"],
-    ((7, 11),): ["言出一人歌 歌起万人和"],
-    ((5, 20),): ["沾以清墨 书我弦歌"],
-    ((12, 10),): ["徵音飞羽 一梦南柯"],
-}
-
-CHINESE_DATE_EVENT_YANLUN: Dict[Tuple[Tuple[int, int], ...], List[str]] = {
-    ((1, 1),): [
-        "新春快乐~",
-        "千门万户曈曈日，总把新桃换旧符\t——王安石《元日》",
-        "爆竹声中一岁除，春风送暖入屠苏\t——王安石《元日》",
-        "半盏屠苏犹未举，灯前小草写桃符\t—— 陆游《除夜雪》",
-        "愿得长如此，年年物候新\t—— 卢照邻《元日述怀》",
-    ]
-}
-
-
-@nonebot.get_driver().on_startup
-async def _():
+async def auto_update_yanlun():
 
     global yanlun_texts, yanlun_seqs
 
@@ -179,6 +168,24 @@ async def _():
         yanlun_seqs = yanlun_texts.copy()
     else:
         await update_yanlun()
+
+
+# 启动时更新
+@nonebot.get_driver().on_startup
+async def _():
+    ulang = Language(get_default_lang_code(), "zh-CN")
+    nonebot.logger.success(
+        ulang.get("yanlun.refresh.success", COUNT=await auto_update_yanlun())
+    )
+
+
+# 每天4点更新
+@scheduler.scheduled_job("cron", hour=4)
+async def _():
+    ulang = Language(get_default_lang_code(), "zh-CN")
+    nonebot.logger.success(
+        ulang.get("yanlun.refresh.success", COUNT=await auto_update_yanlun())
+    )
 
 
 def random_yanlun_text() -> str:
