@@ -359,12 +359,15 @@ async def _(
             "用法：新成语 <成语> [-e|--explanation <释义>] [-d|--difficult]"
         )
 
-    existance, explanation, pinyin_now = wordbase_updater(
-        idiom,
-        explanation=(result.options["explanation"].args["explanation"] or None),
-        pinyin=None,
-        hard=(hard := result.options["difficult"].value),
-    )
+    try:
+        existance, explanation, pinyin_now = wordbase_updater(
+            idiom,
+            explanation=(result.options["explanation"].args["explanation"] or None),
+            pinyin=None,
+            hard=(hard := result.options["difficult"].value),
+        )
+    except Exception as e:
+        await handle_update_idiom_matcher.finish("无法新增成语：{}".format(e))
 
     await handle_update_idiom_matcher.finish(
         "成功{}：[{}词汇]{}\n当前词库总数：{}个，普通模式成语：{}个\n当前成语信息如下：{}".format(
