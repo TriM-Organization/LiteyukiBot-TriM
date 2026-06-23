@@ -402,9 +402,12 @@ async def _(
     else:
         result_readout = ""
 
-    if result.options["group"].value:
-        result_readout += zhDateTime.int_2_grouped_han_str(num)
-    else:
-        result_readout += zhDateTime.int_hanzify(num)
-    
+    try:
+        if result.options["group"].value:
+            result_readout += zhDateTime.int_2_grouped_han_str(num)
+        else:
+            result_readout += zhDateTime.int_hanzify(num)
+    except IndexError as e:
+        await number_read.finish(UniMessage.text("数字太大了：{e}".format(e)))
+
     await number_read.finish(UniMessage.text(result_readout))
