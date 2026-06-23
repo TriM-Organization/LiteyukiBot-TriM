@@ -373,3 +373,38 @@ async def _(
     await time_query.finish(
         UniMessage.text(zhDateTime.DateTime.now().chinesize.chinese_text)
     )
+
+
+number_read = on_alconna(
+    command=Alconna(
+        "读数",
+        Option("-g|--group", default=False, action=store_true),
+        Args["number", str],
+    ),
+    aliases={"readout_number", "number_read"},
+)
+
+@number_read.handle()
+async def _(
+    event: T_MessageEvent,
+    bot: T_Bot,
+    result: Arparma,
+):
+    num = result.main_args.get("number", "")
+    try:
+        num = int(num)
+    except:
+        await number_read.finish(UniMessage.text("小数点后直接读，不是数字没法读"))
+    
+    if num < 0:
+        result_readout = "负"
+        num = abs(num)
+    else:
+        result_readout = ""
+
+    if result.options["group"].value:
+        result_readout += zhDateTime.int_2_grouped_han_str(num)
+    else:
+        result_readout += zhDateTime.int_hanzify(num)
+    
+    await number_read.finish(UniMessage.text(result_readout))
