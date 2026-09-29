@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/UXeRpOfmsWD-m5sNgKMcKw==/109951166835172694.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">美人鱼 (Live)</div>
+      <div>林俊杰</div>
+      <div class="small">03:53 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/b_lFQUHgdaOvuBgf8wMO0w==/109951166557050112.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">路过人间</div>
+      <div>郁可唯</div>
+      <div class="small">04:48 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/LUg-355mSCk-ZoBRZN8SWA==/109951166341738895.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">有些 (Live)</div>
+      <div>颜人中</div>
+      <div class="small">03:53 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mwJWDqpTEy_hIJfOqxFrtA==/109951170987872851.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">塔林</div>
+      <div>Busic Zone</div>
+      <div class="small">02:38 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/_AmlwRUsPEtTJ1Av3CvYCA==/109951169044790486.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">岁月神偷 (Live)</div>
+      <div>张杰</div>
+      <div class="small">04:18 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/i1p1CCz6PaDF2Gs0RqKJBQ==/109951165349625690.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">夏夜最后的烟火<span>（当我抬起头 你正看向我）</span></div>
+      <div>颜人中</div>
+      <div class="small">04:39 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/EquZwnaT2Mo3fushc4yKXw==/109951169274802477.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">樱花再开<span>（爱与恨意并发 你在我命里定格啊）</span></div>
+      <div>Whyyyy.、HYPEEZY、火滚音乐</div>
+      <div class="small">03:03 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/UqWhXIqHBDUREClcyY5_Lg==/109951169740395415.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">梦同游<span>（纯音乐）</span></div>
+      <div>知晏</div>
+      <div class="small">02:31 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/gn4pPKc_Wk3EyByfi86lUQ==/3333719255417035.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">悟空</div>
+      <div>戴荃</div>
+      <div class="small">03:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/iqc4SMOcIcAy8s4ovmT5cA==/109951163432561922.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">向往</div>
+      <div>李健</div>
+      <div class="small">03:59 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/LUg-355mSCk-ZoBRZN8SWA==/109951166341738895.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">晚安 (Live)</div>
+      <div>颜人中</div>
+      <div class="small">04:46 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Z4PD3xWHcSBOqabMWRc_Uw==/109951170376526221.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">传奇</div>
+      <div>李健</div>
+      <div class="small">04:54 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/AFbJ1KzfXApdFO9owHCEfA==/109951163432573502.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">风吹麦浪</div>
+      <div>李健</div>
+      <div class="small">04:07 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DrZNW76NKhTdyqPGzUIEtA==/109951168081878426.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">爱的供养（纯音乐）</div>
+      <div>Сумасшедший</div>
+      <div class="small">01:36 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/la_yQfJiPmrDvVlaXbdhLA==/109951169200439396.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">西湖</div>
+      <div>痛仰乐队</div>
+      <div class="small">04:13 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/OzTSWJtggZyyTs6uiRWxyg==/109951168994159430.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">活下去（纯音乐）</div>
+      <div>am</div>
+      <div class="small">02:03 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4mpw1EzMgS-DDzer4gtxrw==/109951167900428607.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">inhuman<span>（非人类；游戏《CS2》音乐盒）</span></div>
+      <div>ISOxo</div>
+      <div class="small">03:18 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/GXQPSdljd9p6JeTPBy9N5A==/109951164967280080.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Astronomia<span>（天文学）</span></div>
+      <div>Vicetone、Tony Igy</div>
+      <div class="small">03:18 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/0gRHpqeLDnangUKu7RtTLQ==/109951170712025276.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">В экстазе</div>
+      <div>Car-Music</div>
+      <div class="small">03:24 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/qHKvdeYzTqIOxcGKnrfaPQ==/72567767449767.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">故乡的原风景</div>
+      <div>宗次郎</div>
+      <div class="small">04:42 | 热度 100</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

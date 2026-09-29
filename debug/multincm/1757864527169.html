@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/zzhGldNELrCrsWiJSKDYwg==/109951164278946685.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">03:46 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/rwrX8PwQ5_iX-ERJEyWa8w==/6023124697347242.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>初音ミク</div>
+      <div class="small">03:46 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jONcWjV78Vfto56mRyIYfA==/109951163597938536.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>MAYU</div>
+      <div class="small">03:46 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/6_4etUpMoHS6WoocNZ0QqA==/832330302250183.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! -album remix ver.-</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">03:57 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/68bXMbebfrgWSVvvc2fwpg==/109951164270673414.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! EX</div>
+      <div>初音ミク</div>
+      <div class="small">04:51 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/59MbsSpBLjI1XXpyq9lD6Q==/109951166282491902.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Armanyma Asygamyn</div>
+      <div>Marjan Arapbaeva</div>
+      <div class="small">03:45 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JbnnvFWtPhYPRrpJK63VLw==/2343059278814702.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! (Game Version)</div>
+      <div>初音ミク</div>
+      <div class="small">03:04 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XqeLYdiogj2kOx-ToYXSWA==/2349656348582276.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! (Game Version)</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">03:04 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/GuAzXgtdwuka5OyTrGvXYQ==/5940661325067729.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">03:47 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8qEJTdKogpRVmvq-5VqMMA==/835628837133556.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>vip店長</div>
+      <div class="small">03:38 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/LyRsT6PL9cN1M2i8DjmJUQ==/109951163314479535.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>初音ミク、daniwellP</div>
+      <div class="small">02:10 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yTcT2EIMk8o8IX723dR4lw==/5887884767055383.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>Lowland Jazz</div>
+      <div class="small">05:01 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UVDH2yEHqoK7jqYBcKMgaA==/2431020209036092.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">03:47 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/p11_ghpgIfZ7XORcFmnKSg==/109951164224253019.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">A-MAZЗing</div>
+      <div>nyanyannya、鏡音リン</div>
+      <div class="small">04:16 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/x3giOIAYkxwNSWBQ-C8hEA==/6036318836780695.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! (****-SYNTHESIZER remix)</div>
+      <div>daniwellP、SEXY-SYNTHESIZER</div>
+      <div class="small">04:31 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/qtuwPUIX3wT02AVD2ZQ2SQ==/109951163368638139.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! (Wafooooooo Remix)</div>
+      <div>daniwellP、初音ミク</div>
+      <div class="small">04:20 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/pgf75eAWfX4WgC2ixfp8_Q==/109951164186080407.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyan Cat [Light Mix]</div>
+      <div>daniwellP、初音ミク、桃音モモ、Light</div>
+      <div class="small">04:15 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/rlrd9ZcNqc_-9Y7400YOcg==/3265549535364772.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya! (HandzUP Remix)</div>
+      <div>DJ名無し</div>
+      <div class="small">04:32 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HKFgSsI1Djj4rtIr-30sQA==/109951166152642575.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Symphony No. 4 In A Major, Op. 90, MWV N 16 - "Italian":1. Allegro vivace<span>（A大调第4号交响曲, 作品90 -"意大利":第一乐章.活泼的快板）</span></div>
+      <div>Wiener Philharmoniker、Christoph von Dohnányi</div>
+      <div class="small">07:57 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8qEJTdKogpRVmvq-5VqMMA==/835628837133556.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanyanyanyanyanya!</div>
+      <div>vip店長</div>
+      <div class="small">03:38 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 7 页 | 总计 140 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bvpiZO-81l1KTtO67UXtjw==/109951172561270372.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Free Lucky +coffee.</div>
+      <div>轰箜</div>
+      <div class="small">01:32 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xph78Xv3csSm0FP1ZIMOWg==/109951172643455202.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不谈恋abc-lucky coffee（不谈恋abc remix）</div>
+      <div>不谈恋abc</div>
+      <div class="small">00:24 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FxjqJCrtodoc9_KSO7bv1A==/109951171819250758.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky X Coffee（橘子 remix）</div>
+      <div>橘子</div>
+      <div class="small">00:19 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ijfvpiul5PhqeyJ3vQ2MjQ==/109951168406262443.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Pieces of Notes</div>
+      <div class="small">02:16 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/YKQshIz3A3j_eIoWjSW7hA==/109951169139027307.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">lucky coffee</div>
+      <div>Aiden Yoo</div>
+      <div class="small">01:29 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Rbimn6gfGgG8nDFe7cohjg==/109951168652245420.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Jazzical Blue</div>
+      <div class="small">02:13 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jqHDw_UF_Tv28YPAgqH6EA==/109951169173644106.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Coffee(Prod by neyoooo)</div>
+      <div>Lucky</div>
+      <div class="small">02:41 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/NX2Elu_4BPPZQxBU3LOcdg==/109951168434036226.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Drive by</div>
+      <div class="small">02:12 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/1cDWWET9gB1URP-04Ly7YQ==/109951168681182394.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Aurora Strings</div>
+      <div class="small">02:10 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/g9ZDawqn3taHCLFIk0RK1g==/109951168680661942.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Precious Parade</div>
+      <div class="small">02:18 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4x6H_DllTe4c6LuOcqh6IA==/109951168442080461.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Pieces of Notes</div>
+      <div class="small">02:16 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bujmnN3YqOxcdeFIsNsktA==/109951168477168668.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Hawaiian Brightness</div>
+      <div class="small">01:37 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/6qX2oLC9xPyvghLt1BkwfA==/109951168558736806.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Petite Plage</div>
+      <div class="small">01:18 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Y4CDBuTqDKcJG1qZdnwl0g==/109951168717911363.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Petite Plage</div>
+      <div class="small">01:18 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/rpkBtQkSnXLfWQpNsXPjSQ==/109951168681264689.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Aurora Strings</div>
+      <div class="small">02:10 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/AJZlAyO9zdMwic5WCr9n3A==/109951168652254645.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Jazzical Blue</div>
+      <div class="small">02:13 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xrRHDwZQ8f_5VAVLKxXDCg==/109951168680641943.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Precious Parade</div>
+      <div class="small">02:18 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Hc_vCePNSiC3nUbQ1MkMNA==/109951168543066792.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Melody Swing</div>
+      <div class="small">01:23 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FKc6JX_ekk4AhzVZRlmZlA==/109951169875953787.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Harmonious Hues</div>
+      <div class="small">01:24 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/AcQaTfHI-4CQGxOq9IKJTQ==/109951169896773801.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lucky Coffee</div>
+      <div>Harmonious Hues</div>
+      <div class="small">01:24 | 热度 5</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

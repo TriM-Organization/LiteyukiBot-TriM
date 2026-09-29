@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gq2SFOCCD-Q2bdZpEngBeA==/109951166941098890.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩<span>（空气力学少女与少年的诗歌；ゲーム「素晴らしき日々」OPテーマ）</span></div>
+      <div>はな</div>
+      <div class="small">04:13 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gq2SFOCCD-Q2bdZpEngBeA==/109951166941098890.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -PianoVocalVar.-</div>
+      <div>はな</div>
+      <div class="small">04:14 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/3rtl6iK4Cue6mhE02ZNj2A==/109951166171557761.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -Piano Ver.-</div>
+      <div>松本文紀</div>
+      <div class="small">02:55 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gq2SFOCCD-Q2bdZpEngBeA==/109951166941098890.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">終末の微笑<span>（ゲーム「素晴らしき日々」EDテーマ）</span></div>
+      <div>はな</div>
+      <div class="small">05:34 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/3rtl6iK4Cue6mhE02ZNj2A==/109951166171557761.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -Oegel Ver.-</div>
+      <div>松本文紀</div>
+      <div class="small">02:32 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gq2SFOCCD-Q2bdZpEngBeA==/109951166941098890.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">呪われた生／祝福された生<span>（被诅咒的生/被祝福的生；ゲーム「素晴らしき日々」EDテーマ）</span></div>
+      <div>はな</div>
+      <div class="small">04:49 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ooHWOsR6GlhQD1pn6c2Daw==/109951168440317025.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩<span>（空气力学少女与少年的诗歌；ゲーム「素晴らしき日々」OPテーマ）</span></div>
+      <div>はな</div>
+      <div class="small">04:12 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ooHWOsR6GlhQD1pn6c2Daw==/109951168440317025.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -Piano Vocal Ver.-<span>（空气力学少女与少年之诗；PC游戏『美好的每一天~不连续存在~』OP）</span></div>
+      <div>はな</div>
+      <div class="small">04:15 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bJrzGtKNYvwpIRJ5wsPXCg==/5952755952886332.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩<span>（ゲーム「素晴らしき日々」OPテーマ）</span></div>
+      <div>はな</div>
+      <div class="small">04:11 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/C6nEzhDuuGhO5VrTFs8UGA==/18713687906675573.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 (End Of The World Mix)</div>
+      <div>Zakuro Recordings</div>
+      <div class="small">06:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ooHWOsR6GlhQD1pn6c2Daw==/109951168440317025.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -Piano Ver.-</div>
+      <div>松本文紀</div>
+      <div class="small">02:55 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HxrAYkd5jwfNZx0t909lAA==/109951169141012001.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩</div>
+      <div>uen</div>
+      <div class="small">04:15 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ZFR0LNxwjeiSLj9JJFaYNQ==/109951168746239887.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩</div>
+      <div>はな</div>
+      <div class="small">04:13 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JVrqIvU0fflMTdUe-1oANg==/109951165038263780.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩(由岐ちゃんの抱き枕第二弾制作祈願mix)</div>
+      <div>V.A.</div>
+      <div class="small">05:57 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ooHWOsR6GlhQD1pn6c2Daw==/109951168440317025.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -Orgel Ver.-</div>
+      <div>松本文紀</div>
+      <div class="small">02:32 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XE6rueUWmM4dNpfqH1fnFA==/109951165169612548.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 【口琴】</div>
+      <div>友人Aの口琴</div>
+      <div class="small">02:55 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nP2k96_xkt4ydunIkT1sdA==/109951166157119481.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">空気力学少女と少年の詩 -PianoVocalVar.-</div>
+      <div>由汐Yushio</div>
+      <div class="small">04:14 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 1 页 | 总计 17 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

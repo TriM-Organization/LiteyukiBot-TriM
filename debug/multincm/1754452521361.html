@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/SKeqxrWivrQezg6KCGhamw==/7831821325807602.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人总是</div>
+      <div>秋山裕和、むにょっ</div>
+      <div class="small">02:32 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HzBNSl5s0V3PoHnHjI0A8Q==/109951164279258988.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">喜欢两个人</div>
+      <div>彭佳慧</div>
+      <div class="small">05:33 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/M7CDL8ljibUvYXLXXR7OpA==/109951169479579379.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">明天过后（是否两个人足够捕捉爱的镜头）</div>
+      <div>Zy</div>
+      <div class="small">02:45 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XC8nenQLaV9F1ahet5zZCA==/109951169488079761.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">是否两个人足够 捕捉爱的镜头</div>
+      <div>KRSHK</div>
+      <div class="small">03:08 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xqyn1N4nnNrAviA7Tu_FSg==/2902710699027495.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情人知己</div>
+      <div>区瑞强</div>
+      <div class="small">05:25 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gmDKnAG8b473bzxJNnL9eQ==/109951167107188111.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人不等于我们</div>
+      <div>王力宏</div>
+      <div class="small">03:39 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/G2V8QLXZ-8YOMiyP7NKM1g==/109951163067907696.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人的幸运<span>（电影《向左走向右走》粤语版主题曲）</span></div>
+      <div>梁咏琪</div>
+      <div class="small">03:47 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/RzMHHisGG6O7Ti76rb5Ogg==/109951167881344246.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好像都一样（cover：虞书欣/张彬彬）</div>
+      <div>点子、是悲伤鸭QwQ</div>
+      <div class="small">02:55 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-7MzOpiq2diMDryf837Yxg==/109951163365013322.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人的幸运<span>（电影《向左走向右走》粤语版主题曲）</span></div>
+      <div>梁咏琪</div>
+      <div class="small">03:47 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/E-k2-YpPgGE-S2lRsfAhtg==/794946906882381.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">付出是两个人的事</div>
+      <div>雷婷</div>
+      <div class="small">04:02 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nyoVWvG1XarhD-kfw7QJ3A==/3273246121975178.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人的烟火</div>
+      <div>黎明</div>
+      <div class="small">02:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jW0CyklPo0eE-CAPi5_zdA==/109951167500678796.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">喜欢两个人</div>
+      <div>彭佳慧</div>
+      <div class="small">05:33 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/D0-9YaKjBhvYRIicyCweHg==/109951169807096136.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">明天过后（DJ热搜版）</div>
+      <div>深蓝海域DBSea</div>
+      <div class="small">02:18 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/e5dR2hvByic_UKADhZqQxw==/109951167391842242.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">独自收集两个人之间的回忆</div>
+      <div>吃爆米花听歌</div>
+      <div class="small">01:20 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/cXUCtl122Mttj6AlHAtjog==/109951167621436176.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">独自收集两个人之间的回忆</div>
+      <div>•ᴗ•</div>
+      <div class="small">00:53 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/utxDHDOBSV95IjKmLW1MPA==/109951170070128355.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">沉默的两个人 (Live版)</div>
+      <div>张信哲、刘凤瑶</div>
+      <div class="small">04:16 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/5Ge3Zqe__u5OZn1_oNEKtA==/109951168826608946.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">喜欢两个人</div>
+      <div>彭佳慧</div>
+      <div class="small">05:33 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/szNw84ncGvkv-3PtJzmMjg==/4442026976219014.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">两个人的歌一个人唱</div>
+      <div>夏天Alex</div>
+      <div class="small">03:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ypZ5tNAlenSUxdMJQ4hTQg==/109951170429529174.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">爱雨落<span>（爱是两个人同一个心脏）</span></div>
+      <div>Szh</div>
+      <div class="small">02:39 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/GvrCdPgvnFT2mf4SGADUJg==/109951169485472614.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">是否两个人足够捕捉爱的尽头</div>
+      <div>Dj狗峰Remix</div>
+      <div class="small">02:48 | 热度 25</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

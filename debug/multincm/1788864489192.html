@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/SsZ7g3zE2LllrS0fUkWNCA==/109951165058095105.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>忘川风华录、海伊</div>
+      <div class="small">03:25 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ExC40_fFwxUgydQINzjqAQ==/109951164669111492.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之（Cover 忘川风华录）</div>
+      <div>三无Marblue</div>
+      <div class="small">03:26 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Mw7z4vn0EMrWlitsiYgzPQ==/109951163606870393.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>Hanser</div>
+      <div class="small">03:26 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4mirS-k4w1nR70B3VX_GYg==/109951165062890616.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>KBShinya</div>
+      <div class="small">03:26 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mrEqTsRpgqamqwo9doIlKA==/109951165065458224.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>墨绛</div>
+      <div class="small">03:26 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/epdydUGJlW4WAXoap_TKpw==/109951165707438819.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之（粤语版）</div>
+      <div>小小六</div>
+      <div class="small">03:27 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/OtDWbxNL8SnIBQ-8QMDA9A==/109951165058878519.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>茶了了</div>
+      <div class="small">03:25 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/qW4zdo5vp9wh4BPOeE6LWA==/109951165066884915.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>穆小泠</div>
+      <div class="small">03:26 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-t2xs9h58tj6KtP1v-KmHg==/109951165184697289.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>冽冽</div>
+      <div class="small">03:25 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/CJk0tTPdcVCx3W8vH5_syQ==/109951165073636922.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>荔枝odihs</div>
+      <div class="small">03:26 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PEKdPTGZx0NOsAPiVcCFZQ==/109951165076465876.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之(洛天依V4萌 · 凝)(VOCALOID COVER)</div>
+      <div>AtonyP</div>
+      <div class="small">03:30 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/0Ui_kcTUnDcQU11dcvpSSg==/109951169284226958.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之<span>（原神 纳西妲填词）</span></div>
+      <div>萌比Yfh</div>
+      <div class="small">03:26 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/dN4qA74NcKqCynxxf22M7g==/109951165174021894.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>乐小桃、余一</div>
+      <div class="small">03:31 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3G_Z1K6vtHFaC_sjmsKfDw==/109951165920801271.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>Momo半夏、兰草薄荷、梦岚</div>
+      <div class="small">03:26 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/27WfawUp6wE9P-weRWYB6g==/109951165127621766.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之(冷感小少年Ver.)</div>
+      <div>少年霜</div>
+      <div class="small">03:27 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/UulclzJRH_7XywmVZ_0tPA==/109951165063286250.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>折微微</div>
+      <div class="small">03:26 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DvD-H3bn-qMc5b4ETTF97Q==/109951165133909623.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之(洒脱小少年Ver.)</div>
+      <div>阮卿言</div>
+      <div class="small">03:25 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PkzgwFzB_jUCdHEnGmimqQ==/109951166431128449.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>上河Lin、NJ青木</div>
+      <div class="small">03:39 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/WqRFRRJ0HLXisfuqfhRRZg==/109951165128490751.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>绰月</div>
+      <div class="small">03:25 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/u7jd1NhhsaBeRIItjNs_1A==/109951165134005145.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好字唯之</div>
+      <div>帅比笙歌超可爱OvO</div>
+      <div class="small">03:26 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 6 页 | 总计 106 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

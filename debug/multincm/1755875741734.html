@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/fYUFFw7jDkRM1Fa_nx20nw==/109951169248834783.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行<span>（动画《熊出没》电影十周年主题曲）</span></div>
+      <div>熊大 (配音：张伟)、熊二 (配音：张秉君)、光头强 (配音：谭笑)</div>
+      <div class="small">04:00 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Ex1NKibeGnbbCLVrvmfkTA==/109951167893316120.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">终会与你同行<span>（《熊出没之过年》动画片尾曲）</span></div>
+      <div>白挺</div>
+      <div class="small">03:44 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/lK7wu_0_gLcHQCx9XuFP2w==/109951170630216521.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">只想与你同行</div>
+      <div>M.R.Y麦尔彦</div>
+      <div class="small">02:25 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/cpoUinrExafBHL5Nv5iDHQ==/109951166361218466.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">终会与你同行<span>（动画片《熊出没之过年》片尾曲）</span></div>
+      <div>白挺</div>
+      <div class="small">03:45 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/oYr5qbH1OzEGJlBeQrWxkA==/5907675976341558.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雪中情<span>（1991年台视版电视剧《雪山飞狐》主题曲）</span></div>
+      <div>杨庆煌</div>
+      <div class="small">05:20 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/wmnSg0zKeNIpAJUxEZOM-A==/109951170955243340.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">与你同行</div>
+      <div>姜育恒</div>
+      <div class="small">04:41 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/T09-vejCjMUbOSzrD64zwQ==/109951169318610286.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行<span>（动画《熊出没》电影十周年主题曲）</span></div>
+      <div>Steamed Bun、熊大 (配音：张伟)、熊二 (配音：张秉君)、光头强 (配音：谭笑)</div>
+      <div class="small">04:00 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Xy8Iu7ZoIXK4IjpQV-QcXw==/109951171517054631.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hamra Boliman(与你同行)</div>
+      <div>ZulpYe</div>
+      <div class="small">04:14 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/s6MyjuwAvMJsYajsQ37n2g==/109951169149129272.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">寄往未来的信<span>（Time Machine）</span></div>
+      <div>银河快递</div>
+      <div class="small">03:27 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/21b5gCKyLrxGNJ6jifCemg==/109951171015962680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">听你说</div>
+      <div>梁博</div>
+      <div class="small">05:43 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/DexWhf0jeekS-VldX8lN7A==/109951167398569505.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">与你同行B~with~U</div>
+      <div>幽舞越山</div>
+      <div class="small">05:01 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UnXoLERlMhOjL_24gIFtjQ==/109951169054021759.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Journey with You<span>（与你同行；游戏《Rotaeno》一周年纪念曲；游戏《Phigros》收录曲）</span></div>
+      <div>Iris</div>
+      <div class="small">02:10 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/fYUFFw7jDkRM1Fa_nx20nw==/109951169248834783.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行 (伴奏)</div>
+      <div>熊大 (配音：张伟)、熊二 (配音：张秉君)、光头强 (配音：谭笑)</div>
+      <div class="small">04:00 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/IZS8P_KatvwoZG3vJpOAyA==/109951166244066795.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">众</div>
+      <div>黄霄雲</div>
+      <div class="small">03:35 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JqfEQoynhcTQcVDgz1TIUg==/78065325587384.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雪中情<span>（1991年台视版电视剧《雪山飞狐》主题曲）</span></div>
+      <div>杨庆煌</div>
+      <div class="small">05:20 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/_dw9rqBkY3o2VsnF5QKLxw==/109951169300713656.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行（Dream / HIPPO Remix）</div>
+      <div>Dream、HIPPO</div>
+      <div class="small">04:33 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VHUOLys20uDBADDpKHT1_g==/109951169280845963.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Walking With You</div>
+      <div>Daydream</div>
+      <div class="small">04:19 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/p4HyQfnZjTbovWA_6aaWiw==/109951169388390143.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行（熊出没·逆转时空）</div>
+      <div>Daniel Tsang</div>
+      <div class="small">04:02 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jk7lPR1u-AM0jr011utBbA==/109951166892424140.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">终会与你同行(热门原声)</div>
+      <div>南屿</div>
+      <div class="small">01:19 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bbFSakQFgkFOAdSrrbhAZw==/109951169314187272.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再次与你同行(鬼畜全明星)（空水空白 remix）</div>
+      <div>空水空白</div>
+      <div class="small">04:01 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 17 页 | 总计 336 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

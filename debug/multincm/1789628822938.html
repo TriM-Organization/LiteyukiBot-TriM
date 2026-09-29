@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>61</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8_ju0p1u1j5w0hJ0d4H0YA==/109951164204877157.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">保卫黄河</div>
+      <div>中国人民解放军合唱团</div>
+      <div class="small">01:57 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>62</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/dYjWsH4De_TP0EUWnOCAiA==/109951171531113558.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">新春组曲(红石音乐)</div>
+      <div>Veylak</div>
+      <div class="small">04:11 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>63</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/urTaoYeD8t7iZPIgGlk3-Q==/109951167523724467.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">祖国有我</div>
+      <div>银河少年电视艺术团</div>
+      <div class="small">04:07 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>64</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PAOHNAcRQnY0DIH4yOu5IA==/109951170652161461.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">我的中國心</div>
+      <div>张明敏</div>
+      <div class="small">03:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>65</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3nL__2mV7k65XMoUw6Gu-g==/109951169721390560.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">我爱你中国 (live)</div>
+      <div>孙楠、韩红、黄绮珊、古巨基、陈楚生、王心凌、谭维维、胡彦斌、郁可唯、汪苏泷、周深、宋亚轩、杨坤、单依纯、何炅、李莎旻子</div>
+      <div class="small">05:30 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>66</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8_ju0p1u1j5w0hJ0d4H0YA==/109951164204877157.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">强军战歌</div>
+      <div>中国人民解放军合唱团、中国人民解放军军乐团</div>
+      <div class="small">01:55 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>67</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/_lAvi41IfmPhw73Mxq2b8g==/19061133579368888.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">社会主义好</div>
+      <div>中央乐团合唱队、中国人民解放军总政文工团合唱队</div>
+      <div class="small">01:19 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>68</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FJjtSz4peDd8_ErrSo7ftA==/109951164352788627.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Fallen Kingdom</div>
+      <div>CaptainSparklez</div>
+      <div class="small">04:47 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>69</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-tkZLbfzPNzcVQTEIMX_hQ==/109951168266449518.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【Minecraft】青春のアーカイブ（TVsize）</div>
+      <div>Cyanbird-青鸟</div>
+      <div class="small">01:28 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>70</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nU5x84W_z5N-CoDaTXL6PQ==/92358976748023.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好日子</div>
+      <div>宋祖英</div>
+      <div class="small">02:51 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>71</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/R8mdt_cKnfhhN6nzrnBi6Q==/109951170705009449.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大中国</div>
+      <div>高枫</div>
+      <div class="small">04:15 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>72</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/CoZKcK2mHcI-wXD0Rb_h9g==/109951169765420824.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】Never Gonna Give You Up</div>
+      <div>ユウナギソラ</div>
+      <div class="small">04:03 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>73</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kgYuFyBgsyKSov_fbSOgwg==/109951166074437772.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Revenge (Minecraft Blocks Instrumental of DJ Got Us Fallin in Love)</div>
+      <div>Deebri Media</div>
+      <div class="small">03:04 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>74</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/CoZKcK2mHcI-wXD0Rb_h9g==/109951169765420824.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】Megalovania</div>
+      <div>ユウナギソラ</div>
+      <div class="small">02:24 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>75</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/iik6L0t1IFUXdsVHtVVSOQ==/109951169792927671.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一二三四歌</div>
+      <div>阎维文</div>
+      <div class="small">02:43 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>76</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nAG_4VmvuMNA8GDZko31fA==/109951166514723752.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Squid Game Pink Soldiers Theme (Minecraft Note Blocks)</div>
+      <div>grande1899</div>
+      <div class="small">08:34 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>77</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kgYuFyBgsyKSov_fbSOgwg==/109951166074437772.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Don't Mine at Night (Minecraft Blocks Instrumental of Last Friday Night)</div>
+      <div>Deebri Media</div>
+      <div class="small">02:17 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>78</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/YRz6IY_CUzCFmQihXq-_Ew==/109951166074438991.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Undertale Megalovania (Minecraft Note Block Instrumental)</div>
+      <div>Deebri Media</div>
+      <div class="small">02:38 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>79</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/5tC-jNKxGw4QNF_WpdofPQ==/109951170708340647.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">没有共产党就没有新中国</div>
+      <div>中国广播艺术团合唱团</div>
+      <div class="small">01:47 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>80</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/EDHiuqhuFMhPdLE9sytUzQ==/109951165754957182.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Soon May The Note Block Man Come</div>
+      <div>grande1899</div>
+      <div class="small">02:11 | 热度 35</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 4 页 / 共 5 页 | 总计 95 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

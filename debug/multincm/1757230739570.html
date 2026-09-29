@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/hNbHHf5z7Ehukza3gs4ecQ==/109951171964411252.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">in your blue eyes<span>（手游《明日方舟》联动曲）</span></div>
+      <div>Ave Mujica、塞壬唱片-MSR</div>
+      <div class="small">03:42 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JxewrbeBRbqOyLGoEMmmBw==/109951171974896406.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In your blue eyes (Eason_AC's Piano Ver.)</div>
+      <div>Eason_AC</div>
+      <div class="small">03:42 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/f6ZVaJYEZJjyxQCPaGnitQ==/109951169852831951.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lost In Your Eyes</div>
+      <div>Neonica、Harddope、Elle Blue</div>
+      <div class="small">02:42 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jsWGr_oR7ol0FM0pyEAuMg==/109951163710887433.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In Your Eyes (Blue Mix)</div>
+      <div>Filterheadz、Orange 3</div>
+      <div class="small">03:56 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/o1xeTGG842TLlq1ojy6n8w==/109951166349638680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Stars in Your Eyes</div>
+      <div>Pudding</div>
+      <div class="small">02:42 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/aak-xsB8QL4Jufg4uEMptQ==/109951171259919207.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">My dream in your eyes</div>
+      <div>Blue Hour Theory</div>
+      <div class="small">03:23 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Huh-ptlwr1YewUBtWfcfTQ==/109951169335732298.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Story In Your Eyes</div>
+      <div>The Moody Blues</div>
+      <div class="small">03:04 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nGOO4LeWzmQ4KI7zdoWApg==/109951164554720566.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hide In Your Blue Eyes</div>
+      <div>Thomas Reid、Powfu</div>
+      <div class="small">02:54 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nhpizd1MMRFCbeyUBDDIaA==/109951168690105786.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In Your Eyes</div>
+      <div>Kupla</div>
+      <div class="small">02:58 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/lgo50fwfLSIOmQXhBYR_Hg==/109951171965279871.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Home in Your Eyes</div>
+      <div>Bluetale</div>
+      <div class="small">01:22 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/59x1ezF1wevIdrNEwc7X4Q==/109951165908853127.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Somewhere in Your Eyes</div>
+      <div>Blue Brainwave Blues</div>
+      <div class="small">03:28 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/J5ypTHQUQXgEOenQbsspPw==/109951163352853847.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Light In Your Eyes</div>
+      <div>LeAnn Rimes</div>
+      <div class="small">03:21 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/n5deZh_W0V0EgXh0uBd6hw==/2537672837994570.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Story In Your Eyes</div>
+      <div>The Moody Blues</div>
+      <div class="small">02:56 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/sp0pHqLdgtD4ZYHaEEroTA==/109951165977838450.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">blue in your eyes</div>
+      <div>aftrthght</div>
+      <div class="small">02:48 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nUbAZn9yuhDKg8xenpBB3g==/109951167513797978.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In Your Blue Eyes</div>
+      <div>Justin Hayward</div>
+      <div class="small">04:10 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/7oJwv2dkWRdq2x82gZiO4A==/109951163253005245.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In Your Blue Eyes</div>
+      <div>Stephen R Cheney</div>
+      <div class="small">04:00 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0Z656hmypKaR0BnzP1jQdg==/109951171981764935.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">in your blue eyes</div>
+      <div>HrothPegasus</div>
+      <div class="small">03:42 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/9dPWCyqh9s3N53ddo2e5EQ==/109951170566139853.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Stranger in Your Eyes</div>
+      <div>Etta Mae Hartwell</div>
+      <div class="small">07:09 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/uJTFPIsVixxz__08zOKnQQ==/1816393209098311.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">In Your Eyes (Blue Mix)</div>
+      <div>Orange、Filterheadz</div>
+      <div class="small">06:08 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/y0MX6gctyKe17NxFqg2bgA==/109951169710548244.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Blue Sky in Your Eyes</div>
+      <div>Stive Morgan</div>
+      <div class="small">08:00 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

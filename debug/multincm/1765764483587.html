@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FtXkqII_Z3Usfihuqu7T5A==/109951168943705952.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（屋旁的青草）</span></div>
+      <div>Сергей Скачков</div>
+      <div class="small">04:57 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/wk1EsQGT6saT0kk9XywCRw==/109951163305755913.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（屋旁的青草）</span></div>
+      <div>Земляне、Сергей Скачков</div>
+      <div class="small">04:48 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/2e9oTY-mwVB_LOxCfolImQ==/109951167164641887.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">not only earthlings dream of weed<span>（不只有地球人会梦见青草）</span></div>
+      <div>Corn Wave</div>
+      <div class="small">03:07 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Eac0ZNFL667J_Vkcv3Y4BA==/109951169846889086.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Trava u Doma (Geoffrey Day Remix)<span>（屋边的青草）</span></div>
+      <div>Geoffplaysguitar、Земляне、Atomic Heart</div>
+      <div class="small">03:54 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FvRz0RpbPpg6riYMBfKhrA==/109951168655953651.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（屋旁的青草）</span></div>
+      <div>Земляне</div>
+      <div class="small">04:37 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/BzmX5U__PIR3UYkHqajFeQ==/109951169653611996.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома (2007)<span>（屋旁的青草）</span></div>
+      <div>Сергей Скачков</div>
+      <div class="small">05:23 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/SxwEpwM1S0NNU-P00TxB3A==/109951167011300602.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">屋旁的青草【中文翻唱】</div>
+      <div>灼音Choir</div>
+      <div class="small">04:57 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JsbzfjSfl58jnDvNr0FAlg==/109951167265623880.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава У Дома (Radio Mix)<span>（屋旁的青草）</span></div>
+      <div>Антон Чайка、4 Winds</div>
+      <div class="small">03:36 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ELhk_OA7ly5FbhF9fiR-pw==/109951170594257560.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома(屋旁的青草)[电机版]</div>
+      <div>黄老咩</div>
+      <div class="small">04:04 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/1658IWV8kXHdNkS6hf6TxA==/109951163117073783.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（家旁的青草）</span></div>
+      <div>Земляне、Сергей Скачков</div>
+      <div class="small">04:48 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/e814XXkhBnyRfS2L7DPqyQ==/109951163471011947.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（屋旁的青草）</span></div>
+      <div>Земляне</div>
+      <div class="small">04:37 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/hto3HOVsdCUcQSr5ZdW8VA==/109951167835132441.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">屋旁的青草（电音）</div>
+      <div>小市民红球</div>
+      <div class="small">04:23 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/eOpPIH4K6T4vdLDK1plIYA==/109951168230096459.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">屋旁的青草</div>
+      <div>芮和、SumiSerina</div>
+      <div class="small">02:01 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/4kog3TNzjJvx6zO2ixSViw==/109951168251969367.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома / 屋旁的青草 (ft. 重音テト)</div>
+      <div>Selezneva、重音テト</div>
+      <div class="small">04:47 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/D4olwvOnbai6HW8Iwg0Ldw==/109951168823573484.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">屋旁的青草——Trava u doma（Touhou arrange remix）</div>
+      <div>龙鲤Vremya</div>
+      <div class="small">03:58 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/pr8p_40picnz7Zt7F8pr7g==/109951163094243513.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Трава у дома<span>（屋旁的青草）</span></div>
+      <div>J:МОРС</div>
+      <div class="small">03:11 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/3CKvu1fbxOLuJ5smeDUqYA==/109951170175449174.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">小屋旁的松鼠嬉闹 (温暖)</div>
+      <div>水墨乐坊、水墨樂坊</div>
+      <div class="small">02:08 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/uqDOjl-de3g-8L3428bY3Q==/109951162887415964.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">午后的青草香</div>
+      <div>king金鑫</div>
+      <div class="small">03:32 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jhFsWqxTf9VKRftcljxwbQ==/109951164808585969.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">小学篱笆旁的蒲公英</div>
+      <div>Motive蓝吉</div>
+      <div class="small">02:06 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/574JYajSEm4uYXcEaqIzeQ==/109951163230579615.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">外公的缝纫机</div>
+      <div>大滇人乐队</div>
+      <div class="small">04:19 | 热度 25</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 303 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

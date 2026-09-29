@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/C46EsA5gsbTPWjOFNLXlTA==/109951163023120938.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>银临</div>
+      <div class="small">04:17 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/C46EsA5gsbTPWjOFNLXlTA==/109951163023120938.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦 (伴奏)</div>
+      <div>银临</div>
+      <div class="small">04:17 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/4IAI20Oeowgs8dcIG7Wzdg==/109951164501567322.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>南风ZJN</div>
+      <div class="small">04:17 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HRr4TTFLM0yjDadTy43KvQ==/109951163582008893.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>泥鳅Niko、昼夜</div>
+      <div class="small">04:18 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/IaiIVbL62_ZLsbaUiJlXZg==/109951170562516416.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>小坠</div>
+      <div class="small">04:18 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/9Oyv5LVJarCvUnWIBucAzA==/109951163749400224.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>Aki阿杰</div>
+      <div class="small">04:17 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/pPyUY39eKVw4Wye4_1lyOg==/109951165169398694.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">迟迟</div>
+      <div>银临</div>
+      <div class="small">04:18 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/NN0h-lJYQw6EDZvx1K897A==/109951162834063317.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（Cover 银临）</div>
+      <div>水玥兒</div>
+      <div class="small">04:17 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/7XqP882Xt14wbah6knRkGw==/109951164162278088.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（洞箫X竹笛）</div>
+      <div>在下河帛</div>
+      <div class="small">04:22 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/EptnTmYYWmHRhPLtK4I14Q==/109951162813566967.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（翻自 银临）</div>
+      <div>知性的小方块</div>
+      <div class="small">04:17 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/a_frhv0HPT95D5Ilx249dQ==/109951166865097284.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>拂言</div>
+      <div class="small">04:17 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ws7saxCRpH5ZVyXgqUOPSA==/17959422928304314.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>清秋秋</div>
+      <div class="small">04:18 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/um8_gyccbab0o-U05mZdRw==/109951171535379051.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>兰音Reine</div>
+      <div class="small">04:18 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/OvhrcOpf43k0pwTR2jz4ow==/109951167877595449.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（古筝版）</div>
+      <div>裴去病</div>
+      <div class="small">02:27 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xZgoxONiHwP8_WplMdT6cA==/109951167330643596.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>云の泣</div>
+      <div class="small">04:17 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Hv5_m69Mgk2AnR4UIi71Eg==/109951163676282319.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（纯筝）</div>
+      <div>毛小贝古筝</div>
+      <div class="small">02:30 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/L4U7_bNIbMpD-SVnkTo2Hw==/109951162990234133.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦（Cover 银临）</div>
+      <div>子弥</div>
+      <div class="small">04:17 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0GSiSo-MM19zyoF5h3DbcA==/109951168192868862.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦 （和声伴奏）</div>
+      <div>Twilight-暮霖翎</div>
+      <div class="small">04:17 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/2R5ROadcr929rgJnH65_OQ==/109951163096512659.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>池年、墨橙</div>
+      <div class="small">04:16 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/NJAlne72s62PYx5TTHMfWw==/109951164570616875.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不老梦</div>
+      <div>司夏</div>
+      <div class="small">04:20 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 301 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

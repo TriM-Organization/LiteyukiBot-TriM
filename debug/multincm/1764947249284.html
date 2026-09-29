@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/BKJrPO1FlbXcy-98AYXOzg==/109951172268004943.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟<span>（《崩坏：星穹铁道》昔涟动画短片中文单曲）</span></div>
+      <div>张韶涵、HOYO-MiX</div>
+      <div class="small">03:06 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/BKJrPO1FlbXcy-98AYXOzg==/109951172268004943.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Ripples of Past Reverie<span>（《崩坏：星穹铁道》昔涟动画短片英文单曲）</span></div>
+      <div>Cassie Wei、HOYO-MiX</div>
+      <div class="small">03:06 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Mw7z4vn0EMrWlitsiYgzPQ==/109951163606870393.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟</div>
+      <div>Hanser</div>
+      <div class="small">03:06 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/gtunmoxObQyoH01HzURNUw==/109951170292455448.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">何者<span>（《崩坏：星穹铁道》翁法罗斯中文主题曲）</span></div>
+      <div>谭晶、HOYO-MiX</div>
+      <div class="small">02:26 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DYDACa_8zB5irAOrasVgnQ==/109951171396677694.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">耀斑<span>（《崩坏：星穹铁道》白厄动画短片单曲）</span></div>
+      <div>HOYO-MiX、YMIR</div>
+      <div class="small">03:33 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/vWv0JqTV_-Z4HHOP0tF3Zw==/109951172256531493.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟（秋绘翻唱）</div>
+      <div>Akie秋绘</div>
+      <div class="small">03:07 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/g7twyrMTsyIFIBfZ4yz7kQ==/109951171897302187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">再度和你（昔涟角色PV 交响改编）</div>
+      <div>水依竹音Suzy</div>
+      <div class="small">03:28 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/BKJrPO1FlbXcy-98AYXOzg==/109951172268004943.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟 (中文和声伴奏)</div>
+      <div>HOYO-MiX</div>
+      <div class="small">03:06 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/YDU9zs5MJYqyn_ij9v7JHA==/109951172245356492.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟 【兰音翻唱】</div>
+      <div>兰音Reine</div>
+      <div class="small">03:05 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/FyDYtw9HRJ_hDvCyjghE7w==/109951171449311458.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【白厄x昔涟x开拓者】终焉 End of All</div>
+      <div>Kyu烤鱼、春夏秋刀鱼、西服X-F</div>
+      <div class="small">03:39 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/g7twyrMTsyIFIBfZ4yz7kQ==/109951171897302187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟——「你好，世界」动画短片插曲（交响改编）</div>
+      <div>水依竹音Suzy</div>
+      <div class="small">04:03 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/GoUCTkGFoaiXmeR4DZ2SsQ==/109951172293065250.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟【昔涟AI翻唱】 Ripples of Past Reverie(AI Cyrene)</div>
+      <div>往昔的涟漪、泽羲Leo</div>
+      <div class="small">03:06 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/0hf4rSjkS_lGjJ0tgxPgkw==/109951172275703059.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟</div>
+      <div>穆小泠</div>
+      <div class="small">03:06 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/zzywT88V8y9Mxbhf1lPF8w==/109951172024755944.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟（日语版）</div>
+      <div>池年</div>
+      <div class="small">03:06 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/zzywT88V8y9Mxbhf1lPF8w==/109951172024755944.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟（中文版）</div>
+      <div>池年</div>
+      <div class="small">03:06 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/agMVXF5vBv4WPKiRF6zzzw==/109951172301435557.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟（粤语版）</div>
+      <div>雪霏岚岚</div>
+      <div class="small">03:06 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/1lrKKQxdvd3jSRkGAiR_dQ==/109951172270447396.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟 钢琴版</div>
+      <div>hurrrtui</div>
+      <div class="small">03:14 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/BKJrPO1FlbXcy-98AYXOzg==/109951172268004943.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟 Ripples of Past Reverie (伴奏)</div>
+      <div>HOYO-MiX</div>
+      <div class="small">03:06 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JB0K5O1XKFvh2g9QM0Jh4w==/109951172244192916.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">世界上的另一个我（昔涟x爱莉希雅）</div>
+      <div>夏翊然、鱼眠</div>
+      <div class="small">03:59 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/FEmifszV8JE-GlWyxPzTnw==/109951172254651664.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">昔涟</div>
+      <div>茶了了</div>
+      <div class="small">03:06 | 热度 25</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 9 页 | 总计 167 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

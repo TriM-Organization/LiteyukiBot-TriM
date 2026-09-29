@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8o-6lTxr2Ui2iYGAc86nxg==/109951166994048400.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR</div>
+      <div>sasakure.UK</div>
+      <div class="small">03:46 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/z-QeSXpRgZOvknONLZYH3Q==/109951167644504234.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR</div>
+      <div>sasakure.UK</div>
+      <div class="small">02:08 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/5Jb-rFzn657TIm1jzojk5A==/109951165098711210.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR</div>
+      <div>sasakure.UK</div>
+      <div class="small">02:08 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HWtni7ZFXX-hGrvblQgIPg==/109951167634096625.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">folern</div>
+      <div>ぬゆり</div>
+      <div class="small">02:21 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/dsKnzUQepDzPJ8p80MlMNA==/109951173472891269.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR-萝皇帝Cover.（你压不过我你信吗）</div>
+      <div>星斯特杰纳</div>
+      <div class="small">02:09 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yxV-GsX1IGFut2DZXJGDZg==/109951170279346839.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR （多乐器演奏2）</div>
+      <div>HongXing Music Studio</div>
+      <div class="small">02:04 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/T1K0vZ288s71_MKr3KJK5g==/109951169869151339.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR</div>
+      <div>sasakure.UK</div>
+      <div class="small">02:08 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/lICPEH4Kfrt4UKgDvhO2ZA==/109951173294426346.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR - Lofi Remix</div>
+      <div>Da Moon</div>
+      <div class="small">02:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yxV-GsX1IGFut2DZXJGDZg==/109951170279346839.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">the EmpErroR （多乐器）</div>
+      <div>HongXing Music Studio</div>
+      <div class="small">02:13 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8NX0qoUrIFL3zxXafSHVUA==/109951163878293899.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Ngempela</div>
+      <div>Errorbouy、Pelepele</div>
+      <div class="small">04:00 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0-HgKf4Z-Fj_nYDmrFeYSw==/109951168473753398.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Emperror In The Sky</div>
+      <div>Ryan 4Play</div>
+      <div class="small">02:04 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yCI4q71PSbdu_id2P2DEUQ==/109951167914174527.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Feuillemorte</div>
+      <div>The Face of Human Error</div>
+      <div class="small">01:56 | 热度 5</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 1 页 | 总计 12 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

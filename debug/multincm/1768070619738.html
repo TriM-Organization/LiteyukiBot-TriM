@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>21</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/qt29GMt2F0brKyKQfIJZjw==/109951170333635471.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>一颗草莓糖li、文嘀嘀</div>
+      <div class="small">04:04 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>22</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/hIIom3p5mcI-L3z65iAk3Q==/109951171961340963.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄（小橘子版）</div>
+      <div>江酱</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>23</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/MldBS9X6A47yqeTeWCP6xA==/109951170155343468.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>雫凛</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>24</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/26rRRYgsHClm0TLDEbeFeA==/109951170071722285.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>锦梨、书生不读书</div>
+      <div class="small">04:04 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>25</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/hlUwpmwAenXjCB70wXMTRg==/3230365162728465.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">命理难说</div>
+      <div>小曲儿</div>
+      <div class="small">04:53 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>26</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gHPmegJfEtrcQFT5lEWoWQ==/109951172483555889.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>来姐大人</div>
+      <div class="small">04:03 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>27</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Z94qYgz-oq9apAOAgFd7Hg==/109951168951016826.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>君喏、林川Aye</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>28</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UGGyKNcvG41ROteHI5ONGg==/109951168916677121.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>辞软、江晏</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>29</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UuBreaTdQIkb-ZmWgEBgvg==/109951171855763018.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>余又</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>30</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/eSSE1HKR2PjGMZ1jKgNwcA==/109951170979979175.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>萧忆情Alex</div>
+      <div class="small">04:06 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>31</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/fTyZUs8YGXlc143Apb6JQQ==/109951169965805491.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>芊狸koi、哈根达酥</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>32</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/MpTjVmhdCix1okqDoE-Y1w==/109951168179759994.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">性感小野猫</div>
+      <div>输入</div>
+      <div class="small">00:38 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>33</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0muL3lwPClEZO4YHhPbM-w==/109951162811551416.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>流沙sober</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>34</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/F4IQC0GUwW7v1KTBAxZs4Q==/109951168536423850.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄（12p）</div>
+      <div>烟枝南、夏陌_Natsumo、W丁玄之_W、洛大梨、是阿婉不是阿碗、飞云冉冉、晴岚、阿衍、车厘子小七、小乔_0903、草莓筱可爱、杀马特艳子</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>35</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/OPt7CSH9j9vLes55zJ5Iog==/109951169455896014.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>婷婷吖、菜菜子吖</div>
+      <div class="small">04:05 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>36</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/PGiDx0Otu_JdcWkyJy7Ucw==/109951168845159590.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄（Cover 银临、云の泣）</div>
+      <div>不清</div>
+      <div class="small">04:03 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>37</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/wp9kTTe8Rd9U1G4PxTZ7Yg==/109951170641411969.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>小法</div>
+      <div class="small">04:08 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>38</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/69D0JgL6c4bJnVIbPamTmg==/109951171351541675.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>安小兔、墨篱啦</div>
+      <div class="small">04:04 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>39</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/qw9SS6qS3bJRDduJxxCb5w==/109951170979981513.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄 (伴奏)</div>
+      <div>萧忆情Alex</div>
+      <div class="small">03:42 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>40</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/p1dKYyZpy8WNTzS_eEixQQ==/109951170070490534.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">锦鲤抄</div>
+      <div>KeLLY溪里</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 2 页 / 共 16 页 | 总计 301 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

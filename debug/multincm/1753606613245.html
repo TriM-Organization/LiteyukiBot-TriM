@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/96ybPtFF7RoMCOb4fRPV9A==/109951170632856402.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雑魚<span>（杂鱼）</span></div>
+      <div>柊マグネタイト、亞北ネル</div>
+      <div class="small">03:27 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/cwiCjVkBGKvJ4yCWgNnT1w==/109951170565897119.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">ざぁこ<span>（杂鱼）</span></div>
+      <div>柊マグネタイト、歌愛ユキ</div>
+      <div class="small">03:27 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/34kttlM53YpxHwr9BrRjWA==/109951170361517589.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">みむかｩわナイストライ（杂鱼 Nice Try） - Cover. 重音テト（重音Teto）</div>
+      <div>奇跡yc</div>
+      <div class="small">03:43 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jWwgsVRKsBG2j-w8w6-KZA==/109951170067213613.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雜魚體驗卡</div>
+      <div>初音ミク</div>
+      <div class="small">01:59 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Ze29F75_6LeESCXtSMp8-Q==/109951170194104339.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">み む かゥ わ ナ イ ス ト ラ イ<span>（漂亮的尝试）</span></div>
+      <div>ぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬぬ、初音ミク、ずんだもん、四国めたん</div>
+      <div class="small">03:25 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/34rO0z-RHOzDIBy3TEBKxw==/109951170276141223.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼nice try</div>
+      <div>兔籽鲸</div>
+      <div class="small">03:28 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Z4fWKgHI81Cts9_D4-LLEQ==/109951170053152792.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼nice try（中文版みむかｩわナイストライ）</div>
+      <div>黑予幻</div>
+      <div class="small">03:31 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/LBvy4MVKDY4gPCC-vlIMFQ==/109951168546148685.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">いよわ-熱異常（男女七人双声道混响）/LinySz Remix（热异常）</div>
+      <div>LinySz、异世界情绪、水槽、9lana、末端冷え症、うえ、雑魚３号、カプチヰノ</div>
+      <div class="small">04:01 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Re23p1bKpTTTHKyompAFhQ==/109951170846951870.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼小曼波</div>
+      <div>羽羽缘</div>
+      <div class="small">03:27 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/eqvsNAeLTIUekLGIowT58g==/109951170506367200.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【砂纸大魔王】杂鱼杂鱼杂鱼！（中文版みむかｩわナイストライ）</div>
+      <div>砂纸大魔王</div>
+      <div class="small">01:12 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/XFPOvJQma0jGl4gaWuDGnA==/109951170695369273.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雑魚 (Cover)</div>
+      <div>歌愛ユキ</div>
+      <div class="small">03:28 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Xzq5aOmmUeDp0qGpEfRS9A==/109951170330154806.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼Nice Try（み む かゥ わ ナ イ ス ト ラ イ中文版）</div>
+      <div>云野星洢_Star</div>
+      <div class="small">03:18 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Bv2SDCt2lmck-pL5ESBAQA==/109951170982552393.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">みむかｩわナイストライ/杂鱼打牌</div>
+      <div>锦听万山河</div>
+      <div class="small">03:25 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bjLryaoAtu3i7pZ-TuKSzQ==/109951170349003032.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼打牌/みむかｩわナイストライ（粤语版）</div>
+      <div>雪霏岚岚</div>
+      <div class="small">03:28 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ZojovSVm3mddGVSfhzBvIA==/109951171027454695.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼之歌</div>
+      <div>陌阎良</div>
+      <div class="small">00:15 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/S5_QjvAFKG_j_t97mVfFGA==/109951170261673587.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【AI砂金】❤杂鱼❤杂鱼❤￤ぬぬぬぬぬぬぬぬぬぬぬぬ「ナイストライ」</div>
+      <div>chunzhen喵</div>
+      <div class="small">03:09 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xLHAy6YV3xxSr-mXg7OD8g==/109951169019483153.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼nice try</div>
+      <div>忆辰bacca</div>
+      <div class="small">03:15 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Kz4PamkbzahHMnuHvCkoWQ==/109951170246091833.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼nice try（み む かゥ わ ナ イ ス ト ラ イ中文版 feat. 诗岸）</div>
+      <div>HANA</div>
+      <div class="small">03:29 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/CfqSIwmLy7Sa2wsYWlbphw==/109951170747394196.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雑魚 (feat. 重音テト) [Cover]</div>
+      <div>歌愛ユキ、重音テト</div>
+      <div class="small">03:27 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8DDgU4skzu48QdAL-4HwTQ==/109951171316448851.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">杂鱼~</div>
+      <div>小赵</div>
+      <div class="small">00:16 | 热度 45</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 9 页 | 总计 168 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

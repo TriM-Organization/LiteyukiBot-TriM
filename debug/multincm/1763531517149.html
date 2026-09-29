@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PiSqUS2bxc9x2Zbz2vt4sQ==/109951170099752710.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>Muyoi、Pezzi</div>
+      <div class="small">03:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/HZG_WgD1RtlhuS4vvQoDCg==/109951170980785449.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 (Live版)</div>
+      <div>黄子弘凡、姚晓棠</div>
+      <div class="small">03:39 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/MVGPJBolZioUgNYoh1HjBA==/109951170753904889.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>悠羽、皮皮耳</div>
+      <div class="small">03:32 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4JBpPStnIE3b9yxQ6-nJYA==/109951170480119311.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 (Remix)</div>
+      <div>Muyoi、Pezzi</div>
+      <div class="small">05:04 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kZ8ID1H0n3wD_kdDuiy8Gg==/109951170974315469.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点（心风x温柔）</div>
+      <div>郭显乐、唐保国</div>
+      <div class="small">03:20 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ZwkGx2jo4lHWg9ilK2Jv5w==/109951170627253383.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>Muyoi、徐梦洁</div>
+      <div class="small">03:32 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/LVLDd4jkycsh7gHg2zAtig==/109951171031850930.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 （翻唱版本：黄子弘凡/姚晓棠 原唱：Muyoi/Pezzi）</div>
+      <div>闵琪_SUGAr</div>
+      <div class="small">03:39 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/QztYBju5MLL-zojFcYmwUg==/109951170713510824.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 (乘风2025现场)</div>
+      <div>祝绪丹、曹颖、江一燕、蒋梦婕</div>
+      <div class="small">03:26 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/MQo1Gn_8g4eOWUM5439zOQ==/109951170974665435.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 (Live)</div>
+      <div>Ghost (王琳凯)、王睿卓</div>
+      <div class="small">03:35 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/OIFh5ao0tYNCI9lmv3cZZg==/109951171907552821.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点（天赐版）</div>
+      <div>Dok3y7、花晞_FLowER</div>
+      <div class="small">03:39 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PiSqUS2bxc9x2Zbz2vt4sQ==/109951170099752710.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点(DJ墨韩Mix版)</div>
+      <div>Muyoi</div>
+      <div class="small">04:16 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/SjQEf9QxbKD7Ih7FuiJaYg==/109951168571664533.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>海洋Bo、果妹</div>
+      <div class="small">02:53 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/0ju8ET1ApZSXfWacc4w49w==/109951169484091680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点 (DJ版)</div>
+      <div>DJ Wave</div>
+      <div class="small">05:42 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/d-GEsppKEJinO94vm4mszA==/109951170676619882.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>林艺泽</div>
+      <div class="small">03:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/_wEtLoAAYc5DFyFcazRy9Q==/109951170759110422.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点(夏日版)</div>
+      <div>林紫云、Z.Fjy</div>
+      <div class="small">03:32 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/KRrdbP4OwIbKAPlonJpO-Q==/109951169101991875.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>许成成</div>
+      <div class="small">04:40 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nZWMzCTlB73xae9CgmSLhA==/109951170662330940.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点(女声版)</div>
+      <div>ErdanBiu</div>
+      <div class="small">03:20 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/aCMrbsKtRESr2nTUp_Lorg==/109951167535661822.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点</div>
+      <div>张杰</div>
+      <div class="small">04:21 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bUsgLVeYztZTrT7qgdisTA==/109951171976155929.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点点（为什么晚上总是有星星）</div>
+      <div>芊芊龍、董唧唧</div>
+      <div class="small">02:57 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mo0CIua-rtPREdlkjcmyqQ==/109951170995026016.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">一点<span>（抖腿弹鼓DJ）</span></div>
+      <div>恻隐</div>
+      <div class="small">02:17 | 热度 35</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 314 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PJXz9nE7VNPAuz3h3Hn2bQ==/109951171399554623.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵</div>
+      <div>永雏塔菲</div>
+      <div class="small">03:12 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-ndj8xcP4yiqK9hXuDX8oA==/109951172950771650.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵DJ</div>
+      <div>Zero涵</div>
+      <div class="small">01:05 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/WP1aBQ7B1xWAhZGzv0WOpw==/109951173013508788.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵<span>（DJ版）</span></div>
+      <div>雷米克斯</div>
+      <div class="small">03:25 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/OZ3N4gd0eag7t5RAhiGXHA==/109951173017256971.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲喵</div>
+      <div>冰释前嫌、浅迁牵</div>
+      <div class="small">00:59 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-ndj8xcP4yiqK9hXuDX8oA==/109951172950771650.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵-DJ</div>
+      <div>Zero涵、永雏塔菲</div>
+      <div class="small">01:22 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/MCbQ1IBdm7hBpWz_WM5ZgA==/109951173012367432.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵DJ<span>（全站热播）</span></div>
+      <div>满眼星辰都是你</div>
+      <div class="small">01:09 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/sKm-iVpbW3I6hhszVyiojQ==/109951173012378036.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵DJ<span>（Beat）</span></div>
+      <div>Type Beat超市</div>
+      <div class="small">02:00 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/YR30tWCAqHdI9JWnf7h-hQ==/109951173006940782.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵<span>（DJ Deep House）</span></div>
+      <div>凌晨三点半</div>
+      <div class="small">04:04 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/zzMDFWUfZUw9LcmwimrrFw==/109951173012378503.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵DJ<span>（DJ Synthwave）</span></div>
+      <div>霓虹驾驶员</div>
+      <div class="small">02:34 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nEKFAl2CIS_bk97vWGsCdw==/109951173006948575.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵<span>（福音）</span></div>
+      <div>劳伦斯教主</div>
+      <div class="small">03:41 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ut2J_yJDn77wdDFExUdObw==/109951173006952508.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵<span>（Beat）</span></div>
+      <div>Type Beat超市</div>
+      <div class="small">03:20 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Y-y9gkeGmwAQ73MhxUMCMA==/109951173012369296.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲谢谢喵DJ<span>（80年代）</span></div>
+      <div>老张的磁带</div>
+      <div class="small">01:43 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kE9oUCBXmXhbvShcx6C3tA==/109951172790730225.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">塔菲糖笑</div>
+      <div>毛衣</div>
+      <div class="small">00:23 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/fqhhJYNxu5WYN-T58xtkxw==/109951172882258644.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">关注塔菲喵</div>
+      <div>Star坠</div>
+      <div class="small">00:19 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xY6T2QcB0jsSa0AzScTvCw==/109951172980071124.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">天台的绝望告别</div>
+      <div>关注塔菲喵</div>
+      <div class="small">02:04 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/q5WmWqWk0OX_ZLMlYMiTHA==/109951172972265631.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">洗涤</div>
+      <div>关注塔菲谢谢喵</div>
+      <div class="small">01:17 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kE9oUCBXmXhbvShcx6C3tA==/109951172790730225.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不知道</div>
+      <div>毛衣</div>
+      <div class="small">00:47 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/q5WmWqWk0OX_ZLMlYMiTHA==/109951172972265631.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">半旧情怀</div>
+      <div>关注塔菲谢谢喵</div>
+      <div class="small">01:29 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/j3QxFOzt0zaYuZhOeAkShA==/109951172189512738.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">炽焰青春</div>
+      <div>人从众</div>
+      <div class="small">01:09 | 热度 5</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 1 页 | 总计 19 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

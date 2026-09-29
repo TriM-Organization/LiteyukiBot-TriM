@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/1sDqE2g7sI_5IHuAxigRzA==/109951165981230000.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hedwig's Theme (From "Harry Potter and the Philosopher's Stone")<span>（海德薇主题变奏曲）</span></div>
+      <div>Christoph Eschenbach、Wiener Philharmoniker、John Williams</div>
+      <div class="small">05:25 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/pw12PupLvDUVIOogGEKUXw==/109951170073122883.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃茨</div>
+      <div>zaydjesse</div>
+      <div class="small">00:26 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/pB6nrwK4q_y3LYMg4Pe88g==/109951167835551147.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃茨开学了（《哈利波特》原创同人曲）</div>
+      <div>听说是涵十六、千湛、羲和、絮舍、清潇Lanoiah、江陵、唐雅雯、卿顾、绫子RINGO、景莓、知清禅、烏鸦veckard</div>
+      <div class="small">04:28 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VSMlDWY5sI04YT7daZUiqQ==/109951165123064839.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃茨</div>
+      <div>王晓博</div>
+      <div class="small">01:48 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/5c3pCDqc9Q2NHnkVynCDGw==/109951166342484111.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">分院帽之歌-《哈利波特：魔法觉醒》游戏音乐</div>
+      <div>哈利波特魔法觉醒</div>
+      <div class="small">01:41 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/K7ehSnmqW7jA2W5fhUpyiQ==/109951167667877068.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃兹</div>
+      <div>菱屿YJ、风雨远帆、凉城MYeol、吉运、三先生、王铁蛋、白玦、鹿林溪</div>
+      <div class="small">03:21 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Gy7qpIFa5l6-TIIuI4f2DA==/109951169359820431.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hedwig's Theme</div>
+      <div>John Williams</div>
+      <div class="small">05:09 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/sJycpyJGG4_ZAlZh634TNw==/109951166660868813.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃兹</div>
+      <div>李明昊</div>
+      <div class="small">03:39 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/upLN3jy7JDNFcVdNussiVA==/109951166360161549.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃兹</div>
+      <div>三碗、帅气的辣条QAQ</div>
+      <div class="small">03:21 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/s9hjLy48upzuargwqLyicQ==/109951171369689982.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃茨</div>
+      <div>周66</div>
+      <div class="small">02:30 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/OTbD0VvYklQJRm2eLD4tKA==/109951168932292417.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hedwig's Theme<span>（海德薇变奏曲）</span></div>
+      <div>The City of Prague Philharmonic Orchestra</div>
+      <div class="small">04:54 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ZV9MnNygKP-N8HB_PfKElg==/109951166232617285.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃兹</div>
+      <div>孙飒、颜绮萱、挚彬、枫月</div>
+      <div class="small">03:21 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-5CExOysfHxmLGPRn8I5tA==/109951170752368194.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">在鹰院下棋</div>
+      <div>陆语</div>
+      <div class="small">01:15 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-5CExOysfHxmLGPRn8I5tA==/109951170752368194.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">鹰院的神经元</div>
+      <div>陆语</div>
+      <div class="small">00:37 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/iiZDkHRIBA1upBZKT8SmyQ==/109951164991196649.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">明光照人间——哈利波特/凤凰社全员曲</div>
+      <div>小晴、熙尔</div>
+      <div class="small">04:21 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xvda-EUKuyDH85hQnGxTOw==/109951169165211245.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">好天气 坏天气</div>
+      <div>隆历奇、法老</div>
+      <div class="small">03:44 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/QRPnin8fYCigALnVNavvqg==/109951168503845366.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">顶流 （HB CYPHER）</div>
+      <div>生生SurvivaL、PAN、msttttttt</div>
+      <div class="small">02:46 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/IZFZKHdlqTcgNBK71N6prA==/109951164881102411.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【生僻字】之哈利波特魔咒篇_壮哉我霍格沃兹</div>
+      <div>Rosee</div>
+      <div class="small">02:51 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yYk_UPB_BviAw8e5bVdTNA==/109951164722698991.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">童话·哈利波特（翻自 暗杠）</div>
+      <div>紫依_七弦剑吟</div>
+      <div class="small">04:20 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bgRobs1gPjsen9F1ClaKvA==/109951167303162487.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">霍格沃茨一直爱你 ——《哈利波特》原创同人曲</div>
+      <div>炊饭、不馋、NJ青木、木延觉、浮生梦tuzi、上河Lin、惊竹娇、池绛不吃姜</div>
+      <div class="small">03:53 | 热度 45</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 10 页 | 总计 186 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

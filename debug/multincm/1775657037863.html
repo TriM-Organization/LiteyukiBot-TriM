@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Vxl3frtKK-7KM_PxjGjwEw==/109951172980810817.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">SGA(恒儿哥TopBarry合作曲)</div>
+      <div>Rapstan</div>
+      <div class="small">02:20 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/e9l0JKn5ynbucAV_Zk3Hfw==/109951172099621180.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">流量密码</div>
+      <div>Dr.Nur单、欧阳冰凉</div>
+      <div class="small">02:45 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/9Mw3BHQiZ7lSkbNb1-7RPw==/109951170290825382.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 猫 鼠 游 戏 ”- 纯正 Boombap ✧ ✧ ✧#节奏玩家5</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:17 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Kt6LpGOYRb8m-vtw6e_tWA==/109951169702320077.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 无 耻 之 徒 ”- 南区 Boombap ✧ ✧ ✧#节奏玩家5</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:21 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/7zuNietLCARrkNFA72sU5A==/109951170400279802.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ Still D.R.E ”- 致敬 Boombap ✧ ✧ ✧ 疯狂依旧</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:33 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/EZhxXO_wOEYh9uJMZJqcdg==/109951170436032652.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 铃 芽 之 旅 ”- 绝美 Guitar R&B ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:39 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/7qqdwJsGER_H4ieIUywTaQ==/109951169661768190.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 霓 虹 骑 士 ”- 超速 Trap ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">02:48 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/iXlyJE-6socBfjmCR8Rl8Q==/109951170492534760.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 枪 与 玫 瑰 ”- 救赎 Boombap ✧ ✧ ✧ 杀手不太冷</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:35 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Fk_t_ukPS6MNuROqr2XUoA==/109951172997078264.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">MyHouse(topbarry单曲试听版)</div>
+      <div>Rapstan</div>
+      <div class="small">01:23 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-ZyD_uH6Clm9fi5Fe2laqQ==/109951170376896311.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 恶 狼 传 说 ”- 速攻 孟菲斯 Trap Beat ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">02:12 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/IUZfZ6neQ59rSaaAk0YVkQ==/109951169680134494.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 石 之 自 由 ”- 悠悠 Boombap ✧ ✧ ✧节奏玩家5</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:03 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8GeoCSWV2WW0lD6mQVCBwA==/109951169138023266.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">那么刚好</div>
+      <div>Zerlene 郑洁伶</div>
+      <div class="small">03:55 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/FYx-sHdJhLhd38grc02hng==/109951170966965627.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">"Stay" Melodic Rap/Pop Trap/叙事/钢琴「Beat」</div>
+      <div>谭响TanX</div>
+      <div class="small">03:51 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/3zAsZYthJYVItniPortWPA==/109951172626406542.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Top Barry未发布demo</div>
+      <div>谁又记着谁</div>
+      <div class="small">00:42 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jk14muW7xsz94kll0SlFVg==/109951170412385063.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">[FREE]AP Mozart×Key Glock×孟菲斯 Type Beat "恭喜你"</div>
+      <div>INFPeachass屁桃</div>
+      <div class="small">02:44 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xI4c-IWg9rO5g_pe8wyWIQ==/109951170422060962.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">[FREE]Key Glock×孟菲斯 Type Beat“赌神”</div>
+      <div>INFPeachass屁桃</div>
+      <div class="small">03:22 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/4JVC-08Uoc4B4-66k8f9mQ==/109951170214976283.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 极 恶 世 代 ”- 祖安 Club banger ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:01 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xu9H-pBGZSlI-UE5o713iw==/109951167053301696.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 轰 炸 空 间 ”- 摇摆 EDM Beat// 8秒钟夺走你的身体晃动权</div>
+      <div>CRAZY BEATZ</div>
+      <div class="small">03:00 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/3poIR6kqnbOHyYAz-yy_gQ==/109951170351037626.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 孤 独 患 者 ”- Sad Emotional Beat ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:33 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/SvDwIZUvufVjz7IFcAgmUw==/109951170462346839.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【FREE】“ 碎 月 长 歌 ”- 宿命 Emo Trap ✧ ✧ ✧</div>
+      <div>Crazy Yan</div>
+      <div class="small">03:23 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/DL_uM3yDGprfMAIqsq6rFg==/109951165087405684.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心动模式</div>
+      <div>BLACKDD、许允菲</div>
+      <div class="small">03:32 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/DL_uM3yDGprfMAIqsq6rFg==/109951165087405684.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心动模式 伴奏版</div>
+      <div>BLACKDD、许允菲</div>
+      <div class="small">03:32 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/tr1MjYui32xMAojKiQvixQ==/109951164920563602.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心动模式</div>
+      <div>柴鱼</div>
+      <div class="small">03:32 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gL2YEPcQqpqHmorsGbjorw==/109951166073000749.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心动模式</div>
+      <div>漓渊、百陌</div>
+      <div class="small">03:33 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/cIk_WXP0sHOst4g7mexbLA==/109951167714425487.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心动模式</div>
+      <div>李梦圆Charlie</div>
+      <div class="small">03:32 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/25EwdiJtnHvw2p1ReWSe0Q==/109951166239382917.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Say it !</div>
+      <div>YoungC-Tok</div>
+      <div class="small">02:35 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Av6tQ90HGPIZNEjSjc918Q==/109951169803412588.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">没苦硬吃 没福硬享</div>
+      <div>OWEN欧阳子文</div>
+      <div class="small">02:42 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bm9bnhVnBq2VTyBhhWfu4g==/109951169022092826.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">公益跳伞(小猪佩奇)</div>
+      <div>芸风墨客</div>
+      <div class="small">02:31 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Fuf0jjQop-O1An9C2Y1zHQ==/109951169012133923.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雪糕刺客(小猪佩奇)</div>
+      <div>芸风墨客</div>
+      <div class="small">02:15 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/PGcZ5SqUWTyx9QVbACpg5Q==/109951172673383629.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">学校地下王</div>
+      <div>NO MATCH CLUB</div>
+      <div class="small">02:47 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/83bYwMEqysR0edFSVenjhQ==/5798824325103477.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">歪批三国</div>
+      <div>侯宝林</div>
+      <div class="small">24:01 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Jfoh2bE6qOGE_BmbtvQ8EQ==/109951168970137337.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">思密达发电机(熊出没)</div>
+      <div>芸风墨客</div>
+      <div class="small">02:47 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/CaLTWrSPfdiLf4NbczyI8Q==/109951169152873259.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">听不懂颠佬手机(熊出没)</div>
+      <div>芸风墨客</div>
+      <div class="small">02:45 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/83bYwMEqysR0edFSVenjhQ==/5798824325103477.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">批三国</div>
+      <div>侯宝林</div>
+      <div class="small">24:32 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/WO4i8GBIWfEcKGKvTPoSTw==/2074778441637569.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不差钱</div>
+      <div>小沈阳、丫蛋、赵本山</div>
+      <div class="small">23:22 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gXBvfC96TyIjsDwr1C9nlQ==/109951164343395482.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">布朗卡先生的下午茶</div>
+      <div>澄海伯伯、Badago吧嗒</div>
+      <div class="small">02:46 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/s0xElBaAryn-GXA4iwytFQ==/109951164530002949.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">怎么搞</div>
+      <div>熊梓淇</div>
+      <div class="small">03:26 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/WO4i8GBIWfEcKGKvTPoSTw==/2074778441637569.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">送水工</div>
+      <div>赵本山</div>
+      <div class="small">15:53 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/rfDrnEFAGmulpNzhxKwDCQ==/6022025185426303.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Friends S04E23-24<span>（罗斯的婚礼）</span></div>
+      <div>英语听力</div>
+      <div class="small">41:27 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-UsnKYO5l0hDttZds6F6Ag==/109951163083137140.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">乱标价</div>
+      <div>AR刘夫阳</div>
+      <div class="small">05:58 | 热度 25</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 8 页 | 总计 150 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

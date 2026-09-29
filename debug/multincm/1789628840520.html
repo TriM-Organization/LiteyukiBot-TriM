@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>81</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/x-fJlWR_PWujL7c3yIq3HQ==/109951171964643362.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">无人智胜进行曲</div>
+      <div>李旭昊</div>
+      <div class="small">02:14 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>82</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ttvhFqco3I7GLzuJ7vY50A==/109951165925849782.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">不忘初心<span>（舒楠监制 官方正式版）</span></div>
+      <div>韩磊、谭维维</div>
+      <div class="small">04:25 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>83</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/NTAIoxGl91fJQHdQvPUIRA==/109951164914660330.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Minecraftable</div>
+      <div>Abtmelody</div>
+      <div class="small">03:47 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>84</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/oBZ5wy_MR395LLaPRXAZgg==/109951164978250641.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Astronomia (Coffin Dance Song) [Minecraft Note Blocks]</div>
+      <div>grande1899</div>
+      <div class="small">01:02 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>85</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/uDvM-aAf63-f-Ghrm7em-w==/109951171337651402.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Minecraft: Lava Chicken (Original Game Soundtrack)<span>（我的世界：熔岩烤鸡；游戏《我的世界》原声带）</span></div>
+      <div>Minecraft、Hyper Potions</div>
+      <div class="small">02:14 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>86</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-rJM2zfrkBWbe8daE6zP9A==/109951164902620984.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Entity 303's Life</div>
+      <div>Abtmelody</div>
+      <div class="small">04:02 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>87</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8ZScS5RBR1ibMCYDr-YYdw==/109951167480957763.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Graze the Roof (In-Game)<span>（游戏《植物大战僵尸》屋顶关卡主题曲）</span></div>
+      <div>Laura Shigihara</div>
+      <div class="small">03:48 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>88</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/UqY8-Yi_F2ZZ8pITWn8_zA==/109951170943174296.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Pokémon Theme (Minecraft Note Block Cover)</div>
+      <div>acatterz</div>
+      <div class="small">03:08 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>89</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ZZRVcs-IYLJ2AGX_6F9I5Q==/109951165202933338.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Blinding Lights (Minecraft Note Blocks)</div>
+      <div>grande1899</div>
+      <div class="small">03:00 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>90</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-tkZLbfzPNzcVQTEIMX_hQ==/109951168266449518.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大石碎胸口（Minecraft.ver）</div>
+      <div>Cyanbird-青鸟</div>
+      <div class="small">06:43 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>91</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jsEBRqVewZvpxVmFW3XhLw==/109951164920175577.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Monster Crew</div>
+      <div>Abtmelody</div>
+      <div class="small">03:55 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>92</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ax4kj8hMLeBnut0y-U81Kw==/109951164920647892.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Herobrine's Life</div>
+      <div>Abtmelody</div>
+      <div class="small">04:02 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>93</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/cnk6opsLwz6acFo43XGevQ==/109951169018123710.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Only My Railgun (Minecraft Note Block Cover)</div>
+      <div>矿车是什么</div>
+      <div class="small">01:37 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>94</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/spgN75KW0VXsnb51CaSIUg==/109951170943178217.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Talk (Minecraft Note Block Cover)</div>
+      <div>acatterz</div>
+      <div class="small">03:16 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>95</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/HWTtf6fKLlgzjhNIYyAmrg==/109951172217772828.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Don't Mine at Night - Minecraft Parody</div>
+      <div>Brad Knauber</div>
+      <div class="small">03:37 | 热度 25</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 5 页 / 共 5 页 | 总计 95 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

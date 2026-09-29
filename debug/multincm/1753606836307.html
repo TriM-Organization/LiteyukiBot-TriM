@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/QHt1fvA2jRriaxTMjj55Gg==/109951165268850187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung-Tung (Empty)</div>
+      <div>i-dle</div>
+      <div class="small">03:49 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/G5a20PcEu8Ng4gXJg1rsKA==/109951168310265040.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Trinix Remix</div>
+      <div class="small">02:30 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/L94e_mtstPREm1SoslqPKA==/109951165362840834.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung（翻自 女娃）</div>
+      <div>林易LinY、非枳Volta_、北歌Mia、Anjé</div>
+      <div class="small">03:50 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/lMANG4waLpo1unGecO_xFg==/109951171332270815.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung Tung Sahur (Italian Brainrot) (Extended Mix)</div>
+      <div>W&W</div>
+      <div class="small">03:48 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mXpchpWHh-RvgggQJR6Hxg==/109951170243436006.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Sinan Vllasaliu、Vjollca Haxhiu</div>
+      <div class="small">03:09 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3Pm0AmnzUtzj19OTEBRHkQ==/109951166942617860.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung tung</div>
+      <div>Linda Mirena</div>
+      <div class="small">03:39 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/LgVjdclo30s5QVGeK2I6ew==/109951163556705624.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung tung</div>
+      <div>Linda Mirena</div>
+      <div class="small">03:39 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jvP5xk8fBhd7KcHawK8fdA==/109951171142202344.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung (Chu Van Thao Remix)</div>
+      <div>Luny</div>
+      <div class="small">01:11 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4s7A3mtSsHkSdGrOzMfaOg==/109951165616378778.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung(Empty)</div>
+      <div>不静音双子、KimTaetae、米酒貂芋烧、不知名艺术家bb</div>
+      <div class="small">03:50 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nBJyWhO7q4d8vGo3G9Zupw==/109951168676926046.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung (Tech.House)</div>
+      <div>JMRodriguez</div>
+      <div class="small">03:44 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/GhUbFxMaljYCvMsyCDcXHQ==/109951168732012319.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Dipa (ITA)</div>
+      <div class="small">07:42 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-Dfz8qL9HxtFgSVtSH5LnQ==/109951170243720335.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Lendrit Krasniqi</div>
+      <div class="small">03:03 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/XiQImubyUSP6_liayuoUYg==/109951169837614999.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Yan YETE</div>
+      <div class="small">01:14 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Dc7wiBhw_XQm5mAsq26jwA==/109951171315187929.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">tung tung</div>
+      <div>Maxter</div>
+      <div class="small">01:22 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/2wklAh6K1XTCjS4wwpgVmw==/109951168491391897.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>CYANIDE</div>
+      <div class="small">03:40 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/lVPyi1gESinU3SFkFhT1cw==/109951171020049830.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>Proskii</div>
+      <div class="small">02:20 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/miSb_ZhRnGtj4bPhy4oyvQ==/109951171392678670.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>DJ Agung</div>
+      <div class="small">02:19 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/vha6IehYKZYeOx5pLQS_Jg==/109951171391541400.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">TUNG TUNG</div>
+      <div>Ardito</div>
+      <div class="small">02:11 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Fp9kciYz93S2WbWfaOX4NQ==/109951171179850835.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Tung Tung</div>
+      <div>KUDOYAR、Socraton</div>
+      <div class="small">03:30 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/QAXwtjv3B8Uyi1vvb6NG2g==/109951171250473009.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">TUNG TUNG</div>
+      <div>luka caro</div>
+      <div class="small">02:53 | 热度 5</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 304 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

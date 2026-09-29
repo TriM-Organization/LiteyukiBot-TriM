@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JOHM5D5rMXUlLU9FtsJirQ==/109951167107609030.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">ヒステリックナイトガール -Awakening- (feat. Such)<span>（歇斯底里的深夜女孩）</span></div>
+      <div>PSYQUI、Such</div>
+      <div class="small">03:25 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JeIQ_aaJ9QILCbSVP-KfcQ==/109951164388336842.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">ヒステリックナイトガール<span>（歇斯底里的夜间女郎）</span></div>
+      <div>Such、PSYQUI</div>
+      <div class="small">05:06 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/S0oKoMGH4ykuVDJExNqUWg==/109951169364196282.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">シニカル・シニカル (feat. Such)<span>（愤世嫉俗）</span></div>
+      <div>Such、吐息</div>
+      <div class="small">02:56 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/KUm4mbGpJe29vdSvSay0qQ==/109951165777472645.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Don't you want me</div>
+      <div>Such、PSYQUI</div>
+      <div class="small">04:44 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/MdKBhrzMyrWBv50RAG6okw==/109951170353311439.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Signal (feat. Such)</div>
+      <div>rejection、Such</div>
+      <div class="small">05:15 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/PQS2bOGxsz9oHNJlCKP1Bg==/109951166140779996.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">29時はビビッド (feat.Such)<span>（狂热的29点钟）</span></div>
+      <div>水槽、Such</div>
+      <div class="small">02:57 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/CdKxmY1go2C_2xwa5YM2qA==/109951167672426814.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">C & B (feat. Such)</div>
+      <div>PSYQUI、Such</div>
+      <div class="small">02:24 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/9bYefScLsMai36D0pzQ7wg==/109951167107550389.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">DROPS (feat. Such)</div>
+      <div>Such</div>
+      <div class="small">03:02 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/LQv7Inxkhf4GXLh2w6l3XA==/109951165778560012.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Hype (feat. Such)</div>
+      <div>Such、PSYQUI</div>
+      <div class="small">05:03 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/tZlK4OmD1w-_97FmdgLNZw==/109951167107593866.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Raise Your Hands (feat. Such)</div>
+      <div>PSYQUI、Such</div>
+      <div class="small">03:22 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JOHM5D5rMXUlLU9FtsJirQ==/109951167107609030.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Don't you Want Me (feat. Such) [Mameyudoufu Remix]</div>
+      <div>PSYQUI、Such、Mameyudoufu</div>
+      <div class="small">03:27 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JOHM5D5rMXUlLU9FtsJirQ==/109951167107609030.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Secret Dance Hall (feat. PSYQUI)</div>
+      <div>Such</div>
+      <div class="small">03:23 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/rruWLL5xztVS8wVkq8n--Q==/109951166230779429.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">ファントマイズ<span>（幻影）</span></div>
+      <div>Such、エハラミオリ</div>
+      <div class="small">03:48 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JOHM5D5rMXUlLU9FtsJirQ==/109951167107609030.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">センチメンタルハートボーイ (feat. PSYQUI)</div>
+      <div>Such、PSYQUI</div>
+      <div class="small">03:38 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/I2yGLiWuVkT6a8YgErJI7g==/109951165778556776.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Your voice so... (feat. such)</div>
+      <div>Such、PSYQUI</div>
+      <div class="small">04:16 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/1THEGyRaZKBeqTwtoKgtgQ==/109951165461408804.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Mirror Mirror (feat. Such)<span>（魔镜魔镜；游戏《节奏光剑》背景音乐）</span></div>
+      <div>Such</div>
+      <div class="small">04:12 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Iv8XBAF7T-7GxyGnb_rkJw==/109951167013648569.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">29時はビビッド<span>（29 时生动）</span></div>
+      <div>水槽、Such</div>
+      <div class="small">02:57 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/fcIsj3TC9zq7Q1QyxK4W_Q==/109951165777467956.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">ENDLESS CIDER</div>
+      <div>Such、Mameyudoufu</div>
+      <div class="small">03:13 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JOHM5D5rMXUlLU9FtsJirQ==/109951167107609030.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Mend your ways (feat. PSYQUI)</div>
+      <div>Such</div>
+      <div class="small">04:25 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/taUfqkV-NONM8lm4GvBE7A==/109951168319601869.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">SWITCH</div>
+      <div>水槽、Such</div>
+      <div class="small">02:50 | 热度 65</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 12 页 | 总计 232 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In F Minor for Violin, String Orchestra and Continuo, Op. 8, No. 4, RV 297, "L'inverno" (Winter):Allegro non molto<span>（f小调第4号小提琴和弦乐协奏曲《四季》，作品 297 - 第1乐章 不很快的快板“冬”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:35 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IiMDCvc5XqXNacw1XNZxDA==/2539871860492877.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons (Winter):1. Allegro Non Molto<span>（f小调第4号小提琴协奏曲，作品 8 - 第1乐章 不太快的快板“冬”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:30 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Q39e3IKGg0pALWUPlFBesg==/109951163295912927.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto for Cello, Orchestra and Basso continuo in A minor, R. 421, III. Allegro</div>
+      <div>Antonio Vivaldi、Prague Chamber Orchestra、Michal Kaňka</div>
+      <div class="small">02:23 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IiMDCvc5XqXNacw1XNZxDA==/2539871860492877.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons (Spring):1. Allegro<span>（E大调第1号小提琴协奏曲，作品 8 - 第1乐章 快板“春”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:42 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IiMDCvc5XqXNacw1XNZxDA==/2539871860492877.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons (Summer):3. Presto<span>（g小调第2号小提琴协奏曲，作品 8 - 第3乐章 急板“夏”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">02:27 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IiMDCvc5XqXNacw1XNZxDA==/2539871860492877.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons (Winter):2. Largo<span>（f小调第4号小提琴协奏曲，作品 8 - 第2乐章 广板“冬”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">02:01 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In G Minor for Violin, String Orchestra and Continuo, Op. 8, No. 2, RV 315, "L'estate" (Summer):Presto, Tempo impetuoso d'estate<span>（g小调第2号《四季》协奏曲，作品 315 - 急板“夏”；维瓦尔第《四季》：G小调小提琴第二协奏曲，《夏》第三乐章：急板）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:02 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In F Major for Violin, String Orchestra and Continuo, Op. 8, No. 3, RV 293, "L'autumno" (Autumn):Presto ,Tempo impetuoso d'estate<span>（F大调第3号小提琴和弦乐协奏曲《四季》，作品 293 - 急板“秋”；维瓦尔第《四季》：G小调小提琴第三协奏曲，《秋》第一乐章：快板）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">05:02 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ECOXoDUHnrsey7_2Ne54RQ==/6650945837500301.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto Op. 9 No 4 in E major RV263a:3. Allegro non molto<span>（E大调第4号协奏曲，作品 263a - 第3乐章 不很快的快板）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:35 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IiMDCvc5XqXNacw1XNZxDA==/2539871860492877.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons (Autumn):1. Allegro<span>（F大调第3号小提琴协奏曲，作品 8 - 第1乐章 快板“秋”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">05:31 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/4z44Y3geqOVmd7V2VRjzdg==/109951163255633515.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons: Winter - Concerto No. 4 in F Minor, RV 297: I. Allegro Non Molto<span>（f小调第4号小提琴协奏曲，RV8-第1乐章不太快的快板“冬”；维瓦尔第《四季》：F小调小提琴第四协奏曲，《冬》第一乐章：不太快的快板）</span></div>
+      <div>Felix Ayo, I Musici</div>
+      <div class="small">03:22 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xqAMWEPAW1zKYWfFX3_ZTw==/109951167230639423.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">A小调协奏曲，作品 Rv. 161，第一乐章：小快板<span>（Concerto in A minor RV.161: I. Allegretto）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">01:40 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kfEanRVF2ffOC_BIG8MD5A==/109951171840092519.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto for Oboe and Violin in B-Flat Major, RV 548, F. XII:16: III. Allegro</div>
+      <div>Antonio Vivaldi、Classical Archive Stereo Arts</div>
+      <div class="small">02:13 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In F Minor for Violin, String Orchestra and Continuo, Op. 8, No. 4, RV 297, "L'inverno" (Winter):Largo<span>（f小调第4号小提琴和弦乐协奏曲《四季》，作品 297 - 第2乐章 广板“冬”）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">02:24 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/WOsEEsjh5cwucUN8KCTlPg==/109951168146391787.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons, Winter, Violin Concerto in F Minor, RV 297, Op. 8 No. 4:I. Allegro non molto<span>（F小调第4号小提琴协奏曲, 作品8 RV 297 "冬季":第一乐章.不过分的快板）</span></div>
+      <div>Simon Standage、The English Concert、Trevor Pinnock</div>
+      <div class="small">03:12 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mnp0ZCyY3tBfWFcTOLOCdQ==/109951163301389212.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">The Four Seasons - Summer in G Minor, RV. 315: III. Presto<span>（g小调第2号小提琴协奏曲，RV.8-第3乐章急板“夏”）</span></div>
+      <div>Antonio Vivaldi、La Serenissima、Adrian Chandler</div>
+      <div class="small">02:47 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/NXCb559j1_5SHjcaVGSgng==/109951172464233291.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Orchestral Suite No. 1 in C Major, BMV 1066:VI. Bourrée I-II</div>
+      <div>The English Concert、Trevor Pinnock、Johann Sebastian Bach</div>
+      <div class="small">02:20 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In G Minor for Violin, String Orchestra and Continuo, Op. 8, No. 2, RV 315, "L'estate" (Summer):Allegro non molto<span>（g小调第2号《四季》协奏曲，作品 315 - 第1乐 不是很快的快板“夏”；维瓦尔第《四季》：G小调小提琴第二协奏曲，《夏》第一乐章：不太快的快板）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">06:00 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-Z2F80oAcYXgXon76ahkww==/109951170219518001.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto For Lute, 2 Violins And Continuo In D Major, RV 93:3. Allegro<span>（D大调鲁特琴, 双小提琴和通奏低音协奏曲, RV 93:第三乐章.快板）</span></div>
+      <div>Narciso Yepes、Orchestre de Chambre Paul Kuentz、Paul Kuentz</div>
+      <div class="small">02:35 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IEh8mhn_TF97diCgC0gaGQ==/109951163094938816.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Concerto In E Major for Violin, String Orchestra and Continuo, Op. 8, No. 1, RV 269, "La Primavera" (Spring):I. Allegro<span>（E大调第1号小提琴和弦乐协奏曲《四季》，作品 269 - 第1乐章 快板“春”；维瓦尔第《四季》：E大调小提琴第一协奏曲，《春》第一乐章：快板）</span></div>
+      <div>Antonio Vivaldi</div>
+      <div class="small">03:34 | 热度 55</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 306 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

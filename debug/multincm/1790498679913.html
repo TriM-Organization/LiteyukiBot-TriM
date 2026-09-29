@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/MnJ9YnzJULL9aMNuAsWUeQ==/109951173450512665.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你没有心</div>
+      <div>陌雨辰、孤单悲忘录</div>
+      <div class="small">02:32 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/KLx1IFnPgLvY4vNKmtetIA==/109951173430685884.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">没有心</div>
+      <div>77</div>
+      <div class="small">00:12 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/P_ePfxMxxudnG8v5ii4Vcw==/109951173698137776.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你没有心</div>
+      <div>蓉子</div>
+      <div class="small">00:29 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/NtRIMrMC6yV39dII7T3P_A==/109951173114495617.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">他没有心</div>
+      <div>Badynow</div>
+      <div class="small">02:07 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/n_RPuY_H-kXBeh2SH9xoTg==/109951163240594763.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">洋葱</div>
+      <div>杨宗纬</div>
+      <div class="small">04:38 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/nmSww0x4MWYXbo1ujD3OtQ==/109951169285543922.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">有没有动心</div>
+      <div>蒲佳雯</div>
+      <div class="small">02:37 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/XQpDZPe0HswNl5GvjhCLtA==/109951163597926756.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心做し<span>（心理作用）</span></div>
+      <div>GUMI、一之瀬ユウ</div>
+      <div class="small">04:28 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bAgp5luv7ybikMMd3cWXzg==/109951168581066837.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">有没有动心</div>
+      <div>一口甜</div>
+      <div class="small">02:37 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xVsXZb7m7TPxghQuOBdRHQ==/109951172275872336.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">คนไม่มีหัวใจ (เพลงจากซีรีส์ "THE WICKED GAME เกม รัก ลวง")<span>（没有心的人；电视剧《邪恶游戏》OST）</span></div>
+      <div>Offroad Kantapon</div>
+      <div class="small">03:52 | 热度 55</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/hq9g3-7lBQoUIYA7kHGWmQ==/109951164428837079.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">竈門炭治郎のうた<span>（灶门炭治郎之歌；TV动画《鬼灭之刃》第19话插曲:鬼滅の刃 第19話「ヒノカミ」挿入歌）</span></div>
+      <div>中川奈美</div>
+      <div class="small">05:32 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/uL7RfDE12gRmoIiFVVXhjw==/642114790643672.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">심장이 없어<span>（没有心脏）</span></div>
+      <div>8Eight</div>
+      <div class="small">03:30 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/tFh0ATDvy3FBmJq2DYSlbQ==/109951168070715951.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">有没有动心</div>
+      <div>苏星婕</div>
+      <div class="small">02:36 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/eAncobr1ZjUt5il7KxkLCQ==/109951173860874483.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">克罗没有心</div>
+      <div>七生</div>
+      <div class="small">01:55 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PdQVlILih-VSggn47J_ACQ==/109951173570796526.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">爱掉帧<span>（你根本就没有心）</span></div>
+      <div>L8R</div>
+      <div class="small">02:37 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/rmM5zxigbDCs-7viMnKSZg==/109951173630662047.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">德古拉你没有心（我的歌声里）</div>
+      <div>恒崽</div>
+      <div class="small">00:21 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ysVwxar91TI54ExpiV3wuQ==/109951167624002866.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">심장이 없어 (Live)<span>（没有心脏）</span></div>
+      <div>RM、Jin、SUGA、j-hope、Jimin、V、Jung Kook</div>
+      <div class="small">02:38 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/75l5it0eSs0uGnsvZUew6A==/109951168070704471.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">有没有动心</div>
+      <div>何雨溪</div>
+      <div class="small">02:36 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/lfS8AHD0RD5nORL4CHb7Vg==/109951172873179610.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">浔</div>
+      <div>没有心</div>
+      <div class="small">01:24 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xhre6QBjQg_AisDlr-jFKw==/109951172181214217.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">心上沒有心</div>
+      <div>伍思凯</div>
+      <div class="small">04:33 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/QjKO8G5UJsXu8Q2agYEvXw==/109951173946615789.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">他没有心pt2</div>
+      <div>Badynow</div>
+      <div class="small">02:17 | 热度 45</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 17 页 | 总计 321 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

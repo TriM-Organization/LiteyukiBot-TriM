@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/CSjhWIv08-c2-M9PY1tLHQ==/109951170980089869.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>赵乃吉</div>
+      <div class="small">03:51 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/7wR6ByMdnc2Pi3zkPiSotQ==/109951171896026695.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前 (Live)</div>
+      <div>juju</div>
+      <div class="small">00:17 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8hdt36veJTER-PRFLwyIfw==/109951168180416331.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前(手写的永远)</div>
+      <div>鹿小肥</div>
+      <div class="small">00:45 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VoYNarbv8j_bFkjJ6AvhXg==/109951166562133588.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前（Jay piano ver.）</div>
+      <div>阿层丶</div>
+      <div class="small">03:22 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/sC5IWR785m-sG9VnX6JpsA==/109951166649569305.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>酒做的</div>
+      <div class="small">04:54 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/CXdt-LsxVGMuibrH1QmbIw==/109951172582344486.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>大宥</div>
+      <div class="small">04:19 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/wvBKYqAnPtRpS-TR-0L3tw==/109951168992609071.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手寫的從前</div>
+      <div>Cao Son Nguyen</div>
+      <div class="small">05:00 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/MS4zSVSHXpXr3VK1OYxRXg==/109951168826821789.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>是迟迟耶</div>
+      <div class="small">00:45 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XgNal4gVZrWXrba437Utdw==/109951166542643291.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写从前（demo）</div>
+      <div>方大豪</div>
+      <div class="small">04:54 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XgNal4gVZrWXrba437Utdw==/109951166542643291.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写从前（demo） 伴奏</div>
+      <div>方大豪</div>
+      <div class="small">04:54 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gUvb-fLzAJ4Eiy4uKS0u4Q==/109951171796463294.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前周杰伦(正式版)</div>
+      <div>沈幼楚</div>
+      <div class="small">00:54 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8AeJLjbGKnp1gxwMycnDsQ==/109951172661339989.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">红尘客栈</div>
+      <div>周杰伦-、钦琪</div>
+      <div class="small">03:59 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VDy4kORfsG2uXMs-yLdZTA==/109951171907035875.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前(43秒)</div>
+      <div>张宇佳</div>
+      <div class="small">00:43 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8AeJLjbGKnp1gxwMycnDsQ==/109951172661339989.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">踏山河</div>
+      <div>踏山河 - 七叔（叶泽浩）、钦琪、叶泽浩</div>
+      <div class="small">03:59 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8AeJLjbGKnp1gxwMycnDsQ==/109951172661339989.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">执迷不悟</div>
+      <div>执迷不悟、王唯乐、- 小乐哥（王唯乐）、钦琪</div>
+      <div class="small">03:00 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/w_ISodDTOG9Ife3k0kCqqw==/109951171580425142.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前 (DJ版)</div>
+      <div>圈妹、小奶瓶、虞姬、DJ蚕豆好吃</div>
+      <div class="small">02:35 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8AeJLjbGKnp1gxwMycnDsQ==/109951172661339989.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">兰亭序</div>
+      <div>周杰伦-、钦琪</div>
+      <div class="small">03:34 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/EU45RshRvXpuFHFs94CZHw==/109951166328714704.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>瑾甜</div>
+      <div class="small">00:45 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ZYsW-VPixFyR1cbdzHhigw==/109951168715286520.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Lover(钢琴版)</div>
+      <div>沈波</div>
+      <div class="small">01:16 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0ju8ET1ApZSXfWacc4w49w==/109951169484091680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">手写的从前</div>
+      <div>juju</div>
+      <div class="small">00:45 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 12 页 | 总计 240 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

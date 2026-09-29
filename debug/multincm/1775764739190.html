@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/TeOMEQijqWwQbeCyj5k_Vg==/109951172105130561.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站</div>
+      <div>失落花园_</div>
+      <div class="small">02:01 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HxByUdCldDINVs-5Pb888g==/109951172809784394.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站（白菜对我笑）</div>
+      <div>kerou.swag</div>
+      <div class="small">02:13 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/esakm7lkBxNUg5aTsFXJWA==/109951172642639244.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站(0.9X版)</div>
+      <div>朴彩英Ryla</div>
+      <div class="small">02:25 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VJZcCnB3VIievvPn8vD00Q==/109951172539098960.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站FUNK</div>
+      <div>路人痞</div>
+      <div class="small">02:08 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/WUaxrzTltea69w7ogxg3nQ==/109951172212100543.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Sleeping City Funk<span>（沉睡都市放克）</span></div>
+      <div>DJ RAULIPUES、DJ FANGZ、TrongKien</div>
+      <div class="small">01:41 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/wBEuaN80o8R_CTYl7shRYw==/109951172269905574.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站 (New Edit)</div>
+      <div>7ovey</div>
+      <div class="small">02:04 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/TeOMEQijqWwQbeCyj5k_Vg==/109951172105130561.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站（钢琴版）</div>
+      <div>失落花园_</div>
+      <div class="small">00:33 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/YIVlMYcygB15Y7MXBZ06uA==/109951172334242006.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">哈基米情绪回收站（我叫小白李 remix）</div>
+      <div>我叫小白李</div>
+      <div class="small">02:01 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/NR1XVtCNZMoeUfBJdbuWgg==/109951172737927387.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">白菜对我笑<span>（DJ版）</span></div>
+      <div>DJ大大怪</div>
+      <div class="small">01:36 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ZcmBIsC0d2LZiPvweIVHxA==/109951172596846256.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站PT.2</div>
+      <div>失落花园_</div>
+      <div class="small">02:13 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VJZcCnB3VIievvPn8vD00Q==/109951172539098960.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站Funk</div>
+      <div>路人痞</div>
+      <div class="small">01:42 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/HxByUdCldDINVs-5Pb888g==/109951172809784394.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站 X HOUSE</div>
+      <div>kerou.swag</div>
+      <div class="small">01:52 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ldnYTXHEMqT2fiB8J6pzDQ==/109951172760940936.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站(1.2X)</div>
+      <div>努力中的阿飞</div>
+      <div class="small">01:43 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8K2PtdBMibVja5NwZMaK_w==/109951172548234294.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站（slowed）</div>
+      <div>苏睦</div>
+      <div class="small">02:36 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Q9_ZzvSgG8tz5rQwJo2nwg==/109951169635864791.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站</div>
+      <div>UM、时光流逝</div>
+      <div class="small">01:27 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0_levvQ3ZlmLFzY1swcLHw==/109951171981216436.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站（钢琴SLOW版）</div>
+      <div>发仔</div>
+      <div class="small">02:01 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/A8DOFWm-PD0o5ZU6gGsbYg==/109951172625660914.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站Pt2.</div>
+      <div>Mercury Ghost</div>
+      <div class="small">02:17 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/f4es5Ho62B7hBw_iZBnfuA==/109951172747888189.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">变速变调-情绪回收站 - 失落花园_</div>
+      <div>Nayla</div>
+      <div class="small">02:03 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VJZcCnB3VIievvPn8vD00Q==/109951172539098960.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">情绪回收站FUNK</div>
+      <div>路人痞</div>
+      <div class="small">02:08 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/iQ8RhxwvqLrgzn1Ck2YtQQ==/109951172753283438.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">MALVADO DE VAPO+情绪回收站（翻自 不谈恋abc）</div>
+      <div>不谈恋abc</div>
+      <div class="small">00:35 | 热度 65</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 8 页 | 总计 145 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

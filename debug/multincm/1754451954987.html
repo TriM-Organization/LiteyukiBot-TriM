@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/dxxz2yBSVykKAY5RewD-Mg==/109951170980610490.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡(Lil DEER Ver.)</div>
+      <div>晴烟</div>
+      <div class="small">04:05 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/D9sssl4tjFZKjJQZG6PbBg==/109951171372541044.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（熊大版）</div>
+      <div>抽象八</div>
+      <div class="small">04:06 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/TZbhdSDphLy5dU86iaqvdg==/109951171500201864.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北是我的家乡（东北雨）</div>
+      <div>晚安</div>
+      <div class="small">01:06 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/RkRRUev5yQ7TyJdLhGHPvw==/109951171350932233.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（小八版）</div>
+      <div>抽象八</div>
+      <div class="small">04:06 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gJM-xdrEa8R8sXHvv68i6Q==/109951170698160864.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">[NEW] 大东北我的家乡（重音teto ver.）</div>
+      <div>可愛いももP</div>
+      <div class="small">01:21 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/f5rNAVljeGPcpL8DixMLhw==/109951171392675152.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（三角洲填词版）</div>
+      <div>矢泽火花</div>
+      <div class="small">02:16 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0ju8ET1ApZSXfWacc4w49w==/109951169484091680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡 (DJ何鹏版)</div>
+      <div>DJ何鹏</div>
+      <div class="small">06:32 | 热度 45</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bYjqIfZjZzximZ0rWBT5hg==/109951171283390970.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（洛天依）</div>
+      <div>wind-Rises风</div>
+      <div class="small">04:12 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/cZTz5Gt-cx-mBUDMgs0piA==/109951171510384986.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡 (洛天依×初音未来）</div>
+      <div>吴洛清</div>
+      <div class="small">04:07 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UFQdYz9AoCL2AjLzk8svhw==/109951171458185710.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（鲤鱼ACE版）</div>
+      <div>抽象八</div>
+      <div class="small">04:06 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/zorB0oqKgSt2LfJ0tqYnNw==/109951171446131544.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（ZHA_Sty bootleg）</div>
+      <div>ZHA_Sty</div>
+      <div class="small">03:32 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xQSIJADiRCYf_IhGARHhXA==/109951171489409414.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（金色大厅交响乐）</div>
+      <div>逸分</div>
+      <div class="small">01:14 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xd5OIFkM2wC9pearwLH1sw==/109951171651874805.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡</div>
+      <div>米热</div>
+      <div class="small">02:36 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/UFQdYz9AoCL2AjLzk8svhw==/109951171458185710.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">把我放在东北肯定比过老蒯（鲤鱼ACE版）</div>
+      <div>抽象八</div>
+      <div class="small">02:02 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gpT0Xmec7_RP0WguPQH-IA==/109951170996955443.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡（熊大版）</div>
+      <div>MC小洲</div>
+      <div class="small">01:45 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/dYjWsH4De_TP0EUWnOCAiA==/109951171531113558.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北我的家乡(红石音乐)</div>
+      <div>随心徜徉</div>
+      <div class="small">01:55 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/gwHI1HK6chjSp71FtMi7QQ==/109951170706554674.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">大东北也是我的家乡</div>
+      <div>CBUAD、绪山真寻</div>
+      <div class="small">04:06 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-Z4j2FlbS9uAL5CNVU84sw==/109951171356022004.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Levels vs. 大东北我的家乡（Allecvr Mashup）</div>
+      <div>Allecvr</div>
+      <div class="small">03:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/CCY2WlZu2ScMfxkmgUemnw==/109951170344459139.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">晴烟-大东北我的家乡（狗翔 remix）</div>
+      <div>狗翔</div>
+      <div class="small">04:06 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/yWkWDC95OhPAbaC89eZldg==/109951170574300515.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">东北菜东北味 vs 大东北我的家乡 (ZERØBYTE Funkot Bootleg)</div>
+      <div>ZERØBYTE</div>
+      <div class="small">06:56 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 4 页 | 总计 68 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

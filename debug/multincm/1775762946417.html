@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Qt6sfLxRCscFZVXhbQ4bfg==/109951172020385959.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（电视剧《海派甜心》片尾曲）</span></div>
+      <div>杨丞琳</div>
+      <div class="small">04:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/poVOuaCxrC0HB_zPpvXEiQ==/109951163115263393.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（偶像剧《海派甜心》主题曲）</span></div>
+      <div>杨丞琳</div>
+      <div class="small">04:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/ru69BPK6sk2l8IJ8UiekoQ==/109951172647225258.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（秦始皇VS哈迪斯DJ）</span></div>
+      <div>圈圈菌</div>
+      <div class="small">03:07 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/YGc0vH5BJhE7g0XVsaq_xQ==/109951166289177279.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（雨上晴空）</span></div>
+      <div>不是花火呀</div>
+      <div class="small">03:54 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Im6bwlKj5EHXgyOr08c-jQ==/109951167870485650.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱（cover：杨丞琳）</div>
+      <div>杨咩咩</div>
+      <div class="small">04:22 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/yewnn99ZBZvHkx34lo0z0Q==/109951172658883184.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱 (DJ版)</div>
+      <div>Mr-DJ小廖</div>
+      <div class="small">02:13 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PW7EyIPn8fbrHlNdpFlNyg==/109951172460683225.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱rnb<span>（窗外的雨滴一滴滴累积）</span></div>
+      <div>鱼忆</div>
+      <div class="small">03:53 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3aI-tMbFvqPvD1AnsaineQ==/109951164962643372.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱</div>
+      <div>周星星</div>
+      <div class="small">04:11 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Auf9AnzRkI-U-U9W_AXWNw==/109951170310686709.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱DJ（DJ-VINA remix）</div>
+      <div>DJ VINA、筱浛</div>
+      <div class="small">05:15 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/dfl6QbXUcKWwPmgKyCeSoA==/109951171816541187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱DJ (Remix)</div>
+      <div>DJ啊辰</div>
+      <div class="small">03:06 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/xsW1fmjcn4bAL3jhXgJtow==/109951167609288428.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱(0.8)（Hitori remix）</div>
+      <div>Hitori</div>
+      <div class="small">05:25 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pvgxw76L7eIyrRp5ZMHDOQ==/109951172973738431.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（小鞠版）</span></div>
+      <div>池澜</div>
+      <div class="small">04:20 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-d13o2Hx1sIDYp9twneg5A==/109951172859837976.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（氛围男版）</span></div>
+      <div>大头针</div>
+      <div class="small">03:39 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Nv9pPjSTdVr-K_K4BW-wMQ==/109951172582395084.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（微醺R&B版）</span></div>
+      <div>微醺Susie</div>
+      <div class="small">03:54 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3Ia91YFX0RKauAx3WB1XPg==/109951172498638635.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱（DJ热播版）</div>
+      <div>纸鸢、小七</div>
+      <div class="small">01:00 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IOXJXzLa1kpQFhyfM20IaA==/109951172513919788.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱</div>
+      <div>DJAZ、伤心别听网易云、komorebi、夕不阳、酸黄瓜、冮中囗、任我跑调、天赋只是见我的门槛、kk、阿斌、L1mbo、幻墨如烟、早之初、锦衣夜行夏公子、TT112、唔、藤井树、只想贺可乐、98不属虎、顾辞楠</div>
+      <div class="small">01:27 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/9C9Jd_1wCbw9RS-z5Q04BA==/109951172837671893.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱<span>（R&B版）</span></div>
+      <div>微醺卡带</div>
+      <div class="small">03:54 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/VQz4QFMBUV50qaYVr2Nf9Q==/109951171367631258.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱 (Live)</div>
+      <div>欧阳娜娜、陈卓璇</div>
+      <div class="small">04:06 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/au5WiG4GERjguQHu0MIIrA==/109951170711807776.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱 (伴奏)</div>
+      <div>戴羽彤</div>
+      <div class="small">03:32 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/_ZG3_v7zh-9kWJqF2DzBeg==/109951165816847801.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">雨爱 (DJ版)</div>
+      <div>用户 1300324957</div>
+      <div class="small">01:13 | 热度 100</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 303 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

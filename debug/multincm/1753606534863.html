@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ah5VPWlxcSb84xYncaHj8Q==/109951170646749270.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>青柳冬弥</div>
+      <div class="small">03:18 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/KuUjeOC-s5i5oDTrBtqXdA==/109951171350846375.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>神代類、KAITO、天馬司、東雲彰人、青柳冬弥</div>
+      <div class="small">02:29 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/CJ-12DTBJgS_XwkZLI8XLg==/109951169855593001.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂（威風堂々.feat. 初音ミク,鏡音リン,巡音ルカ,gumi,ia）</div>
+      <div>童话中的仙男</div>
+      <div class="small">03:20 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ah5VPWlxcSb84xYncaHj8Q==/109951170646749270.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>東雲彰人</div>
+      <div class="small">03:18 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/RTjmYv2rkSaou-pzE2bUFA==/109951168285977853.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">DarkK.Z-威风堂堂(feat. 初音ミク、镜音リン、巡音ルカ、GUMI)</div>
+      <div>祝开心</div>
+      <div class="small">03:21 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Go1CTBPEpW3ljcdI_bMqcw==/109951163597324593.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々(カバー)<span>（威风堂堂）</span></div>
+      <div>小野賢章</div>
+      <div class="small">03:19 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/mDAlgde3mreBNDThXqh58A==/109951170654069696.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>KAITO</div>
+      <div class="small">02:24 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/lYUk_1OIR0rnc3FBGroZFQ==/109951169498877616.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々 (feat. Fantasista SQUAD,KAITO) (Game size.)<span>（威风堂堂）</span></div>
+      <div>KAITO、東雲彰人、青柳冬弥、天馬司、神代類</div>
+      <div class="small">02:26 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/UozmS_RURgKKFBfnlgrviQ==/109951169413466764.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【正太涩气版】威風堂々（威风堂堂）</div>
+      <div>蝶太</div>
+      <div class="small">03:24 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/bhsDHiqbvoao6VXzH_J3rw==/109951169392563020.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>nqrse</div>
+      <div class="small">03:20 | 热度 50</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/RX2YozjMwonc5PtPldhHkg==/109951168622779994.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【AI狛枝凪斗】威风堂堂（Weiss° remix）</div>
+      <div>Weiss°</div>
+      <div class="small">03:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jWDW2HYIGeezKwrXmXAEVw==/109951164651387140.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">微风堂堂（唢呐版）</div>
+      <div>浑元Rysn</div>
+      <div class="small">02:19 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Ivbgjs3O0mFQHbLup2VfWA==/18702692789117320.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂进行曲</div>
+      <div>Edward Elgar</div>
+      <div class="small">06:02 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/GUX94JeuYbm5c1Wis-0qfA==/109951169857646957.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威風堂々<span>（威风堂堂）</span></div>
+      <div>3SKM、北見遊征、魁星、榊ネス</div>
+      <div class="small">03:21 | 热度 75</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/2kIl0ZlyWgizuhWV8Z2dZg==/109951164895198451.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂的虎视眈眈试图让其响彻（原创rap付）</div>
+      <div>枫斗hayato</div>
+      <div class="small">01:48 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/RpU4dsv4bTCxaCDT7ny4Rg==/109951168276676951.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂</div>
+      <div>西豆</div>
+      <div class="small">03:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/HbNmUtkknLymNjVMEdS9oQ==/109951167641557465.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂</div>
+      <div>CPJ</div>
+      <div class="small">03:20 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jsLg6VyKkTghYgzrtm67Vw==/3094025720639916.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂进行曲</div>
+      <div>吕思清</div>
+      <div class="small">05:49 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Bedh2lXEf3fXm9AY-ctbHg==/109951167475141132.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂（威風堂々.feat. 初音ミク,鏡音リン,巡音ルカ,GUMI,IA）<span>（威风堂堂）</span></div>
+      <div>97月月</div>
+      <div class="small">03:18 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/kr3ABdIWFzCHfw-2hQUN-w==/109951168553426414.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">威风堂堂（纯歌版）</div>
+      <div>程柒柒</div>
+      <div class="small">03:19 | 热度 20</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 8 页 | 总计 152 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

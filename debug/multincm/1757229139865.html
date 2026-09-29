@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/2qGGwWFlMYF2o-GyNMhH5A==/109951171066942237.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓 Proi Proi</div>
+      <div>HOYO-MiX、NIDA</div>
+      <div class="small">03:58 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VHBJeDaJuBRIRIBkoAyp-Q==/109951171446466335.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓 Proi Proi（台词向）</div>
+      <div>子酱酱酱酱</div>
+      <div class="small">03:36 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/rvbc5TkvaLH4gu3wsaMy5g==/109951170448452759.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【崩坏：星穹铁道】拂晓 中文版</div>
+      <div>池年</div>
+      <div class="small">03:58 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/1uWLxBVZ5MLunwuVo5hrzg==/8002245627462629.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">青空</div>
+      <div>Candy_Wind</div>
+      <div class="small">03:21 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/2qGGwWFlMYF2o-GyNMhH5A==/109951171066942237.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓 Proi Proi（和声伴奏）</div>
+      <div>HOYO-MiX</div>
+      <div class="small">03:58 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/ALhc8fVa_P4Tm8wUXfuOPw==/109951171403123967.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">HOYO-MiX-【日冕（哼唱扩写）】Instrument（よあけ拂晓小小小 remix）</div>
+      <div>よあけ拂晓小小小</div>
+      <div class="small">03:13 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/0TiqtzTTXRBt6184JjbUWA==/109951169806262899.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">暁の鎮魂歌<span>（拂晓的镇魂歌 (TV动画《进击的巨人 第三季》片尾曲)）</span></div>
+      <div>Linked Horizon</div>
+      <div class="small">04:04 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Ildw_rIYL7XF2VWompB0yg==/109951171028818651.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓【四国语版】</div>
+      <div>阿扣叩叩</div>
+      <div class="small">03:22 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/8wmImivMLnNzXp-KJsoFQg==/109951171021001431.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓【崩铁/中英双语版】</div>
+      <div>Kyu烤鱼、春夏秋刀鱼、宙斯烤肉_</div>
+      <div class="small">03:24 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/6HDplrwRcFXx9_gi1dH-tg==/109951169708837484.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">青の夜明け（青色的拂晓）<span>（青色的拂晓）</span></div>
+      <div>磯村由紀子</div>
+      <div class="small">05:03 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/1Yq0Jqnmjb8WR-FMZnnk7w==/109951169451121225.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">暁の鎮魂歌 (TV Size)<span>（拂晓的镇魂歌 (TV动画《进击的巨人 第三季》片尾曲)）</span></div>
+      <div>Linked Horizon</div>
+      <div class="small">01:30 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/bCQCvWXXufd7XVvtg5iHkw==/109951166714320898.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">朝が来る<span>（拂晓将至；TV动画《鬼灭之刃 花街篇》片尾曲）</span></div>
+      <div>Aimer</div>
+      <div class="small">04:54 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JV8lqscPUSPJ-SXY-FSgJQ==/109951171315739471.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">那时候的我</div>
+      <div>刘惜君</div>
+      <div class="small">03:52 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JV8lqscPUSPJ-SXY-FSgJQ==/109951171315739471.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓</div>
+      <div>刘惜君</div>
+      <div class="small">04:40 | 热度 70</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/VaBRPQTtkEjGMUta2-f5Ow==/109951170961702497.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">DAYBREAK FRONTLINE<span>（拂晓前线）</span></div>
+      <div>めありー、Orangestar</div>
+      <div class="small">03:36 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/I8oJXhtFOtkJWWWTVbwJ2A==/109951171492076226.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">未明の君と薄明の魔法<span>（拂晓的你与薄明的魔法；TV动画《来自多彩世界的明天》片尾曲）</span></div>
+      <div>やなぎなぎ</div>
+      <div class="small">04:48 | 热度 65</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/IzOwaj9hg99aNBdD0NjISQ==/109951171913471766.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">春雨拂晓（Rain Dawn Of Spring）</div>
+      <div>UM</div>
+      <div class="small">02:30 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/R6apfJmqJ6pjhkll5eiw6Q==/109951170698640676.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓之空 闪耀之誓<span>（星徽骑士EP）</span></div>
+      <div>三Z-STUDIO、HOYO-MiX</div>
+      <div class="small">03:30 | 热度 85</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/oaBVqh7xMKiiPfa2rodPMA==/109951168428872981.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">拂晓</div>
+      <div>路南</div>
+      <div class="small">03:34 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/W3CZdWUUqo2xEwndIYO4nQ==/109951168492162430.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Зари<span>（拂晓）</span></div>
+      <div>Andro、EL'MAN、TONI、MONA</div>
+      <div class="small">02:52 | 热度 90</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 15 页 | 总计 300 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8BuF9airUQy2ZDD1XxEPtw==/109951172374505570.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬</div>
+      <div>木柯桐</div>
+      <div class="small">03:13 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/MnFE8-hgJgCquW591jwSCQ==/109951172187898638.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">朝鲜军歌版《你从丹东来》（你若三冬cover）</div>
+      <div>黄皮硬土豆</div>
+      <div class="small">02:33 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/U43QM1qUlYV5Mb_uCYFlnA==/109951172410231660.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">将军的新曲你若三冬【朝鲜语】（Tebby remix）</div>
+      <div>Tebby</div>
+      <div class="small">04:16 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/Zx6FMFQRCp29yVtYVNZc5A==/109951171580652255.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬 (DJ版)</div>
+      <div>画轩</div>
+      <div class="small">02:20 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/hL5ka2vtg0dnEj0cFQoU0w==/109951170450972808.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">报告将军想吃广东菜</div>
+      <div>DJ阿娅</div>
+      <div class="small">00:17 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/f7lscmXcYdHJ-z1tMlwSgQ==/109951165828821986.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬（抖音纯享版）</div>
+      <div>纯音乐</div>
+      <div class="small">01:18 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jxQxJBuKD18JK1xoRi8rBw==/109951172873723027.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬，但是力量金属【金正恩の小曲】</div>
+      <div>无名小卒</div>
+      <div class="small">04:58 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3PHXxiGlvB8OCVGLJC5NIA==/109951167156316428.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬来</div>
+      <div>陈瑞祁</div>
+      <div class="small">03:10 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/yY0SE3PWor4Ve7W84K0PSg==/109951172410069460.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若九中（你若三冬 remix）</div>
+      <div>洛天依、北沓</div>
+      <div class="small">04:20 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/yH35uTy18Qak7pfJT4rNNg==/109951172115729763.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nhĩ Nhược Tam Đông<span>（你若三冬）</span></div>
+      <div>Lee Phú Quý</div>
+      <div class="small">04:21 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/gDZjOiAhGgnKRW__LWGLjQ==/109951171580575266.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬 (DJ版)</div>
+      <div>兮雅</div>
+      <div class="small">01:57 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/SAoad2dLKRPU_ljUt87zow==/109951169841279435.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬 - DJ</div>
+      <div>不是九尾</div>
+      <div class="small">02:27 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/7HFBIYgIN7kgJ0kck73Epw==/109951172373868762.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬</div>
+      <div>渔跃龙门</div>
+      <div class="small">03:02 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/8eCG3R9gTIrVdUcHztn0Wg==/109951171580769240.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬 (Remix)</div>
+      <div>DJ龙总</div>
+      <div class="small">02:57 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/6BPj4fCfvpihRHz7IhwRfw==/109951166530783391.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬</div>
+      <div>边边</div>
+      <div class="small">01:40 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/3hM2BVX5SPW_eGad-CnRLQ==/109951171580390888.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬  你若三冬 (Remix)</div>
+      <div>阿纯、7妹</div>
+      <div class="small">03:06 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/0ju8ET1ApZSXfWacc4w49w==/109951169484091680.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬</div>
+      <div>倔强的脚踝</div>
+      <div class="small">02:57 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/IGiTkx82G6Nq3epvhU2RUg==/109951172025154305.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬</div>
+      <div>珀伽索斯世纪</div>
+      <div class="small">03:37 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/TJvEfa3_pHqX4d_9RTMS4w==/109951171580616221.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬 (DJ版)</div>
+      <div>城</div>
+      <div class="small">01:21 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/tedAGZFcpAkm33IAsn8PVg==/109951167795683773.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你若三冬（古筝版）</div>
+      <div>裴去病</div>
+      <div class="small">01:45 | 热度 55</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 16 页 | 总计 301 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

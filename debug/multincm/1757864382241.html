@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/-IzhCn9iJ4IYS61-t7E0xQ==/109951165865153984.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyanyanto Catto</div>
+      <div>Joek</div>
+      <div class="small">02:35 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/46RcEtL5o-0TYW3FlOSAfQ==/109951165689540399.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyandang Wirang</div>
+      <div>Anis Harlina</div>
+      <div class="small">04:21 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/KWe7bdNZP_qvGaYzRh7M9A==/109951169538133681.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Drner (Piano)</div>
+      <div>Arthur Grigoryan、Vahagn Hayrapetyan、Artyom Manukyan、Arman Mnatsakanyan</div>
+      <div class="small">02:08 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/KWe7bdNZP_qvGaYzRh7M9A==/109951169538133681.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Drner</div>
+      <div>Arthur Grigoryan、Vahagn Hayrapetyan、Artyom Manukyan、Arman Mnatsakanyan</div>
+      <div class="small">05:11 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/sN0M9HM5zZTAKfl0zIKVRg==/109951169093505092.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">I Can't Stand It Any More</div>
+      <div>ninananu gimipyan</div>
+      <div class="small">01:50 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/PdFoKOqNARa4V9DzefJVaA==/109951163379728287.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Botlenyana</div>
+      <div>Apollo Ntabanyane</div>
+      <div class="small">03:48 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/jJzl36SFZdG9ogRo3It5vA==/109951163658390855.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Botlenyana</div>
+      <div>Apollo GM Ntabanyane</div>
+      <div class="small">03:48 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DwhLylFpuA4S82p63xr5KA==/109951166176147187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Let's Dance & Get Gigue-Y [I. Dance]</div>
+      <div>Lilit Nersisyan、Edward Khorozyan、Andranik Aghajanyan</div>
+      <div class="small">03:28 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DwhLylFpuA4S82p63xr5KA==/109951166176147187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Ishtar & Gilgamesh</div>
+      <div>Lilit Nersisyan、Arshik Tatevosyan、Telman Mkhoyan、Armen Karagyan、Sasha Atanyan</div>
+      <div class="small">05:27 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/DwhLylFpuA4S82p63xr5KA==/109951166176147187.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Let's Dance & Get Gigue-Y [II. Gigue]</div>
+      <div>Lilit Nersisyan、Edward Khorozyan、Andranik Aghajanyan</div>
+      <div class="small">03:26 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/c88DTBAdFxFbtHMgx-1Zig==/109951167476998238.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Mer Bakum</div>
+      <div>Rafael Kotanjyan、Levon Harutyunyan、Forsh、GOgA、Hayko、Tigran Petrosyan、Shushan Petrosyan、Hasmik Karapetyan、Sedrak Davidyan、Ashot Ghazaryan、Ruben Matevosyan、Luiza Nersisyan、Hrant Tokhatyan、Kristina Zaminyan、Naira Ter-Karapetyan、Radik Gabrielyan、Lala Mnatsakanyan</div>
+      <div class="small">04:33 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/51dm_L8SpXvSp_44APvpdA==/109951171394274071.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyananye</div>
+      <div>Anya Solene</div>
+      <div class="small">01:26 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/d8pUU9HyggUCVoZaQadmMg==/109951167179923072.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nocturne by Arno Babajanyan</div>
+      <div>Hayk Gurgenyan、Anahit Nersesyan</div>
+      <div class="small">03:48 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/d8pUU9HyggUCVoZaQadmMg==/109951167179923072.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Serenade by Arno Babajanyan</div>
+      <div>Hayk Gurgenyan、Anahit Nersesyan</div>
+      <div class="small">03:20 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pU9IQ8R-TjA00LplXs1lLg==/109951169055677845.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">That Moment When I Felt</div>
+      <div>Karen Grigoryan、Davit Melkonyan、Yervand Margaryan、Arsen Nersessyan、Arthur Israelyan、Khachatur Savzyan、Arman Mnatsakanyan</div>
+      <div class="small">06:07 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pU9IQ8R-TjA00LplXs1lLg==/109951169055677845.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Somewhere In The Night</div>
+      <div>Karen Grigoryan、Davit Melkonyan、Yervand Margaryan、Arsen Nersessyan、Arthur Israelyan、Khachatur Savzyan、Arman Mnatsakanyan</div>
+      <div class="small">05:20 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pU9IQ8R-TjA00LplXs1lLg==/109951169055677845.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Turn Right</div>
+      <div>Karen Grigoryan、Davit Melkonyan、Yervand Margaryan、Arsen Nersessyan、Arthur Israelyan、Khachatur Savzyan、Arman Mnatsakanyan</div>
+      <div class="small">04:33 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pU9IQ8R-TjA00LplXs1lLg==/109951169055677845.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Solutions</div>
+      <div>Karen Grigoryan、Davit Melkonyan、Yervand Margaryan、Arsen Nersessyan、Arthur Israelyan、Khachatur Savzyan、Arman Mnatsakanyan</div>
+      <div class="small">05:44 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/RZr5B6vDH44u5K8Z1s9PxA==/109951171909768925.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Nyame Ani Womeso</div>
+      <div>Collins Nyantachie</div>
+      <div class="small">04:51 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p2.music.126.net/pU9IQ8R-TjA00LplXs1lLg==/109951169055677845.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Peacfull Memories</div>
+      <div>Karen Grigoryan、Davit Melkonyan、Yervand Margaryan、Arsen Nersessyan、Arthur Israelyan、Khachatur Savzyan、Arman Mnatsakanyan</div>
+      <div class="small">04:57 | 热度 5</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 3 页 | 总计 50 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

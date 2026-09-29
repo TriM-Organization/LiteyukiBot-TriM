@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/vlsFZRpToY9nVupFelGN0Q==/109951162852585067.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>平行四界Quadimension、星尘</div>
+      <div class="small">03:45 | 热度 60</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/BbThauDBop9C9xM5_oyfng==/109951162883990922.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语（Cover 星尘）</div>
+      <div>祖娅纳惜</div>
+      <div class="small">03:44 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Vjwvq1aOiY6AMa5I2BY7Yw==/109951163605311296.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语（Cover 星尘）</div>
+      <div>黄诗扶</div>
+      <div class="small">03:45 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Sv7tv9wvIrPMR62O8990rA==/109951164218201247.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>双笙（陈元汐）</div>
+      <div class="small">03:45 | 热度 35</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/73t0-RvuQa1UjkeYaxgGuw==/109951163204849707.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语（翻自 星尘）</div>
+      <div>凑诗</div>
+      <div class="small">03:46 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/z4RjBmFmsxsVSFIzJghOVA==/109951163021794905.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语（Cover 星尘）</div>
+      <div>大哥L-</div>
+      <div class="small">03:46 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/JdHbPkbBQksXpyITXmwLLQ==/109951164945503913.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>洛天yi微笑时好美丶、诗岸</div>
+      <div class="small">03:48 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/QIbIy2WyaQrNqjeDdMH90g==/109951165248968709.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语<span>（翻自 星尘）</span></div>
+      <div>苏沐辞晚Ciwsulm、赤羽、苍穹、海伊、诗岸</div>
+      <div class="small">03:47 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/SXc9RU0b4tKPA7b8AA3fkA==/109951164716983734.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">被贴上标签的人</div>
+      <div>锦双双双</div>
+      <div class="small">03:43 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/LFGR9KL_56JPulntOJZUFA==/109951168086059395.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>王怜花、Vuslat工作室</div>
+      <div class="small">03:48 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/GUNViUkE_JUwUnJ8P-P1OQ==/109951163426709891.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>晴小瑶</div>
+      <div class="small">03:42 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/jhMG2FxhJbAgRRtGaE7gUg==/109951163657640409.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>竾颜音</div>
+      <div class="small">03:44 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/qLHIveyse842qLG5PYL3yQ==/109951168872788598.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>沈玄汐</div>
+      <div class="small">03:46 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/YnjLbEMjiTgYbU_Aa1_0gQ==/109951167451423523.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>季婕</div>
+      <div class="small">03:43 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/qLHIveyse842qLG5PYL3yQ==/109951168872788598.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语(和声参考)</div>
+      <div>沈玄汐</div>
+      <div class="small">03:46 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/SXc9RU0b4tKPA7b8AA3fkA==/109951164716983734.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">畏光症—silent spiral—</div>
+      <div>锦双双双</div>
+      <div class="small">03:09 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/MuCk3FVseMpqSS-o65ye3g==/109951164922401471.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语（翻自 星尘）</div>
+      <div>Haru芮晴、夏叶子、萨摩耶P</div>
+      <div class="small">03:44 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/DQpfi_MoJnlg-pjMgFrzTg==/109951165980621924.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>落凌</div>
+      <div class="small">03:45 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/BhgHlh_VoR03Vw2WOgf65Q==/109951164638139474.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>江小南@咕咕</div>
+      <div class="small">03:48 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/TKNboEWGwkGEitCKFebeig==/109951164228912575.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">生死一舞的爱语</div>
+      <div>姜雨涵</div>
+      <div class="small">03:50 | 热度 10</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 4 页 | 总计 62 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>

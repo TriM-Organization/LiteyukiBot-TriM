@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --c-bg-0: #24273a;
+      --c-bg-1: #1e2030;
+      --c-fg-pri: #a5adcb;
+      --c-fg-sec: #8087a2;
+      --c-index-bg: #8aadf460;
+      --c-shadow: #939ab740;
+
+      --shadow-card: 2px 2px 8px var(--c-shadow);
+      --shadow-cover: 1px 1px 4px var(--c-shadow);
+
+      --font-family: sans-serif;
+    }
+
+    body {
+      background-color: var(--c-bg-0);
+      color: var(--c-fg-pri);
+      font-family: var(--font-family);
+    }
+
+    main {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    main>.title {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    main>.footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--c-fg-sec);
+    }
+
+    main>.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line-height-1 {
+      line-height: 1;
+    }
+  </style>
+  <style>
+  main {
+    width: fit-content;
+  }
+
+  .card {
+    display: flex;
+    overflow: hidden;
+    padding: 16px;
+    background-color: var(--c-bg-1);
+    border-radius: 8px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .card.song {
+    width: 350px;
+    position: relative;
+    display: block;
+  }
+
+  .card.song .index {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    background-color: var(--c-index-bg);
+    color: var(--c-fg-pri);
+    clip-path: polygon(100% 0, 0 0, 0 100%);
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card.song .index span {
+    display: block;
+    transform: rotate(-45deg);
+  }
+
+  .card.song .inner {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    height: 100%;
+  }
+
+  .card.song img.cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--c-shadow);
+    box-shadow: var(--shadow-cover);
+  }
+
+  .card.song .desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+
+  .card.song .desc-inline {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+  }
+
+  .card.song .desc .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .card.song .desc .title span {
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--c-fg-sec);
+  }
+
+  .card.song .desc .small {
+    font-size: 14px;
+    color: var(--c-fg-sec);
+  }
+</style>
+</head>
+
+<body>
+  <main><div class="title line-height-1">歌曲列表</div>
+<div class="tip text-center">
+  直接发送 <b>序号</b> 进行选择 | 发送 <b>P</b>+<b>数字</b> 跳到指定页数<br />
+  其他操作：<b>上一页</b>(P) | <b>下一页</b>(N) | <b>退出</b>(E)
+</div>
+<div class="card-grid">
+  <div class="card song">
+  <div class="index">
+    <span>1</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Kk5YxGO0qB_KQx8-uEOL6g==/109951173459347365.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">反乌托邦×拼接遗憾×Sinos De Natal<span>（就把我的吉他带走吧）</span></div>
+      <div>Vince丷、见过夏天P、Ciyo</div>
+      <div class="small">01:53 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>2</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/73Tp_wCj9u3OkvNySAjdBg==/109951167744185407.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">STAY (Minecraft红石音乐)</div>
+      <div>Lightcloud</div>
+      <div class="small">02:20 | 热度 80</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>3</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/nzX_SgWyk8B2oGDb5UIfsg==/109951167983092018.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">没有共产党就没有新中国</div>
+      <div>中国人民解放军军乐团</div>
+      <div class="small">01:49 | 热度 95</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>4</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Fx2ZZeLF8qtRHN56SVfuTg==/109951168090864637.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">起风了【红石音乐】</div>
+      <div>火龙灬</div>
+      <div class="small">05:09 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>5</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/dYjWsH4De_TP0EUWnOCAiA==/109951171531113558.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">跑操音乐(红石音乐)</div>
+      <div>Veylak</div>
+      <div class="small">02:46 | 热度 30</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>6</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/FwlJ-3sBdsh3nHMcKdJn-w==/109951163410290652.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】鸟之诗 - Animenz</div>
+      <div>xue_tao_lu</div>
+      <div class="small">03:07 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>7</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/xaqyMAFO_155bOsMo-WWzQ==/109951167300061597.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">[红石音乐] 大鱼</div>
+      <div>众怒</div>
+      <div class="small">04:44 | 热度 15</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>8</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/e1Kfka3H8RDIPugcWEeQMQ==/109951166255444817.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】彼女は旅に出る</div>
+      <div>花一定会再开吧</div>
+      <div class="small">03:47 | 热度 5</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>9</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/FwlJ-3sBdsh3nHMcKdJn-w==/109951163410290652.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】花之舞 Flower Dance 钢琴版</div>
+      <div>xue_tao_lu</div>
+      <div class="small">04:24 | 热度 40</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>10</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Fx2ZZeLF8qtRHN56SVfuTg==/109951168090864637.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">千本樱【红石音乐】</div>
+      <div>火龙灬</div>
+      <div class="small">04:08 | 热度 20</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>11</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XJrJ_vlHZ4TFAR9gWQ-xTg==/669602581327739.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">映山红</div>
+      <div>韩红</div>
+      <div class="small">03:33 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>12</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/o2uQiqnOV9A-VHvPPEHhjw==/109951169874348518.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">没有共产党就没有新中国</div>
+      <div>群星</div>
+      <div class="small">01:54 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>13</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/Fh6J-Sxft1jt_1AUZYHyTg==/109951171274775121.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">你奶奶个三角篓子的</div>
+      <div>电子手刹</div>
+      <div class="small">01:34 | 热度 90</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>14</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/-73EXzstN341sUHHTjHzPQ==/109951167084892793.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">【红石音乐】怪物-YOASOBI</div>
+      <div>Betacarr</div>
+      <div class="small">03:24 | 热度 25</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>15</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/c-ysm0ldxCEIGab_mUv9sQ==/109951168598799319.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">中国人民解放军进行曲</div>
+      <div>中国人民解放军合唱团</div>
+      <div class="small">02:20 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>16</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/PmpjIEsnzmR8jx7C-QTb1A==/109951163497823236.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">十送红军</div>
+      <div>中央乐团合唱团</div>
+      <div class="small">05:10 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>17</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/XJrJ_vlHZ4TFAR9gWQ-xTg==/669602581327739.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">祖国不会忘记</div>
+      <div>韩红</div>
+      <div class="small">03:45 | 热度 100</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>18</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/dYjWsH4De_TP0EUWnOCAiA==/109951171531113558.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">Crucified(红石音乐神父小曲)</div>
+      <div>Veylak</div>
+      <div class="small">01:44 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>19</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/LmfNqZ92kZ24sJwQuV9eIQ==/109951165782804144.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">fripSide-[红石音乐] Sister's noise（a6513375 remix）</div>
+      <div>Inkarro</div>
+      <div class="small">04:05 | 热度 10</div>
+    </div>
+  </div>
+</div><div class="card song">
+  <div class="index">
+    <span>20</span>
+  </div>
+  <div class="inner">
+    <img class="cover" src="http://p1.music.126.net/sq2MgxypSCODzMHULujMWw==/126443837212197.jpg?param=64y64" />
+    <div class="desc">
+      <div class="title">义勇军进行曲<span>（中华人民共和国国歌 合唱版）</span></div>
+      <div>上海乐团管弦乐团与合唱团</div>
+      <div class="small">01:02 | 热度 100</div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="text-center">
+  第 1 页 / 共 5 页 | 总计 95 项
+</div>
+<div class="footer text-center">
+  Generated by nonebot-plugin-multincm v1.2.3
+</div></main>
+</body>
+
+
+
+
+</html>
