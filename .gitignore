@@ -14,8 +14,10 @@ __pycache__/
 *.pyd
 *.pyw
 /plugins/
-/debug/
-/multincm*.png
+
+# waste
+debug/multincm/*
+multincm-qrcode.png
 
 
 #config
